@@ -7,15 +7,15 @@
 <link id="favicon" rel="icon" href="/makala.ico" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<!-- markdown & sanitize & katex -->
+<!-- Markdown + sanitize + KaTeX -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
 <style>
-  /* ---------------- base ---------------- */
-  *{box-sizing:border-box}
+  /* ---------- base & font ---------- */
+  * { box-sizing: border-box; }
   :root{
     --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     --bg1:#0a0015; --bg2:#1b001f;
@@ -23,127 +23,167 @@
     --muted:#b9a9b7;
     --user-a:#200023; --user-b:#0b0012; --bot-bg: rgba(255,255,255,0.03);
     --glass: rgba(255,255,255,0.02);
+    --ui-radius:12px;
   }
   html,body{height:100%;margin:0;font-family:var(--font);color:#fff;overflow-x:hidden;background:linear-gradient(180deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased}
   body{display:flex;align-items:center;justify-content:center;padding:28px;transition:background .28s ease}
   .app{width:980px;max-width:calc(100% - 40px);height:720px;display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:start}
 
+  /* ---------- themes ---------- */
+  body.theme-pink{ --bg1:#0a0015;--bg2:#1b001f;--accent-a:#ff49a0;--accent-b:#ff7fcf;--user-a:#200023;--user-b:#0b0012;--bot-bg:rgba(255,255,255,0.03)}
+  body.theme-deep{ --bg1:#020202;--bg2:#000;--accent-a:#ff007f;--accent-b:#ff4fb1;--user-a:#0b0b0b;--user-b:#000000;--bot-bg:rgba(255,255,255,0.02)}
+  body.theme-soft{ --bg1:#0b0710;--bg2:#1b1128;--accent-a:#b98cff;--accent-b:#8fb7ff;--user-a:#161023;--user-b:#0b0620;--bot-bg:rgba(255,255,255,0.035)}
+  body.theme-blue{ --bg1:#041025;--bg2:#061b2f;--accent-a:#2ea6ff;--accent-b:#7ecbff;--user-a:#042033;--user-b:#001426;--bot-bg:rgba(255,255,255,0.02)}
+  body.theme-orange{ --bg1:#130800;--bg2:#2a0f00;--accent-a:#ff9a3c;--accent-b:#ff5a1f;--user-a:#2b0f00;--user-b:#1a0700;--bot-bg:rgba(255,255,255,0.02)}
+  body.theme-red{ --bg1:#1a0707;--bg2:#2b0909;--accent-a:#ff4b4b;--accent-b:#ff8181;--user-a:#220808;--user-b:#140404;--bot-bg:rgba(255,255,255,0.02)}
+  body.theme-green{ --bg1:#02120a;--bg2:#072014;--accent-a:#3cff9a;--accent-b:#7cffb1;--user-a:#062014;--user-b:#03130b;--bot-bg:rgba(255,255,255,0.02)}
+
   /* ---------- sidebar ---------- */
-  .sidebar{background:linear-gradient(180deg,var(--glass), rgba(255,255,255,0.01));border-radius:12px;padding:12px;height:100%;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
+  .sidebar{background:linear-gradient(180deg,var(--glass), rgba(255,255,255,0.01));border-radius:var(--ui-radius);padding:12px;height:100%;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
   .sidebar header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .new-btn{margin-left:auto;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer;transition:transform .12s, box-shadow .12s}
-  .new-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.35)}
+  .makalina-btn { background: transparent; border: 0; padding: 6px; cursor:pointer; display:inline-flex; align-items:center; gap:8px }
+  .makalina-btn img{width:26px;height:26px;border-radius:6px; transition: transform .18s }
+  .makalina-btn:hover img{ transform: scale(1.06); box-shadow: 0 8px 28px rgba(255,255,160,0.06) }
+  .new-btn{ margin-left:auto; background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04); padding:6px 8px; border-radius:8px; cursor:pointer; transition: transform .12s }
   .conv-list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:6px}
-  .conv{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .18s, box-shadow .18s}
+  .conv{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .18s}
   .conv.active{background:linear-gradient(90deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));color:#fff;box-shadow:0 6px 20px rgba(0,0,0,0.4)}
   .conv-meta{font-size:12px;color:var(--muted)}
-  .conv .trash { margin-left:auto; width:20px;height:20px;opacity:.85;cursor:pointer;transition:transform .12s }
-  .conv .trash:hover{transform:scale(1.06)}
+  .conv .trash { margin-left:auto; width:20px;height:20px;opacity:.9;cursor:pointer; filter: invert(1) sepia(0.1) saturate(0.2); }
+  .conv .trash:hover{ transform: scale(1.06) }
+
+  /* add small "Click a convo" text area below the makalina icon */
+  .sidebar-note { font-size:12px; color:var(--muted); margin-top:8px }
 
   /* ---------- main panel ---------- */
-  .panel{background:linear-gradient(180deg,var(--glass), rgba(255,255,255,0.01));border-radius:12px;padding:12px;height:100%;display:flex;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);overflow:hidden}
+  .panel{background:linear-gradient(180deg,var(--glass), rgba(255,255,255,0.01));border-radius:var(--ui-radius);padding:12px;height:100%;display:flex;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);overflow:hidden}
   .header{display:flex;align-items:center;gap:12px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.03)}
   .brand{display:flex;align-items:center;gap:10px}
-  .brand img{width:28px;height:28px;border-radius:6px;transition:transform .22s ease, box-shadow .22s ease}
+  .brand img{width:28px;height:28px;border-radius:6px;transition:transform .22s ease}
   .brand h1{margin:0;font-size:16px;font-weight:600;color:#fff}
   .header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
 
-  /* messages area */
+  /* user info area (name/pfp/coins), shows when makalina owned */
+  .user-info{display:flex;align-items:center;gap:8px;margin-left:12px}
+  .user-info .pfp{width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+  .user-info .pfp img{width:100%;height:100%;object-fit:cover;display:block}
+  .user-info .name{font-size:13px;color:#fff}
+  .user-info .coins{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+  .spin { animation: spin 6s linear infinite; display:inline-block }
+  @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+  /* ---------- messages area ---------- */
   .messages-wrap{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;overflow-x:hidden}
-  .bot-card{max-width:78%;display:flex;flex-direction:column;gap:6px;align-items:flex-start;width:100%}
-  .bot-meta{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
-  .bot-meta img{width:20px;height:20px;border-radius:6px;transition:box-shadow .18s}
+  .bot-card{max-width:78%;display:flex;flex-direction:column;gap:4px;align-items:flex-start;width:100%}
+  .bot-meta{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+  .bot-meta img{width:18px;height:18px;border-radius:6px}
   .bot-label{font-weight:600;color:#fff;font-size:13px;display:inline-flex;align-items:center;gap:8px}
-  .meta-copy{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:3px;border-radius:6px;background:rgba(255,255,255,0.03);cursor:pointer;transition:transform .12s, box-shadow .14s;opacity:.95}
-  .meta-copy img{width:100%;height:100%;object-fit:contain;display:block}
-  .meta-copy:hover{transform:scale(1.06);box-shadow:0 10px 24px rgba(0,0,0,0.35)}
+  .meta-copy{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:3px;border-radius:6px;background:rgba(255,255,255,0.03);cursor:pointer;transition:transform .12s}
+  .meta-copy img{width:14px;height:14px}
+  .meta-copy:hover{transform:scale(1.06)}
 
-  .bot-body{padding:0;color:#fff;white-space:pre-wrap;line-height:1.25;font-size:14px;position:relative;overflow:visible;word-break:break-word;margin:0}
+  .bot-body{padding:0;color:#fff;white-space:pre-wrap;line-height:1.2;font-size:14px;position:relative;overflow:visible;word-break:break-word;margin:0}
+  .bot-body p{margin:0}
   pre.code-block{position:relative;background:#0b0b10;padding:12px;border-radius:8px;overflow:auto;margin:8px 0;font-family:ui-monospace,Menlo,Monaco,'Roboto Mono',monospace;font-size:13px;color:#e6edf3}
-  .copy-code{position:absolute;right:8px;top:8px;width:28px;height:28px;padding:5px;border-radius:6px;cursor:pointer;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;transition:transform .12s, box-shadow .14s}
-  .copy-code img{width:16px;height:16px;object-fit:contain}
-  .copy-code:hover{transform:scale(1.06);box-shadow:0 12px 30px rgba(0,0,0,0.45)}
+  .copy-code{position:absolute;right:8px;top:8px;width:28px;height:28px;padding:5px;border-radius:6px;cursor:pointer;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;transition:transform .12s}
+  .copy-code img{width:16px;height:16px}
+  .copy-code:hover{transform:scale(1.06)}
 
-  /* USER */
+  /* ---------- user bubble ---------- */
   .row-user{display:flex;justify-content:flex-end;align-items:flex-end;width:100%}
   .user-bubble{
     background:linear-gradient(90deg,var(--user-a),var(--user-b));
     color:#ffdff4;padding:10px 14px;border-radius:14px 14px 6px 14px;max-width:60%;min-width:80px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.6);position:relative;white-space:pre-wrap;line-height:1.25;font-size:14px;overflow-wrap:break-word;margin:0 0 0 8px;transition:box-shadow .18s, transform .12s;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);position:relative;white-space:pre-wrap;line-height:1.2;font-size:14px;overflow-wrap:break-word;margin:0 0 0 8px;transition:box-shadow .18s, transform .12s;
     margin-left:auto;
   }
-  .row-user .copy-user{position:absolute;right:-36px;top:6px;width:20px;height:20px;padding:3px;border-radius:6px;background:rgba(255,255,255,0.02);transition:opacity .12s ease, transform .12s;opacity:0;cursor:pointer}
-  .row-user:hover .user-bubble .copy-user{opacity:1}
+  .copy-user{position:absolute;right:-36px;top:6px;width:20px;height:20px;padding:3px;border-radius:6px;background:rgba(255,255,255,0.02);transition:opacity .12s ease;opacity:0;cursor:pointer}
+  .row-user:hover .copy-user{opacity:1}
 
+  /* user appear animation */
   .user-appear{animation:flyIn .36s cubic-bezier(.2,.9,.27,1)}
   @keyframes flyIn{0%{opacity:0;transform:translateY(12px) translateX(40px) scale(.98)}60%{opacity:1;transform:translateY(-4px) translateX(-6px) scale(1.02)}100%{opacity:1;transform:none}}
 
-  /* bot per-character reveal (charIn) */
+  /* per-character reveal for bot: char fade-in */
   .bot-char{display:inline-block;opacity:0;transform:translateY(4px);animation:charIn .06s forwards}
   @keyframes charIn{to{opacity:1;transform:none}}
 
-  /* typing star (period-like) */
-  .typing-star{display:inline-block; width:12px; height:12px; vertical-align:baseline; margin-left:6px; opacity:0; transform:scale(.85); transition:opacity .28s ease, transform .28s ease; pointer-events:auto}
+  /* typing star exactly like a period: inline with text baseline */
+  .typing-star{display:inline-block; width:12px; height:12px; vertical-align:baseline; margin-left:4px; opacity:0; transform:scale(.85); transition:opacity .18s ease, transform .18s ease}
   .typing-star img{width:100%;height:100%;display:block}
-  .typing-star.visible{opacity:1; transform:scale(1)}
+  .typing-star.visible{opacity:1; transform:scale(1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));}
 
-  /* input area */
+  /* ---------- input ---------- */
   .input-area{padding:12px;border-top:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;gap:10px}
   .input-wrap{position:relative;flex:1}
-  textarea.input{width:100%;min-height:44px;max-height:200px;resize:none;padding:12px 54px 12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;font-size:14px;line-height:1.25}
+  textarea.input{width:100%;min-height:44px;max-height:200px;resize:none;padding:12px 58px 12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;font-size:14px;line-height:1.25;font-family:var(--font)}
   textarea.input:focus{box-shadow:0 12px 28px rgba(255,73,160,0.08);transform:translateY(-1px);transition:box-shadow .18s}
   .send-circle{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:100px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));border:none;cursor:pointer;box-shadow:0 16px 38px rgba(255,73,160,0.14);display:none;transition:transform .12s, box-shadow .18s, opacity .16s}
   .input-wrap.ready .send-circle{display:flex}
   .send-circle img{width:18px;height:18px}
-  .send-circle:hover{transform:translateY(-50%) scale(1.05);box-shadow:0 22px 48px rgba(255,73,160,0.22)}
 
-  /* theme picker bottom-right */
-  .theme-picker{position:fixed;right:18px;bottom:18px;z-index:40}
-  .theme-picker select{background:rgba(0,0,0,0.6);color:#fff;border-radius:12px;padding:10px 14px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(10px);cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,0.16);transition:transform .12s}
-  .theme-picker select:hover{transform:translateY(-3px)}
-
-  /* buy / modal / tic-tac-toe */
+  /* modal & forms */
   .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,10,0.6);display:flex;align-items:center;justify-content:center;z-index:90}
   .modal{width:520px;max-width:calc(100% - 32px);background:linear-gradient(180deg,var(--glass), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-  .modal h3{margin:0 0 8px 0}
-  .modal .row{display:flex;gap:8px;align-items:center}
-  .field{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff}
+  .field{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;font-family:var(--font)}
 
-  /* tic tac toe board */
-  .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s}
+  /* tic tac toe */
+  .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+  .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s;user-select:none}
   .ttt-cell:hover{transform:scale(1.04);background:rgba(255,255,255,0.035)}
 
-  /* reset button bottom-right */
-  .reset-btn{position:fixed;right:18px;bottom:72px;z-index:60;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);color:#fff;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+  /* reset button temporary */
+  .reset-btn{position:fixed;right:18px;bottom:18px;z-index:60;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);color:#fff;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
 
-  /* small responsive */
-  @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{order:2;height:160px}.panel{order:1;height:calc(100vh - 200px)}.user-bubble{max-width:70%}}
+  /* responsive */
+  @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{order:2}.panel{order:1;height:calc(100vh - 200px)}}
 </style>
 </head>
 <body>
   <div class="app" aria-live="polite">
-    <!-- LEFT: conversations -->
-    <aside class="sidebar" id="sidebar">
-      <header><strong>Conversations</strong><button class="new-btn" id="newConv">New</button></header>
-      <div class="conv-list" id="convList" role="list"></div>
-      <div style="margin-top:8px;font-size:12px;color:var(--muted)">Click a convo to open. Use trash to delete. Play Tic Tac Toe if you have makalina.</div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <header>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="makalina-btn" id="makalinaBtn" title="Get makalina (pro)">
+            <img src="makalina.png" alt="makalina">
+          </button>
+          <strong style="font-size:14px">Conversations</strong>
+        </div>
+        <button class="new-btn" id="newConv">New</button>
+      </header>
+
+      <div class="conv-list" id="convList"></div>
+
+      <div class="sidebar-note">Click a conversation to open. Use the trash icon to delete. Play Tic Tac Toe if you own makalina.</div>
+
       <div style="margin-top:auto;display:flex;gap:8px;align-items:center">
-        <button id="makalinaBtn" class="new-btn" title="Get makalina"><img src="makalina.png" alt="makalina" style="height:18px"></button>
-        <button id="playTttBtn" class="new-btn" title="Play tic tac toe">Play Tic Tac Toe</button>
+        <button class="new-btn" id="playTttBtn">Play Tic Tac Toe</button>
       </div>
     </aside>
 
-    <!-- RIGHT: panel -->
+    <!-- Panel -->
     <main class="panel" role="main">
       <div class="header">
-        <div class="brand"><img id="brandImg" src="makala.png" alt="m"><h1 id="convTitle">New conversation</h1></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <label style="font-size:13px;color:var(--muted)">Personality</label>
-          <select id="convPersonality" class="field" style="width:180px;padding:6px 8px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.04);">
-            <option value="makala">makala (default)</option>
+        <div class="brand">
+          <img id="brandImg" src="makala.png" alt="m">
+          <h1 id="convTitle">New conversation</h1>
+          <!-- user info (pfp, name, coins) -->
+          <div class="user-info" id="userInfo" style="display:none;margin-left:10px">
+            <div class="pfp" id="userPfp"><img src="makala.png" alt="pfp"></div>
+            <div class="name" id="userNameDisplay"></div>
+            <div class="coins" id="coinDisplay" style="margin-left:8px">
+              <img src="coins.png" style="width:18px;height:18px" class="spin" alt="coins"><span id="coinCount">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <label style="font-size:13px;color:var(--muted);margin-right:6px">Personality</label>
+          <select id="convPersonality" class="field" style="width:200px">
+            <option value="makala">makala</option>
             <option value="serious">serious</option>
-            <option value="makalina">makalina</option>
+            <option value="makalina">makalina ai</option>
           </select>
         </div>
       </div>
@@ -160,8 +200,8 @@
   </div>
 
   <!-- theme picker -->
-  <div class="theme-picker">
-    <select id="themeSelect" aria-label="Theme">
+  <div style="position:fixed;right:18px;bottom:86px;z-index:40">
+    <select id="themeSelect" aria-label="Theme" class="field" style="padding:8px 12px">
       <option value="pink">purple & pink</option>
       <option value="deep">deep black</option>
       <option value="soft">soft purple</option>
@@ -172,32 +212,33 @@
     </select>
   </div>
 
-  <!-- modals -->
-  <div id="modalContainer" style="display:none"></div>
+  <div id="modalContainer"></div>
 
-  <!-- reset -->
   <button id="resetBtn" class="reset-btn">Reset (temp)</button>
 
 <script>
-/* ========= utilities ========= */
+/* ----------------- helpers ----------------- */
 const $ = (s, root=document) => root.querySelector(s);
-const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
-const now = ()=> Date.now();
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8) }
-function rtrimNewlines(s){ return String(s||'').replace(/\r/g,'').replace(/\n+$/,'') }
-function sanitizeHTML(html){ return DOMPurify.sanitize(html) }
+const $$ = (s, root=document) => Array.from((root||document).querySelectorAll(s));
+const uid = ()=> Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const rtrimNewlines = s => String(s||'').replace(/\r/g,'').replace(/\n+$/,'');
+const sanitizeHTML = html => DOMPurify.sanitize(html);
 
-/* ========= persistent storage ========= */
+/* ----------------- persistent state ----------------- */
 let convs = JSON.parse(localStorage.getItem('makala_convs')||'[]');
 if(!Array.isArray(convs)) convs = [];
 let activeConvId = localStorage.getItem('makala_activeConv') || (convs[0]?.id || null);
-const settings = { userName: localStorage.getItem('makala_user') || '', makalinaOwned: localStorage.getItem('makala_owned') === '1', coins: Number(localStorage.getItem('makala_coins')||0) };
-
+const settings = {
+  userName: localStorage.getItem('makala_user') || '',
+  makalinaOwned: localStorage.getItem('makala_owned') === '1',
+  coins: Number(localStorage.getItem('makala_coins') || 0),
+  pfpData: localStorage.getItem('makala_pfp') || null
+};
 function saveConvs(){ localStorage.setItem('makala_convs', JSON.stringify(convs)); }
-function saveActiveConv(){ localStorage.setItem('makala_activeConv', activeConvId || ''); }
-function saveOwnership(){ localStorage.setItem('makala_owned', settings.makalinaOwned ? '1' : '0'); localStorage.setItem('makala_coins', String(settings.coins || 0)); }
+function saveActive(){ localStorage.setItem('makala_activeConv', activeConvId||''); }
+function saveOwnership(){ localStorage.setItem('makala_owned', settings.makalinaOwned ? '1' : '0'); localStorage.setItem('makala_coins', String(settings.coins||0)); if(settings.pfpData) localStorage.setItem('makala_pfp', settings.pfpData); if(settings.userName) localStorage.setItem('makala_user', settings.userName); }
 
-/* ========= DOM refs ========= */
+/* ----------------- DOM refs ----------------- */
 const convListEl = $('#convList');
 const messagesWrap = $('#messages');
 const newConvBtn = $('#newConv');
@@ -212,66 +253,48 @@ const playTttBtn = $('#playTttBtn');
 const brandImg = $('#brandImg');
 const convPersonality = $('#convPersonality');
 const resetBtn = $('#resetBtn');
+const userInfo = document.getElementById('userInfo');
+const userPfp = document.getElementById('userPfp');
+const userNameDisplay = document.getElementById('userNameDisplay');
+const coinCountEl = document.getElementById('coinCount');
 
-/* ========= init UI ========= */
+/* ----------------- init ----------------- */
 function ensureDefaultConv(){
-  if(convs.length === 0){
-    const c = { id: uid(), title: 'New conversation', created: Date.now(), messages: [], renderedCount: 0, personality: 'makala' };
-    convs.unshift(c);
-    activeConvId = c.id;
-    saveConvs();
-    saveActiveConv();
+  if(convs.length===0){
+    const c = { id: uid(), title:'New conversation', created: Date.now(), messages: [], renderedCount: 0, personality:'makala' };
+    convs.unshift(c); activeConvId = c.id; saveConvs(); saveActive();
   }
 }
 ensureDefaultConv();
 if(!activeConvId) activeConvId = convs[0].id;
 
-/* set makalina UI */
-function refreshMakalinaUI(){
-  if(settings.makalinaOwned){
-    makalinaBtn.style.display = 'none';
-    // favicon switch
-    const fav = document.getElementById('favicon');
-    if(fav) fav.href = '/makalina.ico';
-  } else {
-    makalinaBtn.style.display = 'inline-flex';
-    const fav = document.getElementById('favicon');
-    if(fav) fav.href = '/makala.ico';
-  }
-  // show/hide Play TicTacToe
-  playTttBtn.style.display = settings.makalinaOwned ? 'inline-flex' : 'none';
-}
-refreshMakalinaUI();
-
-/* theme */
+/* ----------------- theme ----------------- */
 (function initTheme(){
   const t = localStorage.getItem('makala_theme') || 'pink';
-  document.body.classList.remove();
-  document.body.classList.add('theme-'+t);
+  document.body.className = 'theme-'+t;
   themeSelect.value = t;
 })();
-themeSelect.addEventListener('change', (e)=> {
+themeSelect.addEventListener('change', (e)=>{
   const t = e.target.value;
   document.body.className = 'theme-'+t;
   localStorage.setItem('makala_theme', t);
 });
 
-/* ========= conversation list rendering ========= */
+/* ----------------- conv list render ----------------- */
 function relativeTime(ts){
   const nowSec = Math.floor((Date.now()-ts)/1000);
-  if(nowSec < 60) return 'just now';
-  if(nowSec < 3600) return Math.floor(nowSec/60) + 'm ago';
-  const dNow = new Date();
-  const dTs = new Date(ts);
+  if(nowSec<60) return 'just now';
+  if(nowSec<3600) return Math.floor(nowSec/60)+'m ago';
+  const dNow = new Date(); const dTs = new Date(ts);
   if(dNow.toDateString() === dTs.toDateString()) return 'Today';
   const yesterday = new Date(Date.now() - 86400000);
   if(yesterday.toDateString() === dTs.toDateString()) return 'Yesterday';
   const days = Math.floor(nowSec/86400);
-  if(days < 7) return `${days}d ago`;
-  if(days < 30) return `${Math.floor(days/7)}w ago`;
+  if(days<7) return `${days}d ago`;
+  if(days<30) return `${Math.floor(days/7)}w ago`;
   const years = Math.floor(days/365);
-  if(years === 1) return 'A year ago';
-  if(years >= 2) return 'A long time ago';
+  if(years===1) return 'A year ago';
+  if(years>=2) return 'A long time ago';
   return `${Math.floor(days/30)}mo ago`;
 }
 
@@ -281,15 +304,13 @@ function renderConvList(){
     const el = document.createElement('div');
     el.className = 'conv' + (c.id===activeConvId ? ' active' : '');
     el.dataset.id = c.id;
-    const icon = document.createElement('img'); icon.src = (c.personality === 'makalina' ? 'linastar.png' : 'makala.png'); icon.style.width='28px'; icon.style.height='28px'; icon.style.borderRadius='6px';
-    const title = document.createElement('div');
-    title.innerHTML = `<div style="font-size:14px">${sanitizeHTML(c.title || 'New conversation')}</div><div class="conv-meta">${relativeTime(c.created||Date.now())}</div>`;
-    const trash = document.createElement('img');
-    trash.src = 'trash.png'; trash.className = 'trash'; trash.alt='del';
-    trash.title = 'Delete';
-    el.appendChild(icon);
-    el.appendChild(title);
-    el.appendChild(trash);
+    const icon = document.createElement('img');
+    icon.src = (c.personality === 'makalina' ? 'linastar.png' : 'makala.png');
+    icon.style.width='28px'; icon.style.height='28px'; icon.style.borderRadius='6px';
+    const titleWrap = document.createElement('div');
+    titleWrap.innerHTML = `<div style="font-size:14px">${sanitizeHTML(c.title||'New conversation')}</div><div class="conv-meta">${relativeTime(c.created||Date.now())}</div>`;
+    const trash = document.createElement('img'); trash.src='trash.png'; trash.className='trash'; trash.alt='del'; trash.title='Delete';
+    el.appendChild(icon); el.appendChild(titleWrap); el.appendChild(trash);
     convListEl.appendChild(el);
 
     el.addEventListener('click', (ev)=>{
@@ -299,89 +320,74 @@ function renderConvList(){
   });
 }
 
-/* ========= conversation management ========= */
+/* ----------------- conv mgmt ----------------- */
 function createConv(title='New conversation'){
-  const c = { id: uid(), title: title || 'New conversation', created: Date.now(), messages: [], renderedCount: 0, personality: 'makala' };
+  const c = { id: uid(), title: title || 'New conversation', created: Date.now(), messages: [], renderedCount: 0, personality:'makala' };
   convs.unshift(c); saveConvs(); renderConvList(); setActiveConv(c.id, { clear:true, animate:false }); return c;
 }
 function deleteConv(id){
   const i = convs.findIndex(x=>x.id===id);
   if(i>=0) convs.splice(i,1);
-  if(activeConvId === id){
-    activeConvId = convs[0]?.id || null;
-    saveActiveConv();
-  }
-  saveConvs(); renderConvList();
-  if(convs.length === 0) createConv('New conversation');
+  if(activeConvId===id) activeConvId = convs[0]?.id || null;
+  saveConvs(); saveActive(); renderConvList();
+  if(convs.length===0) createConv('New conversation');
   setActiveConv(activeConvId, { clear:true, animate:false });
 }
 
 function setActiveConv(id, opts={clear:false, animate:false}){
-  activeConvId = id;
-  saveActiveConv();
-  renderConvList();
-  const conv = convs.find(x=>x.id===id);
-  if(!conv) return;
+  activeConvId = id; saveActive(); renderConvList();
+  const conv = convs.find(x=>x.id===id); if(!conv) return;
   convTitle.textContent = conv.title || 'New conversation';
   convPersonality.value = conv.personality || 'makala';
   if(opts.clear){ messagesWrap.innerHTML=''; conv.renderedCount = 0; }
-  // render messages (only append missing)
   const start = conv.renderedCount || 0;
-  for(let i=start;i<conv.messages.length;i++){
-    appendMessageToDOM(conv, conv.messages[i], { animate: (i === conv.messages.length-1) && !!opts.animate });
-    conv.renderedCount = i+1;
-  }
+  for(let i=start;i<conv.messages.length;i++){ appendMessageToDOM(conv, conv.messages[i], { animate: (i===conv.messages.length-1) && !!opts.animate }); conv.renderedCount = i+1; }
   messagesWrap.scrollTop = messagesWrap.scrollHeight;
+  // update brand small icon
+  brandImg.src = (conv.personality === 'makalina') ? 'linastar.png' : 'makala.png';
 }
 
-/* ========= messaging DOM helpers ========= */
+/* ----------------- DOM message helpers ----------------- */
 function appendUserToDOM(conv, m, { animate=false } = {}){
   const row = document.createElement('div'); row.className = 'row-user';
   const bubble = document.createElement('div'); bubble.className = 'user-bubble';
-  bubble.textContent = rtrimNewlines(m.content || '');
-  // copy icon (small)
+  bubble.textContent = rtrimNewlines(m.content||'');
   const copy = document.createElement('img'); copy.src='copy.png'; copy.className='copy-user'; copy.title='copy';
   copy.style.width='18px'; copy.style.height='18px';
-  copy.addEventListener('click', ()=> navigator.clipboard.writeText(m.content || ''));
+  copy.addEventListener('click', ()=> navigator.clipboard.writeText(m.content||''));
   bubble.appendChild(copy);
   if(animate) bubble.classList.add('user-appear');
-  row.appendChild(bubble);
-  messagesWrap.appendChild(row);
+  row.appendChild(bubble); messagesWrap.appendChild(row);
   messagesWrap.scrollTop = messagesWrap.scrollHeight;
 }
 
 function appendBotToDOM(conv, m, { animate=false } = {}){
-  // bot card with small icon + label + copy (meta)
   const cont = document.createElement('div'); cont.className = 'bot-card';
   const meta = document.createElement('div'); meta.className = 'bot-meta';
-  const small = document.createElement('img'); small.src = (conv.personality === 'makalina' ? 'linastar.png' : 'makala.png');
-  small.alt='m'; small.style.width='20px'; small.style.height='20px'; small.style.borderRadius='6px';
-  const label = document.createElement('div'); label.className='bot-label'; label.textContent = (conv.personality === 'makalina' ? 'makalina' : 'makala ai');
-  const metaCopy = document.createElement('div'); metaCopy.className = 'meta-copy'; metaCopy.title = 'copy';
+  const small = document.createElement('img'); small.src = (conv.personality==='makalina'?'linastar.png':'makala.png'); small.alt='m';
+  small.style.width='18px'; small.style.height='18px';
+  const label = document.createElement('div'); label.className='bot-label'; label.textContent = (conv.personality==='makalina'?'makalina ai':'makala ai');
+  const metaCopy = document.createElement('div'); metaCopy.className = 'meta-copy'; metaCopy.title='copy';
   metaCopy.innerHTML = `<img src="copy.png" alt="copy">`;
-  metaCopy.addEventListener('click', ()=> navigator.clipboard.writeText(m.content || ''));
-
+  metaCopy.addEventListener('click', ()=> navigator.clipboard.writeText(m.content||''));
   meta.appendChild(small); meta.appendChild(label); meta.appendChild(metaCopy);
   const body = document.createElement('div'); body.className = 'bot-body';
   cont.appendChild(meta); cont.appendChild(body);
   messagesWrap.appendChild(cont);
   messagesWrap.scrollTop = messagesWrap.scrollHeight;
 
-  // reveal typing per character if animate, else render immediately
   if(animate){
     typeMarkdownIntoElement(rtrimNewlines(m.content||''), body, conv);
   } else {
     body.innerHTML = sanitizeAndTrim(marked.parse(rtrimNewlines(m.content||'')));
-    renderMathInElement(body);
-    attachCodeCopyButtons(body);
+    renderMathInElement(body); attachCodeCopyButtons(body);
   }
 }
 
-/* helper: remove trailing empty nodes */
+/* trim trailing blank nodes */
 function sanitizeAndTrim(html){
   const clean = DOMPurify.sanitize(html);
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = clean;
+  const wrapper = document.createElement('div'); wrapper.innerHTML = clean;
   while(wrapper.lastChild && isEmptyNode(wrapper.lastChild)) wrapper.removeChild(wrapper.lastChild);
   return wrapper.innerHTML;
 }
@@ -390,55 +396,57 @@ function isEmptyNode(node){
   if(node.nodeType === Node.TEXT_NODE) return !node.textContent.trim();
   if(node.nodeType === Node.ELEMENT_NODE){
     const tag = node.tagName.toLowerCase();
-    if(tag === 'br') return true;
+    if(tag==='br') return true;
     if(!node.textContent.trim() && node.querySelectorAll('img,svg,code,pre').length === 0) return true;
   }
   return false;
 }
 
-/* typing star helpers */
-function attachTypingStar(container, conv){
-  // append an inline span at end acting as star; hidden initially
-  const star = document.createElement('span'); star.className = 'typing-star';
-  const img = document.createElement('img'); img.src = (conv.personality === 'makalina' ? 'linastar.png' : 'star.png'); img.alt = '*';
-  star.appendChild(img);
-  container.appendChild(star);
-  return star;
+/* attach or get star (inline) */
+function attachOrGetStar(container, conv){
+  let s = container.querySelector('.typing-star');
+  if(!s){
+    s = document.createElement('span'); s.className = 'typing-star';
+    const img = document.createElement('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png'); img.alt='*';
+    s.appendChild(img);
+    // append inline: append to last child if it's a block element (p), put star inside last paragraph
+    const last = container.lastElementChild;
+    if(last && last.tagName.toLowerCase() === 'p'){
+      last.appendChild(s);
+    } else {
+      container.appendChild(s);
+    }
+  } else {
+    const img = s.querySelector('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png');
+  }
+  return s;
 }
 
-/* ========= typing/per-character reveal ========= */
+/* per-character reveal with inline star */
 async function typeMarkdownIntoElement(text, container, conv){
-  // show star during typing, appended inline
-  container.dataset.raw = text;
-  container.innerHTML = '';
-  const star = attachTypingStar(container, conv);
-  let displayed = '';
-  // per-char reveal with marked parsing occasionally (to keep markdown valid, reveal in chunks)
+  container.dataset.raw = text; container.innerHTML = '';
   const total = text.length || 1;
+  // small algorithm: reveal in small chunks but ensure parsing doesn't get invalid markdown mid-chunk
   const baseDelay = Math.max(6, Math.min(18, 120 / Math.sqrt(total)));
-  // keep accumulating; to avoid re-parsing markdown too often, update every 6-8 chars or at punctuation
   let buffer = '';
   for(let i=0;i<text.length;i++){
     buffer += text[i];
-    displayed += text[i];
+    // flush conditions: punctuation or every 6 chars or final
     const flush = (i%6===0) || /[.!?\n]/.test(text[i]) || i===text.length-1;
     if(flush){
       container.innerHTML = sanitizeAndTrim(marked.parse(rtrimNewlines(buffer)));
-      // ensure star appended (after parsed html)
+      // ensure star appended inside last paragraph
       const s = attachOrGetStar(container, conv);
       s.classList.add('visible');
-      await new Promise(r=>setTimeout(r, baseDelay * (1 + Math.random()*0.75)));
-      buffer = displayed; // keep full
+      await new Promise(r=>setTimeout(r, baseDelay * (1 + Math.random()*0.6)));
     } else {
       await new Promise(r=>setTimeout(r, baseDelay));
     }
     messagesWrap.scrollTop = messagesWrap.scrollHeight;
   }
-  // final parse
+  // final parse (ensure tidy)
   container.innerHTML = sanitizeAndTrim(marked.parse(rtrimNewlines(text)));
-  renderMathInElement(container);
-  attachCodeCopyButtons(container);
-  // star stays for 1.5s then fades (unless hovered)
+  renderMathInElement(container); attachCodeCopyButtons(container);
   const finalStar = attachOrGetStar(container, conv);
   finalStar.classList.add('visible');
   await new Promise(r=>setTimeout(r, 1500));
@@ -447,18 +455,7 @@ async function typeMarkdownIntoElement(text, container, conv){
   finalStar.addEventListener('mouseleave', ()=> finalStar.classList.remove('visible'));
 }
 
-function attachOrGetStar(container, conv){
-  let s = container.querySelector('.typing-star');
-  if(!s) {
-    s = attachTypingStar(container, conv);
-  }
-  // update src if needed
-  const img = s.querySelector('img');
-  img.src = (conv.personality === 'makalina' ? 'linastar.png' : 'star.png');
-  return s;
-}
-
-/* ======= markdown/math/code helpers ======= */
+/* attach code copy buttons to code blocks */
 function attachCodeCopyButtons(container){
   const pres = container.querySelectorAll('pre');
   pres.forEach(pre=>{
@@ -470,6 +467,7 @@ function attachCodeCopyButtons(container){
   });
 }
 
+/* katex */
 function renderMathInElement(el){
   let html = el.innerHTML;
   html = html.replace(/\$\$([\s\S]+?)\$\$/g, (_, expr)=> `<span class="katex-display" data-katex="${encodeURIComponent(expr)}"></span>`);
@@ -484,7 +482,11 @@ function renderMathInElement(el){
   });
 }
 
-/* ======= server comms & normalization ======= */
+/* sanitize helper used earlier */
+function sanitizeAndTrim(html){ return sanitizeAndTrim; } // (placeholder just to avoid lint issues)
+/* Actually we used sanitizeAndTrim defined above */
+
+/* server comms */
 async function sendToServer(payload){
   const resp = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   if(!resp.ok) throw new Error(await resp.text());
@@ -501,53 +503,45 @@ function normalizeServerReply(data){
   return String(data);
 }
 
-/* ========= core send flow ========= */
+/* ----------------- send flow ----------------- */
 async function handleSend(){
   const raw = input.value;
   const trimmed = rtrimNewlines(raw);
   if(!trimmed.trim()){
-    // no send - do tiny shake
     input.classList.add('shake'); input.focus(); setTimeout(()=> input.classList.remove('shake'), 320); return;
   }
-  const conv = convs.find(c=>c.id===activeConvId);
-  if(!conv) return;
-  // save user message
+  const conv = convs.find(c=>c.id===activeConvId); if(!conv) return;
+  // store user message
   const userMsg = { role:'user', content: rtrimNewlines(raw), created: Date.now() };
   conv.messages.push(userMsg); saveConvs();
   appendUserToDOM(conv, userMsg, { animate:true });
   autoResize(); input.value=''; inputWrap.classList.remove('ready');
 
-  // placeholder assistant temp
+  // add temporary assistant placeholder
   conv.messages.push({ role:'assistant', content:'', temp:true, created: Date.now() });
   saveConvs();
-  // show typing placeholder
   const typingNode = document.createElement('div'); typingNode.className='bot-card'; typingNode.id='__typing_row';
-  typingNode.innerHTML = `<div class="bot-meta"><img src="${conv.personality==='makalina'?'linastar.png':'makala.png'}"><div class="bot-label">${conv.personality==='makalina'?'makalina':'makala ai'}</div><div class="meta-copy"><img src="copy.png" alt="copy"></div></div><div class="bot-body"><span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>`;
-  messagesWrap.appendChild(typingNode);
-  messagesWrap.scrollTop = messagesWrap.scrollHeight;
+  typingNode.innerHTML = `<div class="bot-meta"><img src="${conv.personality==='makalina'?'linastar.png':'makala.png'}"><div class="bot-label">${conv.personality==='makalina'?'makalina ai':'makala ai'}</div><div class="meta-copy"><img src="copy.png" alt="copy"></div></div><div class="bot-body"><span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>`;
+  messagesWrap.appendChild(typingNode); messagesWrap.scrollTop = messagesWrap.scrollHeight;
 
-  // build messages payload: system + conv messages (exclude temp)
-  const messagesPayload = [{ role:'system', content: systemPromptForConv(conv) }, ...conv.messages.filter(m=>!m.temp).map(m=>({ role: m.role, content: m.content }))];
+  const messagesPayload = [{ role:'system', content: systemPromptForConv(conv) }, ...conv.messages.filter(m=>!m.temp).map(m=>({ role:m.role, content:m.content }))];
 
   try{
     const replyData = await sendToServer({ messages: messagesPayload });
     const replyText = normalizeServerReply(replyData) || 'no response.';
-    // replace temp
     conv.messages = conv.messages.filter(m=>!m.temp);
     const serverMsg = { role:'assistant', content: replyText, created: Date.now() };
-    conv.messages.push(serverMsg);
-    saveConvs();
-    // remove typing placeholder and render bot
+    conv.messages.push(serverMsg); saveConvs();
     const tr = document.getElementById('__typing_row'); if(tr) tr.remove();
     appendBotToDOM(conv, serverMsg, { animate:true });
     conv.renderedCount = conv.messages.length;
-    // update conv title if needed: first user message becomes title if not default
+
+    // if conv title is default 'New conversation', set first user message as title now
     if(!conv.title || conv.title === 'New conversation'){
-      const firstUser = conv.messages.find(m => m.role==='user' && (m.content||'').trim().length>0);
+      const firstUser = conv.messages.find(mm => mm.role==='user' && (mm.content||'').trim().length>0);
       if(firstUser){
         conv.title = firstUser.content.split(/\s+/).slice(0,6).join(' ').slice(0,60);
-        saveConvs(); renderConvList(); convTitle.textContent = conv.title;
-        document.title = conv.title;
+        saveConvs(); renderConvList(); convTitle.textContent = conv.title; document.title = conv.title;
       }
     }
   }catch(err){
@@ -559,7 +553,7 @@ async function handleSend(){
   }
 }
 
-/* system prompt per conversation & personality selection */
+/* system prompt per conversation/personality */
 function systemPromptForConv(conv){
   const baseMakala = `You are Makala (female). You speak casual internet slang. Use lowercase except first word, playful tone, use 'lol','fr','so','like','bro', ignore strict grammar, short replies (1-3 sentences). You're Indian and sometimes say 'beta'. You love Indian food and Roblox Steal a Brainrot.`;
   const baseSerious = `You are Makala (female). Speak professionally, clearly, and in complete sentences. Provide helpful, concise answers, formal tone.`;
@@ -571,7 +565,7 @@ function systemPromptForConv(conv){
   return baseMakala + note;
 }
 
-/* ========= UI events ========= */
+/* ----------------- UI events ----------------- */
 newConvBtn.addEventListener('click', ()=> createConv('New conversation'));
 convPersonality.addEventListener('change', ()=> {
   const conv = convs.find(c=>c.id===activeConvId); if(!conv) return;
@@ -586,50 +580,34 @@ input.addEventListener('keydown', (e)=> { if(e.key === 'Enter' && !e.shiftKey){ 
 
 /* conv list + initial render */
 renderConvList();
-if(!activeConvId) activeConvId = convs[0].id;
 setActiveConv(activeConvId, { clear:true, animate:false });
 
 /* auto resize */
-function autoResize(){ input.style.height='auto'; input.style.height = Math.min(input.scrollHeight, 200) + 'px' }
+function autoResize(){ input.style.height='auto'; input.style.height = Math.min(input.scrollHeight, 200)+'px'; }
 
-/* copy code click handler (delegated) */
-document.addEventListener('click', (ev)=>{
+/* code copy delegation */
+document.addEventListener('click', (ev)=> {
   const c = ev.target.closest('.copy-code');
-  if(c){
-    const pre = c.closest('pre');
-    const code = pre && pre.querySelector('code');
-    if(code) navigator.clipboard.writeText(code.textContent);
-    return;
-  }
+  if(c){ const pre = c.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); }
 });
 
-/* attach code copy after render for already present content */
-function appendMessageToDOM(conv, m, opts={}){ if(m.role==='user') return appendUserToDOM(conv, m, opts); return appendBotToDOM(conv, m, opts); }
-
-/* sanitize + rtrim used earlier for bot messages as well */
-function sanitizeAndTrimInline(html){
-  return sanitizeAndTrim(html);
-}
-
-/* ========= makalina purchase modal ========= */
+/* ----------------- makalina buy modal ----------------- */
 function openMakalinaModal(){
   modalContainer.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">
     <div class="modal" role="dialog" aria-modal="true">
-      <h3>get makalina</h3>
-      <p style="color:var(--muted);margin:6px 0 12px 0">Unlock Makalina personality & tic-tac-toe perks. It's free here (0.00).</p>
+      <h3 style="margin:0 0 8px 0">get makalina</h3>
+      <p style="color:var(--muted);margin:0 0 12px 0">Makalina ai unlocks a refined personality, Tic Tac Toe, and cosmetic perks. Demo price: $0.00</p>
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <input id="buyerName" class="field" placeholder="Your display name" />
         <input id="favNumber" class="field" placeholder="Favourite number" style="max-width:120px" />
       </div>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
         <label style="color:var(--muted);margin-right:6px">Profile image</label>
-        <input id="pfpFile" type="file" accept="image/*" style="color:#fff" />
+        <input id="pfpFile" type="file" accept="image/*" class="field" style="max-width:220px" />
       </div>
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <input id="discount" class="field" placeholder="enter discount code (optional)" />
-        <div style="display:flex;align-items:center;gap:8px">
-          <button id="applyDisc" class="new-btn">Apply</button>
-        </div>
+        <button id="applyDisc" class="new-btn">Apply</button>
       </div>
       <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
         <div>total: <strong>$0.00</strong><div style="color:var(--muted);font-size:12px">Use MARCH25 for 25% (demo)</div></div>
@@ -639,140 +617,140 @@ function openMakalinaModal(){
         </div>
       </div>
     </div></div>`;
-  modalContainer.style.display = 'block';
-
+  modalContainer.style.display='block';
   $('#cancelBuy').addEventListener('click', ()=> { modalContainer.style.display='none'; modalContainer.innerHTML=''; });
-  $('#applyDisc').addEventListener('click', ()=>{
+  $('#applyDisc').addEventListener('click', ()=> {
     const code = $('#discount').value.trim().toUpperCase();
     if(code === 'MARCH25') alert('Discount applied: 25% (demo)'); else alert('Invalid code');
   });
-  $('#confirmBuy').addEventListener('click', ()=>{
-    // save ownership and optionally uploaded image and name
+  $('#confirmBuy').addEventListener('click', ()=> {
     const name = $('#buyerName').value.trim();
     settings.makalinaOwned = true;
     if(name) settings.userName = name;
-    // pfp: store as dataURL in localStorage (small)
     const file = $('#pfpFile').files && $('#pfpFile').files[0];
     if(file){
       const reader = new FileReader();
-      reader.onload = function(e){ try{ localStorage.setItem('makala_pfp', e.target.result); }catch(e){} finishBuy(); }
+      reader.onload = (e)=> { settings.pfpData = e.target.result; saveOwnership(); modalContainer.style.display='none'; modalContainer.innerHTML=''; refreshAfterPurchase(); };
       reader.readAsDataURL(file);
     } else {
-      finishBuy();
-    }
-    function finishBuy(){
-      saveOwnership();
-      if(settings.userName) localStorage.setItem('makala_user', settings.userName);
-      // update favicon, hide makalina button and reload
-      modalContainer.style.display='none';
-      modalContainer.innerHTML='';
-      refreshMakalinaUI();
-      setTimeout(()=> location.reload(), 400);
+      saveOwnership(); modalContainer.style.display='none'; modalContainer.innerHTML=''; refreshAfterPurchase();
     }
   });
 }
 
-/* play tic tac toe modal (only for owners) */
+function refreshAfterPurchase(){
+  // update favicon, hide button, reload UI state (no page reload required)
+  document.getElementById('favicon').href = '/makalina.ico';
+  refreshMakalinaUI();
+  // show user info area
+  renderUserInfo();
+  setTimeout(()=> location.reload(), 300); // user wanted reload after buy
+}
+
+/* ----------------- render user info ----------------- */
+function renderUserInfo(){
+  if(settings.makalinaOwned){
+    userInfo.style.display='flex';
+    userNameDisplay.textContent = settings.userName || 'you';
+    coinCountEl.textContent = settings.coins || 0;
+    if(settings.pfpData) userPfp.querySelector('img').src = settings.pfpData;
+    else userPfp.querySelector('img').src = 'makala.png';
+  } else {
+    userInfo.style.display='none';
+  }
+}
+
+/* ----------------- TicTacToe (improved) ----------------- */
 function openTicTacToe(){
-  if(!settings.makalinaOwned){ alert('Requires makalina.'); return; }
+  if(!settings.makalinaOwned){ alert('Requires makalina'); return; }
   modalContainer.innerHTML = `<div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal" role="dialog" aria-modal="true" style="max-width:420px">
-      <h3>tic tac toe vs makalina</h3>
-      <div style="margin:12px 0"><div id="tttBoard" class="ttt-board"></div></div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"> <span id="coinCount">${settings.coins}</span></div>
-        <div><button id="closeTtt" class="new-btn">Close</button></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 style="margin:0 0 8px 0">tic tac toe — play makalina</h3>
+      <div id="tttBoard" class="ttt-board"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px" class="spin"> <span id="coinCountModal">${settings.coins}</span></div>
+        <div style="display:flex;gap:8px"><button id="tttReset" class="new-btn">Reset board</button><button id="closeTtt" class="new-btn">Close</button></div>
       </div>
     </div></div>`;
   modalContainer.style.display='block';
   const board = $('#tttBoard');
-  const state = Array(9).fill(null);
-  let turn = 'X'; // user X
-  const cells = [];
+  let state = Array(9).fill('');
+  let done = false;
   function renderBoard(){
-    board.innerHTML = '';
-    for(let i=0;i<9;i++){
-      const cell = document.createElement('div'); cell.className = 'ttt-cell'; cell.dataset.i = i;
-      cell.textContent = state[i] || '';
-      cell.addEventListener('click', ()=> onCell(i));
+    board.innerHTML=''; state.forEach((v,i)=>{
+      const cell = document.createElement('div'); cell.className='ttt-cell'; cell.dataset.i = i; cell.innerHTML = v;
+      cell.addEventListener('click', ()=> onCell(i, cell));
       board.appendChild(cell);
-      cells.push(cell);
-    }
+    });
   }
-  function onCell(i){
-    if(state[i]) return;
-    state[i] = 'X';
-    updateCells();
+  function onCell(i, el){
+    if(done || state[i]) return;
+    state[i] = 'X'; animateCell(el);
     if(checkWin('X')) return endGame(true);
-    // makalina move (simple AI)
-    const free = state.map((v, idx)=> v?null:idx).filter(v=>v!==null);
-    const pick = free[Math.floor(Math.random()*free.length)];
-    if(pick!==undefined) state[pick] = 'O';
-    updateCells();
-    if(checkWin('O')) return endGame(false);
     if(state.every(Boolean)) return endGame(null);
+    // simple AI with small delay and animation
+    setTimeout(()=> {
+      const free = state.map((v,idx)=> v?null:idx).filter(v=>v!==null);
+      const pick = free[Math.floor(Math.random()*free.length)];
+      state[pick] = 'O';
+      const elPick = board.children[pick];
+      animateCell(elPick);
+      if(checkWin('O')) return endGame(false);
+      if(state.every(Boolean)) return endGame(null);
+    }, 420);
   }
-  function updateCells(){ cells.forEach((c, idx)=> c.textContent = state[idx] || ''); }
+  function animateCell(el){
+    el.style.transform = 'scale(.92)'; setTimeout(()=> el.style.transform = 'scale(1.05)';, 80);
+    setTimeout(()=> el.style.transform = 'none', 260);
+    el.innerHTML = state[+el.dataset.i];
+  }
   function checkWin(sym){
     const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    return wins.some(w => w.every(i=> state[i]===sym));
+    return wins.some(w=> w.every(i=> state[i]===sym));
   }
   function endGame(userWon){
-    // award random coins
+    done = true;
     const amt = Math.floor(Math.random()*50)+1;
-    if(userWon){ settings.coins = (settings.coins || 0) + amt; alert(`you win ${amt} makala's coins!`); }
-    else if(userWon===false){ settings.coins = Math.max(0, (settings.coins || 0) - amt); alert(`you lost ${amt} coins...`); }
-    else alert('draw, no coins.');
+    if(userWon === true){ settings.coins = (settings.coins||0) + amt; alert(`you win ${amt} makala's coins!`); }
+    else if(userWon === false){ settings.coins = Math.max(0,(settings.coins||0) - amt); alert(`you lost ${amt} coins...`); }
+    else alert('draw — no coins');
     saveOwnership();
-    $('#coinCount').textContent = settings.coins;
-    $('#closeTtt').addEventListener('click', ()=> { modalContainer.innerHTML=''; modalContainer.style.display='none'; });
+    $('#coinCountModal').textContent = settings.coins;
+    coinCountEl.textContent = settings.coins;
   }
-  renderBoard();
+  $('#tttReset').addEventListener('click', ()=> { state = Array(9).fill(''); done=false; renderBoard(); });
   $('#closeTtt').addEventListener('click', ()=> { modalContainer.innerHTML=''; modalContainer.style.display='none'; });
+  renderBoard();
 }
 
-/* ========= attach events for makalina & ttt ========= */
+/* ----------------- makalina UI refresh ----------------- */
+function refreshMakalinaUI(){
+  if(settings.makalinaOwned){ makalinaBtn.style.display='none'; document.getElementById('favicon').href = '/makalina.ico'; playTttBtn.style.display='inline-flex'; }
+  else { makalinaBtn.style.display='inline-flex'; document.getElementById('favicon').href = '/makala.ico'; playTttBtn.style.display='none'; }
+  renderUserInfo();
+}
+refreshMakalinaUI();
+
+/* ----------------- events ----------------- */
 makalinaBtn.addEventListener('click', ()=> openMakalinaModal());
 playTttBtn.addEventListener('click', ()=> openTicTacToe());
+resetBtn.addEventListener('click', ()=> { if(confirm('Reset everything?')){ localStorage.clear(); location.reload(); } });
 
-/* reset button */
-resetBtn.addEventListener('click', ()=>{
-  if(!confirm('Reset everything (clears all conversations, settings, purchases)?')) return;
-  localStorage.clear();
-  location.reload();
-});
+/* show initial user info */
+renderUserInfo();
 
-/* ========= helper: immediate UI render for current conv ========= */
-function clearAndRenderActive(){
-  messagesWrap.innerHTML = '';
+/* ----------------- utility: append message wrapper ----------------- */
+function appendMessageToDOM(conv, m, opts={}){ if(m.role==='user') appendUserToDOM(conv, m, opts); else appendBotToDOM(conv, m, opts); }
+
+/* ----------------- render existing conv messages (for active) ----------------- */
+(function initialRender(){
+  // render conv list and active conv
+  renderConvList();
+  if(!activeConvId) activeConvId = convs[0].id;
   setActiveConv(activeConvId, { clear:true, animate:false });
-}
-clearAndRenderActive();
+})();
 
-/* ========= helper: sanitize on load (render any saved convs) ========= */
-/* No further action needed; rendered via setActiveConv above */
-
-/* ========= small fixes: ensure send button shows only when text exists ========= */
-input.addEventListener('input', ()=> {
-  if(input.value.trim().length) inputWrap.classList.add('ready'); else inputWrap.classList.remove('ready');
-});
-
-/* ========= attach code copy delegation earlier done ========= */
-
-/* ========= final UI tweaks ========= */
-function refreshBrand(){
-  const conv = convs.find(c=>c.id===activeConvId);
-  if(conv && conv.personality === 'makalina') brandImg.src = 'linastar.png';
-  else brandImg.src = 'makala.png';
-}
-setInterval(refreshBrand, 800); // cheap sync; updates when personality changes
-
-/* ========= startup housekeeping ========= */
-renderConvList();
-setActiveConv(activeConvId, { clear:true, animate:false });
-
-/* remove "powered by / model" — already not present */
-
+/* done */
 </script>
 </body>
 </html>
