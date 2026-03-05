@@ -37,15 +37,13 @@
   body.theme-orange{ --bg1:#130800;--bg2:#2a0f00;--accent-a:#ff9a3c;--accent-b:#ff5a1f;--user-a:#2b0f00;--user-b:#1a0700;--bot-bg:rgba(255,255,255,0.02)}
   body.theme-red{ --bg1:#1a0707;--bg2:#2b0909;--accent-a:#ff4b4b;--accent-b:#ff8181;--user-a:#220808;--user-b:#140404;--bot-bg:rgba(255,255,255,0.02)}
   body.theme-green{ --bg1:#02120a;--bg2:#072014;--accent-a:#3cff9a;--accent-b:#7cffb1;--user-a:#062014;--user-b:#03130b;--bot-bg:rgba(255,255,255,0.02)}
-  /* smooth UI transitions */
   .panel, .sidebar, .messages-wrap, textarea.input, .field { transition: all .18s ease; }
 
   /* sidebar */
   .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--ui-radius);padding:12px;height:100%;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
   header.sidebar-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .makalina-btn { background: transparent; border: 0; padding: 6px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; color:var(--muted)}
-  .makalina-btn img{width:26px;height:26px;border-radius:6px; transition: transform .18s }
-  .makalina-btn:hover img{ transform: scale(1.06); box-shadow:0 8px 28px rgba(255,73,160,0.08)}
+  .makalina-rect { background:linear-gradient(90deg,var(--accent-a),var(--accent-b)); color:#fff; border-radius:10px; padding:8px 10px; border:0; cursor:pointer; display:flex; align-items:center; gap:8px; font-weight:600; box-shadow:0 12px 30px rgba(0,0,0,0.3);}
+  .makalina-rect img{width:22px;height:22px;border-radius:6px}
   .new-btn{ margin-left:auto; background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04); padding:6px 8px; border-radius:8px; cursor:pointer}
   .conv-list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:6px}
   .conv{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .12s}
@@ -118,16 +116,18 @@
   .input-wrap.ready .send-circle{display:flex}
   .send-circle img{width:18px;height:18px}
 
-  /* modal, inputs */
-  .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,10,0.6);display:flex;align-items:center;justify-content:center;z-index:90}
-  .modal{width:520px;max-width:calc(100% - 32px);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+  /* modal, inputs (backdrop made darker, modal more opaque) */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,10,0.85);display:flex;align-items:center;justify-content:center;z-index:90}
+  .modal{width:520px;max-width:calc(100% - 32px);background:linear-gradient(180deg, #0b0712, #0f0716);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
   .field{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;font-family:var(--font)}
-  .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-  .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s;user-select:none}
+  .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;position:relative}
+  .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s;user-select:none;aspect-ratio:1/1}
   .ttt-cell:hover{transform:scale(1.04);background:rgba(255,255,255,0.035)}
+  .ttt-line{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
 
   .reset-btn{position:fixed;right:18px;bottom:18px;z-index:60;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);color:#fff;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
 
+  /* responsive */
   @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{order:2}.panel{order:1;height:calc(100vh - 200px)}}
 </style>
 </head>
@@ -137,8 +137,8 @@
     <aside class="sidebar">
       <header class="sidebar-h">
         <div style="display:flex;align-items:center;gap:8px">
-          <button class="makalina-btn" id="makalinaBtn" title="Get makalina (pro)">
-            <img src="makalina.png" alt="makalina">
+          <button class="makalina-rect" id="makalinaBtn" title="Purchase makalina">
+            <img src="makalina.png" alt="makalina"><span>makalina</span>
           </button>
           <strong style="font-size:14px">Conversations</strong>
         </div>
@@ -147,7 +147,7 @@
 
       <div class="conv-list" id="convList"></div>
 
-      <div class="sidebar-note">Click a conversation to open. Use the trash icon to delete. Play Tic Tac Toe if owner.</div>
+      <div class="sidebar-note">Click a conversation to open. Use trash to delete. Play Tic Tac Toe below.</div>
 
       <div style="margin-top:auto;display:flex;gap:8px;align-items:center">
         <button class="new-btn" id="playTttBtn">Play Tic Tac Toe</button>
@@ -205,13 +205,13 @@
   <button id="resetBtn" class="reset-btn">Reset (temp)</button>
 
 <script>
-/* ----------------- helpers ----------------- */
+/* ---------- helpers ---------- */
 const $ = (s, root=document)=> root.querySelector(s);
 const uid = ()=> Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const rtrimNewlines = s => String(s||'').replace(/\r/g,'').replace(/\n+$/,'');
 const sanitize = html => DOMPurify.sanitize(html);
 
-/* ----------------- state ----------------- */
+/* ---------- state ---------- */
 let convs = JSON.parse(localStorage.getItem('makala_convs')||'[]'); if(!Array.isArray(convs)) convs=[];
 let activeConvId = localStorage.getItem('makala_activeConv') || (convs[0]?.id || null);
 const settings = {
@@ -224,7 +224,7 @@ function saveConvs(){ localStorage.setItem('makala_convs', JSON.stringify(convs)
 function saveActive(){ localStorage.setItem('makala_activeConv', activeConvId||''); }
 function saveOwnership(){ localStorage.setItem('makala_owned', settings.makalinaOwned ? '1' : '0'); localStorage.setItem('makala_coins', String(settings.coins||0)); if(settings.pfpData) localStorage.setItem('makala_pfp', settings.pfpData); if(settings.userName) localStorage.setItem('makala_user', settings.userName); }
 
-/* ----------------- refs ----------------- */
+/* ---------- refs ---------- */
 const convListEl = $('#convList'), messagesWrap = $('#messages'), newConvBtn = $('#newConv'),
       convTitle = $('#convTitle'), input = $('#input'), inputWrap = $('#inputWrap'),
       sendBtn = $('#sendBtn'), themeSelect = $('#themeSelect'), modalContainer = $('#modalContainer'),
@@ -233,7 +233,7 @@ const convListEl = $('#convList'), messagesWrap = $('#messages'), newConvBtn = $
       resetBtn = $('#resetBtn'), userInfo = $('#userInfo'), userPfp = $('#userPfp'),
       userNameDisplay = $('#userNameDisplay'), coinCountEl = $('#coinCount');
 
-/* ----------------- init basics ----------------- */
+/* ---------- init ---------- */
 (function ensureDefault(){
   if(convs.length===0){ const c={id:uid(),title:'New conversation',created:Date.now(),messages:[],renderedCount:0,personality:'makala'}; convs.unshift(c); activeConvId=c.id; saveConvs(); saveActive(); }
   if(!activeConvId) activeConvId = convs[0].id;
@@ -241,7 +241,7 @@ const convListEl = $('#convList'), messagesWrap = $('#messages'), newConvBtn = $
 (function initTheme(){ const t = localStorage.getItem('makala_theme')||'pink'; document.body.className = 'theme-'+t; themeSelect.value=t; })();
 renderConvList(); setActiveConv(activeConvId, { clear:true, animate:false }); renderUserInfo();
 
-/* ----------------- conv list ----------------- */
+/* ---------- conv list ---------- */
 function relativeTime(ts){ const now=Date.now(); const s = Math.floor((now-ts)/1000); if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; const dNow=new Date(), dTs=new Date(ts); if(dNow.toDateString()===dTs.toDateString()) return 'Today'; const yesterday=new Date(now-86400000); if(yesterday.toDateString()===dTs.toDateString()) return 'Yesterday'; const days=Math.floor(s/86400); if(days<7) return days+'d ago'; if(days<30) return Math.floor(days/7)+'w ago'; const yrs=Math.floor(days/365); if(yrs===1) return 'A year ago'; if(yrs>=2) return 'A long time ago'; return Math.floor(days/30)+'mo ago'; }
 
 function renderConvList(){
@@ -255,13 +255,13 @@ function renderConvList(){
   });
 }
 
-/* ----------------- conv mgmt ----------------- */
+/* ---------- conv mgmt ---------- */
 function createConv(title='New conversation'){ const c={id:uid(),title:title||'New conversation',created:Date.now(),messages:[],renderedCount:0,personality:'makala'}; convs.unshift(c); saveConvs(); renderConvList(); setActiveConv(c.id,{clear:true,animate:false}); return c; }
 function deleteConv(id){ const i=convs.findIndex(x=>x.id===id); if(i>=0) convs.splice(i,1); if(activeConvId===id) activeConvId=convs[0]?.id||null; saveConvs(); saveActive(); renderConvList(); if(convs.length===0) createConv('New conversation'); setActiveConv(activeConvId,{clear:true,animate:false}); }
 
 function setActiveConv(id, opts={clear:false,animate:false}){ activeConvId=id; saveActive(); renderConvList(); const conv=convs.find(x=>x.id===id); if(!conv) return; convTitle.textContent = conv.title || 'New conversation'; convPersonality.value = conv.personality || 'makala'; if(opts.clear){ messagesWrap.innerHTML=''; conv.renderedCount=0; } const start = conv.renderedCount||0; for(let i=start;i<conv.messages.length;i++){ appendMessageToDOM(conv, conv.messages[i], { animate: (i===conv.messages.length-1) && !!opts.animate }); conv.renderedCount = i+1; } messagesWrap.scrollTop = messagesWrap.scrollHeight; brandImg.src = (conv.personality==='makalina') ? 'linastar.png' : 'makala.png'; }
 
-/* ----------------- DOM message rendering (stable) ----------------- */
+/* ---------- message rendering ---------- */
 function appendUserToDOM(conv, m, { animate=false } = {}){
   const row=document.createElement('div'); row.className='row-user';
   const bubble=document.createElement('div'); bubble.className='user-bubble';
@@ -309,14 +309,13 @@ function isEmptyNode(node){
   return false;
 }
 
-/* inline typing star */
+/* typing star */
 function attachOrGetStar(container, conv){
   let s = container.querySelector('.typing-star');
   if(!s){
     s = document.createElement('span'); s.className='typing-star';
     const img = document.createElement('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png'); img.alt='*'; img.style.width='100%'; img.style.height='100%';
     s.appendChild(img);
-    // try to append to last paragraph, else append at end
     const lastP = container.querySelector('p:last-of-type') || container.lastElementChild;
     if(lastP) lastP.appendChild(s); else container.appendChild(s);
   } else {
@@ -325,9 +324,8 @@ function attachOrGetStar(container, conv){
   return s;
 }
 
-/* type reveal (only the last message animates) */
+/* typing reveal (per char) */
 async function typeMarkdownIntoElement(text, container, conv){
-  // avoid re-animating earlier messages
   container.dataset.animating = '1';
   container.innerHTML = '';
   const total = text.length || 1;
@@ -335,7 +333,6 @@ async function typeMarkdownIntoElement(text, container, conv){
   let buffer = '';
   for(let i=0;i<text.length;i++){
     buffer += text[i];
-    // flush occasionally to not break markdown mid-syntax
     const flush = (i%8===0) || /[.!?\n]/.test(text[i]) || i===text.length-1;
     if(flush){
       container.innerHTML = sanitizeAndTrim(marked.parse(rtrimNewlines(buffer)));
@@ -347,7 +344,6 @@ async function typeMarkdownIntoElement(text, container, conv){
     }
     messagesWrap.scrollTop = messagesWrap.scrollHeight;
   }
-  // final
   container.innerHTML = sanitizeAndTrim(marked.parse(rtrimNewlines(text)));
   renderMathInElement(container); attachCodeCopyButtons(container);
   const finalStar = attachOrGetStar(container, conv); finalStar.classList.add('visible');
@@ -383,7 +379,7 @@ function renderMathInElement(el){
   });
 }
 
-/* ----------------- server comms / normalization -------------- */
+/* ---------- server comms ---------- */
 async function sendToServer(payload){
   const resp = await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   if(!resp.ok) throw new Error(await resp.text());
@@ -397,12 +393,11 @@ function normalizeServerReply(data){
     const c = data.raw.choices[0];
     return c.message?.content || c.text || '';
   }
-  // fallbacks
   if(data.choices && data.choices[0] && data.choices[0].message) return data.choices[0].message.content || '';
   return String(data);
 }
 
-/* ----------------- send flow ----------------- */
+/* ---------- send flow ---------- */
 async function handleSend(){
   const raw = input.value; const trimmed = rtrimNewlines(raw);
   if(!trimmed.trim()){ input.classList.add('shake'); input.focus(); setTimeout(()=> input.classList.remove('shake'),320); return; }
@@ -456,7 +451,7 @@ function systemPromptForConv(conv){
   return baseMakala + note;
 }
 
-/* ----------------- UI events ----------------- */
+/* ---------- UI events ---------- */
 newConvBtn.addEventListener('click', ()=> createConv('New conversation'));
 convPersonality.addEventListener('change', ()=> { const conv = convs.find(c=>c.id===activeConvId); if(!conv) return; conv.personality = convPersonality.value; saveConvs(); renderConvList(); setActiveConv(activeConvId,{clear:true,animate:false}); });
 sendBtn.addEventListener('click', handleSend);
@@ -470,11 +465,11 @@ renderConvList(); setActiveConv(activeConvId, { clear:true, animate:false });
 function autoResize(){ input.style.height='auto'; input.style.height = Math.min(input.scrollHeight, 200)+'px'; }
 
 /* code copy delegation */
-document.addEventListener('click', (ev)=> { const c = ev.target.closest('.copy-code'); if(c){ const pre = c.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
+document.addEventListener('click', (ev)=> { const c = ev.target.closest('.copy-code'); if(c){ const pre = ev.target.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
 
-/* ----------------- Makalina modal/demo (free) ----------------- */
+/* ---------- Makalina modal / purchase ---------- */
 function openMakalinaModal(){
-  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px">get makalina (demo)</h3><p style="color:var(--muted);margin:0 0 12px">Makalina adds a refined persona and cosmetic perks. Demo is free.</p><div style="display:flex;gap:8px;margin-bottom:8px"><input id="buyerName" class="field" placeholder="Display name"/><input id="favNumber" class="field" placeholder="Favourite number" style="max-width:120px"/></div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><label style="color:var(--muted);margin-right:6px">Profile image</label><input id="pfpFile" type="file" accept="image/*" class="field" style="max-width:220px"/></div><div style="display:flex;gap:8px;align-items:center;justify-content:space-between"><div>total: <strong>$0.00</strong></div><div style="display:flex;gap:8px"><button id="cancelBuy" class="new-btn">Cancel</button><button id="confirmBuy" class="new-btn">Buy (free)</button></div></div></div></div>`;
+  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><img src="fullmakalina.png" alt="makalina" style="width:100%;border-radius:8px;margin-bottom:12px"><h3 style="margin:0 0 8px">Purchase Makalina</h3><p style="color:var(--muted);margin:0 0 12px">Makalina adds a refined persona and cosmetic perks. Price: <strong>$0.00</strong></p><div style="display:flex;gap:8px;margin-bottom:12px"><input id="buyerName" class="field" placeholder="Display name"/><input id="favNumber" class="field" placeholder="Favourite number" style="max-width:120px"/></div><div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><label style="color:var(--muted);margin-right:6px">Profile image</label><input id="pfpFile" type="file" accept="image/*" class="field" style="max-width:220px"/></div><div style="display:flex;gap:8px;align-items:center;justify-content:space-between"><div>subtotal: <strong>$0.00</strong></div><div style="display:flex;gap:8px"><button id="cancelBuy" class="new-btn">Cancel</button><button id="confirmBuy" class="makalina-rect">Purchase</button></div></div></div></div>`;
   modalContainer.style.display='block';
   $('#cancelBuy').addEventListener('click', ()=> { modalContainer.style.display='none'; modalContainer.innerHTML=''; });
   $('#confirmBuy').addEventListener('click', ()=>{
@@ -485,37 +480,61 @@ function openMakalinaModal(){
 }
 function refreshAfterPurchase(){ document.getElementById('favicon').href = '/makalina.ico'; refreshMakalinaUI(); renderUserInfo(); setTimeout(()=> location.reload(), 300); }
 
-/* ----------------- user info render ----------------- */
+/* ---------- user info ---------- */
 function renderUserInfo(){ if(settings.makalinaOwned){ userInfo.style.display='flex'; userNameDisplay.textContent = settings.userName || 'you'; coinCountEl.textContent = settings.coins || 0; if(settings.pfpData) userPfp.querySelector('img').src = settings.pfpData; else userPfp.querySelector('img').src = 'makala.png'; } else userInfo.style.display='none'; }
-function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; document.getElementById('favicon').href='/makalina.ico'; playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; document.getElementById('favicon').href='/makala.ico'; playTttBtn.style.display='none'; } renderUserInfo(); }
+function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; document.getElementById('favicon').href='/makalina.ico'; playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; document.getElementById('favicon').href='/makala.ico'; playTttBtn.style.display='inline-flex'; } renderUserInfo(); }
 refreshMakalinaUI();
 
-/* ----------------- Tic Tac Toe (polished) ----------------- */
+/* ---------- Tic Tac Toe ---------- */
 function openTicTacToe(){
-  if(!settings.makalinaOwned){ alert('Requires makalina'); return; }
-  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px">tic tac toe — play makalina</h3><div id="tttBoard" class="ttt-board"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px" class="spin"> <span id="coinCountModal">${settings.coins}</span></div><div style="display:flex;gap:8px"><button id="tttReset" class="new-btn">Reset board</button><button id="closeTtt" class="new-btn">Close</button></div></div></div></div>`;
+  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px">tic tac toe — play makala</h3><div id="tttBoardWrapper" style="position:relative"><div id="tttBoard" class="ttt-board"></div><svg class="ttt-line" id="tttLine" viewBox="0 0 320 320" preserveAspectRatio="none"></svg></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px" class="spin"> <span id="coinCountModal">${settings.coins}</span></div><div style="display:flex;gap:8px"><button id="tttReset" class="new-btn">Reset board</button><button id="closeTtt" class="new-btn">Close</button></div></div></div></div>`;
   modalContainer.style.display='block';
-  const board = $('#tttBoard'); let state = Array(9).fill(''); let done=false;
-  function renderBoard(){ board.innerHTML=''; state.forEach((v,i)=>{ const cell=document.createElement('div'); cell.className='ttt-cell'; cell.dataset.i=i; cell.innerHTML=v; cell.addEventListener('click', ()=> onCell(i,cell)); board.appendChild(cell); }); }
-  function onCell(i,el){ if(done || state[i]) return; state[i]='X'; animateCell(el); if(checkWin('X')) return endGame(true); if(state.every(Boolean)) return endGame(null); setTimeout(()=>{ const free = state.map((v,idx)=> v?null:idx).filter(v=>v!==null); const pick = free[Math.floor(Math.random()*free.length)]; state[pick]='O'; const elPick = board.children[pick]; animateCell(elPick); if(checkWin('O')) return endGame(false); if(state.every(Boolean)) return endGame(null); }, 420); }
-  function animateCell(el){ el.style.transform='scale(.92)'; setTimeout(()=> el.style.transform='scale(1.05)',80); setTimeout(()=> el.style.transform='none',260); el.innerHTML = state[+el.dataset.i]; }
-  function checkWin(sym){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(w=> w.every(i=> state[i]===sym)); }
-  function endGame(userWon){ done=true; const amt=Math.floor(Math.random()*50)+1; if(userWon===true){ settings.coins=(settings.coins||0)+amt; alert(`you win ${amt} makala's coins!`); } else if(userWon===false){ settings.coins=Math.max(0,(settings.coins||0)-amt); alert(`you lost ${amt} coins...`); } else alert('draw — no coins'); saveOwnership(); $('#coinCountModal').textContent=settings.coins; coinCountEl.textContent=settings.coins; }
-  $('#tttReset').addEventListener('click', ()=> { state=Array(9).fill(''); done=false; renderBoard(); });
+  const board = $('#tttBoard'); const svg = $('#tttLine'); let state = Array(9).fill(''); let done=false;
+  const conv = convs.find(c=>c.id===activeConvId) || { personality:'makala' };
+
+  function renderBoard(){ board.innerHTML=''; state.forEach((v,i)=>{ const cell=document.createElement('div'); cell.className='ttt-cell'; cell.dataset.i=i; if(v==='X'){ const img=document.createElement('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png'); img.style.width='46px'; img.style.height='46px'; cell.appendChild(img); } else if(v==='O'){ cell.textContent='O'; } cell.addEventListener('click', ()=> onCell(i,cell)); board.appendChild(cell); }); }
+  function onCell(i,el){ if(done || state[i]) return; state[i]='O'; renderBoard(); if(checkWin('O')) return endGame(true); if(state.every(Boolean)) return endGame(null); // computer move
+    setTimeout(()=>{ const free = state.map((v,idx)=> v?null:idx).filter(v=>v!==null); const pick = free[Math.floor(Math.random()*free.length)]; state[pick]='X'; renderBoard(); if(checkWin('X')) return endGame(false); if(state.every(Boolean)) return endGame(null); }, 420);
+  }
+  function checkWin(sym){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.find(w=> w.every(i=> state[i]===sym)); }
+  function drawWinLine(winIndices){
+    // map indices to coordinates inside 320x320 box
+    const coords = [
+      [16,16],[160,16],[304,16],
+      [16,160],[160,160],[304,160],
+      [16,304],[160,304],[304,304]
+    ];
+    const a = coords[winIndices[0]]; const b = coords[winIndices[2]];
+    svg.innerHTML = `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="rgba(255,255,255,0.6)" stroke-width="6" stroke-linecap="round"/>`;
+  }
+  function endGame(userWon){
+    done=true;
+    const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    const w = wins.find(wi=> wi.every(i=> state[i]=== (userWon? 'O' : 'X')));
+    if(w) drawWinLine(w);
+    const amt=Math.floor(Math.random()*50)+1;
+    if(userWon===true){ settings.coins=(settings.coins||0)+amt; setTimeout(()=> alert(`you win ${amt} makala's coins!`), 120); }
+    else if(userWon===false){ settings.coins=Math.max(0,(settings.coins||0)-amt); setTimeout(()=> alert(`you lost ${amt} coins...`), 120); }
+    else setTimeout(()=> alert('draw — no coins'), 120);
+    saveOwnership(); $('#coinCountModal').textContent=settings.coins; coinCountEl.textContent=settings.coins;
+    // auto reset after 2.2s
+    setTimeout(()=>{ state = Array(9).fill(''); done=false; svg.innerHTML=''; renderBoard(); }, 2200);
+  }
+  $('#tttReset').addEventListener('click', ()=> { state = Array(9).fill(''); done=false; svg.innerHTML=''; renderBoard(); });
   $('#closeTtt').addEventListener('click', ()=> { modalContainer.innerHTML=''; modalContainer.style.display='none'; });
   renderBoard();
 }
 
-/* ----------------- events ----------------- */
+/* ---------- events ---------- */
 makalinaBtn.addEventListener('click', openMakalinaModal);
 playTttBtn.addEventListener('click', openTicTacToe);
 resetBtn.addEventListener('click', ()=> { if(confirm('Reset everything?')){ localStorage.clear(); location.reload(); } });
 themeSelect.addEventListener('change', (e)=> { document.body.className='theme-'+e.target.value; localStorage.setItem('makala_theme', e.target.value); });
 
-/* attach send triggers */
+/* copy code delegation */
 document.addEventListener('click', (ev)=> { if(ev.target.closest('.copy-code')){ const pre = ev.target.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
 
-/* ----------------- small helpers for appendMessageToDOM ----------------- */
+/* ---------- small helpers ---------- */
 function appendMessageToDOM(conv, m, opts={}){ if(m.role==='user') appendUserToDOM(conv,m,opts); else appendBotToDOM(conv,m,opts); }
 
 </script>
