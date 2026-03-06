@@ -49,8 +49,9 @@
   .conv{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .12s}
   .conv.active{background:linear-gradient(90deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));color:#fff;box-shadow:0 6px 20px rgba(0,0,0,0.4)}
   .conv-meta{font-size:12px;color:var(--muted)}
-  .conv .trash { margin-left:auto; width:18px;height:18px;opacity:.9;cursor:pointer; filter: invert(1) brightness(2); } /* make trash white */
-  .sidebar-note{font-size:12px;color:var(--muted);margin-top:8px}
+  /* force trash icon to appear white regardless of image content */
+  .conv .trash { margin-left:auto; width:18px;height:18px;opacity:.95;cursor:pointer; filter: invert(1) grayscale(1) brightness(2); }
+  .sidebar-note{display:none} /* removed per request */
 
   /* main panel */
   .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));border-radius:var(--ui-radius);padding:12px;height:100%;display:flex;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);overflow:hidden}
@@ -129,14 +130,12 @@
   /* modal, inputs */
   .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,10,0.85);display:flex;align-items:center;justify-content:center;z-index:90}
   .modal{width:520px;max-width:calc(100% - 32px);background:linear-gradient(180deg, #0b0712, #0f0716);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-  .modal img.full{width:100%;height:auto;border-radius:8px;margin:6px 0}
+  .modal img.full{width:100%;height:auto;border-radius:8px;margin:6px 0;max-height:320px;object-fit:contain} /* made bigger */
   .field{width:100%;padding:8px;border-radius:8px;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.04);color:#fff;font-family:var(--font)}
   .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;position:relative}
   .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s;user-select:none;aspect-ratio:1/1}
   .ttt-cell:hover{transform:scale(1.04);background:rgba(255,255,255,0.035)}
   .ttt-line{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none; display:none}
-
-  .reset-btn{position:fixed;right:18px;bottom:18px;z-index:60;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);color:#fff;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
 
   /* responsive */
   @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{order:2}.panel{order:1;height:calc(100vh - 200px)}}
@@ -158,8 +157,6 @@
       </header>
 
       <div class="conv-list" id="convList"></div>
-
-      <div class="sidebar-note">Click a conversation to open. Use trash to delete. Play tic-tac-toe below.</div>
 
       <div style="margin-top:auto;display:flex;gap:8px;align-items:center">
         <button class="new-btn" id="playTttBtn">Play tic-tac-toe</button>
@@ -214,7 +211,6 @@
   </div>
 
   <div id="modalContainer"></div>
-  <button id="resetBtn" class="reset-btn">Reset (temp)</button>
 
 <script>
 /* ---------- helpers ---------- */
@@ -242,20 +238,19 @@ const convListEl = $('#convList'), messagesWrap = $('#messages'), newConvBtn = $
       sendBtn = $('#sendBtn'), themeSelect = $('#themeSelect'), modalContainer = $('#modalContainer'),
       makalinaBtn = $('#makalinaBtn'), playTttBtn = $('#playTttBtn'),
       brandImg = $('#brandImg'), convPersonality = $('#convPersonality'),
-      resetBtn = $('#resetBtn'), userInfo = $('#userInfo'), userPfp = $('#userPfp'),
+      userInfo = $('#userInfo'), userPfp = $('#userPfp'),
       userNameDisplay = $('#userNameDisplay'), coinCountEl = $('#coinCount');
 
-/* ---------- favicon helper ---------- */
+/* ---------- favicon helper (always makala.ico as requested) ---------- */
 function setFavicon(){
   const link = document.getElementById('favicon') || document.createElement('link');
   link.id = 'favicon';
   link.rel = 'icon';
-  link.href = settings.makalinaOwned ? '/makalina.ico' : '/makala.ico';
+  link.href = '/makala.ico'; // always default to makala.ico per request
   if(!document.getElementById('favicon')) document.head.appendChild(link);
 }
 
 /* ---------- init ---------- */
-/* ensure at least one convo exists; when none, create with title 'makala.ai' */
 (function ensureDefault(){
   if(convs.length===0){
     const c={id:uid(),title:'makala.ai',created:Date.now(),messages:[],renderedCount:0,personality:'makala'};
@@ -504,13 +499,12 @@ renderConvList(); setActiveConv(activeConvId, { clear:true, animate:false });
 function autoResize(){ input.style.height='auto'; input.style.height = Math.min(input.scrollHeight, 200)+'px'; }
 
 /* code copy delegation */
-document.addEventListener('click', (ev)=> { const c = ev.target.closest('.copy-code'); if(c){ const pre = ev.target.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
+document.addEventListener('click', (ev)=> { if(ev.target.closest('.copy-code')){ const pre = ev.target.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
 
-/* ---------- Makalina modal / purchase ---------- */
+/* ---------- Makalina modal / purchase (updated: bigger image, discount below subtotal + total) ---------- */
 function openMakalinaModal(){
   modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal">
-    <!-- larger fullmakalina.png at top (reduced vertical padding) -->
-    <img src="fullmakalina.png" alt="makalina" class="full" style="margin-top:2px;margin-bottom:8px;max-height:180px;object-fit:contain">
+    <img src="fullmakalina.png" alt="makalina" class="full" style="margin-top:2px;margin-bottom:8px;max-height:320px;object-fit:contain">
     <h3 style="margin:6px 0">Purchase Makalina</h3>
     <p style="color:var(--muted);margin:6px 0 12px">Makalina lets you talk to a more matured persona, and lets you play tic-tac-toe. Base price: <strong>$0.00</strong></p>
     <div style="display:flex;gap:8px;margin-bottom:8px">
@@ -521,15 +515,20 @@ function openMakalinaModal(){
       <label style="color:var(--muted);margin-right:6px">Profile image</label>
       <input id="pfpFile" type="file" accept="image/*" class="field" style="max-width:220px"/>
     </div>
-    <div style="display:flex;gap:6px;align-items:center;margin-bottom:12px">
+
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
       <input id="discountCode" class="field" placeholder="Discount code (optional)" style="max-width:220px"/>
       <button id="applyDiscount" class="new-btn">Apply</button>
-      <div id="discountRow" style="color:var(--muted);margin-left:auto;display:none">discount: <strong id="discountPct">-25%</strong></div>
     </div>
+
+    <div style="margin-bottom:12px">
+      <div>subtotal: <strong id="subtotal">$0.00</strong></div>
+      <div id="discountLine" style="color:var(--muted);display:none;margin-top:6px">discount: <strong id="discountPct">-25%</strong></div>
+      <div id="totalLine" style="margin-top:8px">total: <strong id="totalAmount">$0.00</strong></div>
+    </div>
+
     <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
-      <div>
-        <div>subtotal: <strong>$0.00</strong></div>
-      </div>
+      <div style="color:var(--muted)">You will be redirected after purchase</div>
       <div style="display:flex;gap:8px">
         <button id="cancelBuy" class="new-btn">Cancel</button>
         <button id="confirmBuy" class="purchase-btn">Purchase</button>
@@ -539,11 +538,16 @@ function openMakalinaModal(){
   modalContainer.style.display='block';
 
   let discountApplied = 0;
+  const price = 0.00;
+  $('#subtotal').textContent = `$${price.toFixed(2)}`;
+  $('#totalAmount').textContent = `$${(price*(1-discountApplied)).toFixed(2)}`;
+
   $('#applyDiscount').addEventListener('click', ()=>{
     const code = $('#discountCode').value.trim();
     if(!code){ alert('enter a code'); return; }
-    if(code.toUpperCase() === 'MARCH25'){ discountApplied = 0.25; $('#discountRow').style.display='block'; $('#discountPct').textContent='-25%'; }
-    else { discountApplied = 0; alert('invalid code'); $('#discountRow').style.display='none'; }
+    if(code.toUpperCase() === 'MARCH25'){ discountApplied = 0.25; $('#discountLine').style.display='block'; $('#discountPct').textContent='-25%'; }
+    else { discountApplied = 0; alert('invalid code'); $('#discountLine').style.display='none'; }
+    $('#totalAmount').textContent = `$${(price*(1-discountApplied)).toFixed(2)}`;
   });
 
   $('#cancelBuy').addEventListener('click', ()=> { modalContainer.style.display='none'; modalContainer.innerHTML=''; });
@@ -577,11 +581,11 @@ function openMakalinaModal(){
     }
   });
 }
-function refreshAfterPurchase(){ setFavicon(); refreshMakalinaUI(); renderUserInfo(); setTimeout(()=> location.reload(), 250); }
+function refreshAfterPurchase(){ refreshMakalinaUI(); renderUserInfo(); setTimeout(()=> location.reload(), 250); }
 
 /* ---------- user info ---------- */
 function renderUserInfo(){ if(settings.makalinaOwned){ userInfo.style.display='flex'; userNameDisplay.textContent = settings.userName || 'you'; coinCountEl.textContent = settings.coins || 0; if(settings.pfpData) userPfp.querySelector('img').src = settings.pfpData; else userPfp.querySelector('img').src = 'makala.png'; } else userInfo.style.display='none'; }
-function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; setFavicon(); playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; setFavicon(); playTttBtn.style.display='none'; } renderUserInfo(); enforceMakalinaAvailability(); }
+function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; playTttBtn.style.display='none'; } renderUserInfo(); enforceMakalinaAvailability(); }
 refreshMakalinaUI();
 
 /* Ensure Makalina personality option and TTT availability reflect ownership */
@@ -616,7 +620,6 @@ function openTicTacToe(){
 /* ---------- events ---------- */
 makalinaBtn.addEventListener('click', ()=> { if(!settings.makalinaOwned) openMakalinaModal(); });
 playTttBtn.addEventListener('click', ()=> { if(settings.makalinaOwned) openTicTacToe(); else openMakalinaModal(); });
-resetBtn.addEventListener('click', ()=> { if(confirm('Reset everything?')){ localStorage.clear(); location.reload(); } });
 themeSelect.addEventListener('change', (e)=> { document.body.className='theme-'+e.target.value; localStorage.setItem('makala_theme', e.target.value); });
 
 /* copy code delegation */
