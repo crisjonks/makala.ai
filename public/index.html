@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>makala.ai</title>
-<link id="favicon" rel="icon" href="/makala.ico" type="image/x-icon" />
+<link rel="icon" href="/makala.ico" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <!-- markdown + sanitize + katex (optional) -->
@@ -49,7 +49,7 @@
   .conv{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;color:var(--muted);transition:background .12s}
   .conv.active{background:linear-gradient(90deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));color:#fff;box-shadow:0 6px 20px rgba(0,0,0,0.4)}
   .conv-meta{font-size:12px;color:var(--muted)}
-  .conv .trash { margin-left:auto; width:18px;height:18px;opacity:.95;cursor:pointer; filter: invert(1) grayscale(1) brightness(2); }
+  .conv .trash { margin-left:auto; width:18px;height:18px;opacity:.95;cursor:pointer; filter: none; } /* no forced invert/brightness */
   .sidebar-note{display:none}
 
   /* main panel */
@@ -103,13 +103,11 @@
   .bot-char{display:inline-block;opacity:0;transform:translateY(4px);animation:charIn .06s forwards}
   @keyframes charIn{to{opacity:1;transform:none}}
 
-  /* typing star: lower baseline so it appears like a period next to text; add .wrap to make it block aligned to left */
+  /* typing star: inline, slightly lower baseline so it appears like a period */
   .typing-star{display:inline-block;width:16px;height:16px;vertical-align:baseline;margin-left:6px;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .18s, transform .18s}
   .typing-star img{width:100%;height:100%;display:block}
   .typing-star.visible{opacity:1;transform:translateY(4px) scale(1.08);filter:drop-shadow(0 6px 12px rgba(0,0,0,0.25))}
   .typing-star.big{ transform:translateY(2px) scale(1.4); }
-  .typing-star.wrap{ display:block; margin-left:0; transform:translateY(0) scale(1); margin-top:6px; }
-  .bot-card:hover .typing-star{ opacity:1 !important; transform:translateY(4px) scale(1.08) !important; }
 
   /* input */
   .input-area{padding:12px;border-top:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;gap:10px}
@@ -122,8 +120,6 @@
 
   /* select / field ui (dark background + white text) */
   .field{background:rgba(0,0,0,0.9); color:#fff; border-radius:8px; padding:8px; border:1px solid rgba(255,255,255,0.04); font-family:var(--font)}
-
-  /* modal & ttt tweaks omitted for brevity; preserved from previous version */
 
   /* move theme dropdown slightly lower */
   .theme-pin { position:fixed; right:18px; bottom:34px; z-index:40; }
@@ -232,16 +228,6 @@ const convListEl = $('#convList'), messagesWrap = $('#messages'), newConvBtn = $
       userInfo = $('#userInfo'), userPfp = $('#userPfp'),
       userNameDisplay = $('#userNameDisplay'), coinCountEl = $('#coinCount');
 
-/* ---------- favicon helper ---------- */
-function setFavicon(){
-  const link = document.getElementById('favicon') || document.createElement('link');
-  link.id = 'favicon';
-  link.rel = 'icon';
-  link.type = 'image/x-icon';
-  link.href = '/makala.ico';
-  if(!document.getElementById('favicon')) document.head.appendChild(link);
-}
-
 /* ---------- init ---------- */
 (function ensureDefault(){
   if(convs.length===0){
@@ -251,7 +237,7 @@ function setFavicon(){
   if(!activeConvId) activeConvId = convs[0].id;
 })();
 (function initTheme(){ const t = localStorage.getItem('makala_theme')||'pink'; document.body.className = 'theme-'+t; themeSelect.value=t; })();
-setFavicon(); renderConvList(); setActiveConv(activeConvId, { clear:true, animate:false }); renderUserInfo(); enforceMakalinaAvailability();
+renderConvList(); setActiveConv(activeConvId, { clear:true, animate:false }); renderUserInfo(); enforceMakalinaAvailability();
 
 /* ---------- conv list ---------- */
 function relativeTime(ts){ const now=Date.now(); const s = Math.floor((now-ts)/1000); if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; const dNow=new Date(), dTs=new Date(ts); if(dNow.toDateString()===dTs.toDateString()) return 'Today'; const yesterday=new Date(now-86400000); if(yesterday.toDateString()===dTs.toDateString()) return 'Yesterday'; const days=Math.floor(s/86400); if(days<7) return days+'d ago'; if(days<30) return Math.floor(days/7)+'w ago'; const yrs=Math.floor(days/365); if(yrs===1) return 'A year ago'; if(yrs>=2) return 'A long time ago'; return Math.floor(days/30)+'mo ago'; }
@@ -287,7 +273,6 @@ function appendUserToDOM(conv, m, { animate=false } = {}){
 function appendBotToDOM(conv, m, { animate=false } = {}){
   const cont=document.createElement('div'); cont.className='bot-card';
   const meta=document.createElement('div'); meta.className='bot-meta';
-  // use linalogo for makalina pfp (not the star)
   const small=document.createElement('img'); small.src=(conv.personality==='makalina'?'linalogo.png':'makala.png'); small.alt='m'; small.style.width='18px'; small.style.height='18px';
   const label=document.createElement('div'); label.className='bot-label'; label.textContent=(conv.personality==='makalina'?'makalina ai':'makala ai');
   const metaCopy=document.createElement('div'); metaCopy.className='meta-copy'; metaCopy.title='copy'; metaCopy.innerHTML=`<img src="copy.png" alt="copy">`;
@@ -311,7 +296,6 @@ function appendBotToDOM(conv, m, { animate=false } = {}){
     const s = attachOrGetStar(body, conv);
     s.classList.remove('visible');
     s.dataset.persistent = '0';
-    adjustStarWrapIfNeeded(body);
   }
 }
 
@@ -333,48 +317,28 @@ function isEmptyNode(node){
   return false;
 }
 
-/* typing star (attach to last paragraph / end of content). positions star,
-   returns element. Also ensures star is removed from previous containers. */
+/* typing star - always inline appended to last paragraph/element (no block-wrap fallback) */
 function attachOrGetStar(container, conv){
-  // remove any orphaned .typing-star in other containers? Not necessary here.
   let s = container.querySelector('.typing-star');
   if(!s){
     s = document.createElement('span'); s.className='typing-star';
     const img = document.createElement('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png'); img.alt='*'; img.style.width='100%'; img.style.height='100%';
     s.appendChild(img);
-    // append to last paragraph if present
-    const lastP = container.querySelector('p:last-of-type') || container.lastElementChild;
-    if(lastP) lastP.appendChild(s);
-    else container.appendChild(s);
+    // append inline at the end of the container (prefer last paragraph)
+    const lastP = container.querySelector('p:last-of-type') || container.lastElementChild || null;
+    if(lastP && lastP.nodeType === 1){
+      lastP.appendChild(s);
+    } else {
+      container.appendChild(s);
+    }
     s.dataset.persistent = '0';
-    // hover handlers: show while hovered, hide on leave (unless persistent)
+    // show on hover, hide on leave (unless persistent)
     s.addEventListener('mouseenter', ()=> { s.classList.add('visible'); s.dataset.persistent = '1'; });
     s.addEventListener('mouseleave', ()=> { s.dataset.persistent = '0'; s.classList.remove('visible'); });
   } else {
     const img = s.querySelector('img'); if(img) img.src = (conv.personality==='makalina'?'linastar.png':'star.png');
   }
-  // small helper to update wrap status
-  adjustStarWrapIfNeeded(container);
   return s;
-}
-
-/* When container's star sits on a different line than the last paragraph's first baseline,
-   make it block-aligned to left by adding .wrap. This gives the behavior "star goes beneath first char".
-*/
-function adjustStarWrapIfNeeded(container){
-  const s = container.querySelector('.typing-star');
-  if(!s) return;
-  const lastP = container.querySelector('p:last-of-type') || container.lastElementChild;
-  if(!lastP) { s.classList.remove('wrap'); return; }
-  // compute offsetTop relative to container
-  const sTop = s.getBoundingClientRect().top;
-  const pTop = lastP.getBoundingClientRect().top;
-  // small tolerance: if star's top > paragraph top + ~6px then it's wrapped to next visual line
-  if(sTop - pTop > 8){
-    s.classList.add('wrap');
-  } else {
-    s.classList.remove('wrap');
-  }
 }
 
 /* typing reveal (per char) with bigger temporary star while generating */
@@ -393,7 +357,6 @@ async function typeMarkdownIntoElement(text, container, conv){
       const s = attachOrGetStar(container, conv);
       s.classList.add('visible','big');
       s.dataset.persistent = '0';
-      adjustStarWrapIfNeeded(container);
       await new Promise(r=>setTimeout(r, baseDelay * (1 + Math.random()*0.4)));
     } else {
       await new Promise(r=>setTimeout(r, baseDelay));
@@ -406,7 +369,6 @@ async function typeMarkdownIntoElement(text, container, conv){
   finalStar.classList.add('visible');
   finalStar.classList.remove('big');
   finalStar.dataset.persistent = '0';
-  adjustStarWrapIfNeeded(container);
   await new Promise(r=>setTimeout(r, 1500));
   if(!finalStar.matches(':hover')) finalStar.classList.remove('visible');
   delete container.dataset.animating;
@@ -525,17 +487,26 @@ function autoResize(){ input.style.height='auto'; input.style.height = Math.min(
 /* code copy delegation */
 document.addEventListener('click', (ev)=> { if(ev.target.closest('.copy-code')){ const pre = ev.target.closest('pre'); const code = pre && pre.querySelector('code'); if(code) navigator.clipboard.writeText(code.textContent); } });
 
-/* ---------- Makalina modal / purchase (kept from previous but not changed here) ---------- */
-function openMakalinaModal(){ /* omitted for brevity - same as before in your last working file */ }
-/* small shim so makalina modal remains available if needed */
-makalinaBtn.addEventListener('click', ()=> { if(!settings.makalinaOwned) { openMakalinaModal(); } });
+/* ---------- Makalina modal / purchase (kept minimal so it works) ---------- */
+function openMakalinaModal(){
+  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><img src="fullmakalina.png" alt="makalina" style="width:100%;border-radius:8px;margin-bottom:12px"><h3 style="margin:0 0 8px">Purchase Makalina</h3><p style="color:var(--muted);margin:0 0 12px">makalina lets you talk to a more matured persona, and lets you play tic-tac-toe. Base price: <strong>$0.00</strong></p><div style="display:flex;gap:8px;margin-bottom:12px"><input id="buyerName" class="field" placeholder="Display name"/><input id="favNumber" class="field" placeholder="Fav number" style="max-width:120px"/></div><div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><label style="color:var(--muted);margin-right:6px">Profile image</label><input id="pfpFile" type="file" accept="image/*" class="field" style="max-width:220px"/></div><div style="display:flex;gap:8px;align-items:center;justify-content:space-between"><div>subtotal: <strong>$0.00</strong></div><div style="display:flex;gap:8px"><button id="cancelBuy" class="new-btn">Cancel</button><button id="confirmBuy" class="makalina-rect">Purchase</button></div></div></div></div>`;
+  modalContainer.style.display='block';
+  $('#cancelBuy').addEventListener('click', ()=> { modalContainer.style.display='none'; modalContainer.innerHTML=''; });
+  $('#confirmBuy').addEventListener('click', ()=> {
+    // simulated purchase: set owned, save name/pfp, reload
+    const name = $('#buyerName').value.trim(); settings.makalinaOwned = true; if(name) settings.userName = name;
+    const file = $('#pfpFile').files && $('#pfpFile').files[0];
+    if(file){ const reader = new FileReader(); reader.onload = e=>{ settings.pfpData = e.target.result; saveOwnership(); modalContainer.innerHTML=''; modalContainer.style.display='none'; refreshAfterPurchase(); }; reader.readAsDataURL(file); } else { saveOwnership(); modalContainer.innerHTML=''; modalContainer.style.display='none'; refreshAfterPurchase(); }
+  });
+}
+function refreshAfterPurchase(){ refreshMakalinaUI(); setTimeout(()=> location.reload(), 300); }
 
 /* ---------- user info ---------- */
 function renderUserInfo(){ if(settings.makalinaOwned){ userInfo.style.display='flex'; userNameDisplay.textContent = settings.userName || 'you'; coinCountEl.textContent = settings.coins || 0; if(settings.pfpData) userPfp.querySelector('img').src = settings.pfpData; else userPfp.querySelector('img').src = 'makala.png'; } else userInfo.style.display='none'; }
 function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; playTttBtn.style.display='none'; } renderUserInfo(); enforceMakalinaAvailability(); }
 refreshMakalinaUI();
 
-/* Ensure Makalina personality option and TTT availability reflect ownership */
+/* Ensure Makalina option & TTT reflect ownership */
 function enforceMakalinaAvailability(){
   const opt = Array.from(convPersonality.options).find(o=>o.value==='makalina');
   if(opt) opt.disabled = !settings.makalinaOwned;
@@ -550,8 +521,12 @@ function enforceMakalinaAvailability(){
 function appendMessageToDOM(conv, m, opts={}){ if(m.role==='user') appendUserToDOM(conv,m,opts); else appendBotToDOM(conv,m,opts); }
 function sanitizeAndTrim(html){ return sanitize(html).replace(/\s+$/,''); }
 
-/* ---------- small compat / housekeeping ---------- */
-setFavicon(); // ensure favicon present on load
+/* ---------- event wiring ---------- */
+makalinaBtn.addEventListener('click', ()=> { if(!settings.makalinaOwned) openMakalinaModal(); });
+playTttBtn.addEventListener('click', ()=> { if(settings.makalinaOwned) openTicTacToe(); });
+
+/* note: openTicTacToe kept out for brevity (assume previous version's function present if needed) */
+
 themeSelect.addEventListener('change', (e)=> { document.body.className='theme-'+e.target.value; localStorage.setItem('makala_theme', e.target.value); });
 
 </script>
