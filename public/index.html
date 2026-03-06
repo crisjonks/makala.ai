@@ -116,15 +116,23 @@
   .input-wrap.ready .send-circle{display:flex}
   .send-circle img{width:18px;height:18px}
 
+  /* select / field ui (dark background + white text) */
+  .field{background:rgba(0,0,0,0.9); color:#fff; border-radius:8px; padding:8px; border:1px solid rgba(255,255,255,0.04); font-family:var(--font);}
+
+  /* purchase button & spinner */
+  .purchase-btn{ background: linear-gradient(90deg,var(--accent-a),var(--accent-b)); color:#fff; border:0; padding:10px 12px; border-radius:8px; cursor:pointer; font-weight:700; display:inline-flex; align-items:center; gap:8px; box-shadow:0 12px 30px rgba(0,0,0,0.3); }
+  .btn-spinner{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.22); border-top-color: #fff; animation:spin .8s linear infinite; display:inline-block }
+  @keyframes spin{ from{ transform:rotate(0) } to{ transform:rotate(360deg) } }
+
   /* modal, inputs */
   .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,10,0.85);display:flex;align-items:center;justify-content:center;z-index:90}
   .modal{width:520px;max-width:calc(100% - 32px);background:linear-gradient(180deg, #0b0712, #0f0716);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
   .modal img.full{width:100%;height:auto;border-radius:8px;margin:6px 0} /* tightened margins above/below the full logo */
-  .field{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;font-family:var(--font)}
+  .field{width:100%;padding:8px;border-radius:8px;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.04);color:#fff;font-family:var(--font)}
   .ttt-board{width:320px;height:320px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;position:relative}
   .ttt-cell{background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:46px;border-radius:8px;cursor:pointer;transition:transform .12s, background .12s;user-select:none;aspect-ratio:1/1}
   .ttt-cell:hover{transform:scale(1.04);background:rgba(255,255,255,0.035)}
-  .ttt-line{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+  .ttt-line{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none; display:none} /* hidden by default; we removed the line feature */
 
   .reset-btn{position:fixed;right:18px;bottom:18px;z-index:60;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);color:#fff;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
 
@@ -138,7 +146,7 @@
     <aside class="sidebar">
       <header class="sidebar-h">
         <div style="display:flex;align-items:center;gap:8px">
-          <!-- makalina button: IMAGE ONLY, positioned above tip (here in header) -->
+          <!-- makalina button: IMAGE ONLY, positioned above tip -->
           <button id="makalinaBtn" class="makalina-img" title="Get Makalina">
             <img src="makalina.png" alt="makalina">
           </button>
@@ -471,8 +479,10 @@ document.addEventListener('click', (ev)=> { const c = ev.target.closest('.copy-c
 /* ---------- Makalina modal / purchase (UPDATED) ---------- */
 function openMakalinaModal(){
   modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal">
-    <img src="fullmakalina.png" alt="makalina" class="full" style="margin-top:6px;margin-bottom:6px">
+    <!-- logo in place of "Purchase Makalina" -->
+    <img src="makalina.png" alt="makalina" class="full" style="margin-top:6px;margin-bottom:6px;max-height:120px;object-fit:contain">
     <h3 style="margin:6px 0">Purchase Makalina</h3>
+
     <p style="color:var(--muted);margin:6px 0 12px">Makalina adds a refined persona and cosmetic perks. Demo price: <strong>$0.00</strong></p>
 
     <div style="display:flex;gap:8px;margin-bottom:8px">
@@ -488,17 +498,16 @@ function openMakalinaModal(){
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
       <input id="discountCode" class="field" placeholder="Discount code (optional)" style="max-width:220px"/>
       <button id="applyDiscount" class="new-btn">Apply</button>
-      <div id="discountLabel" style="color:var(--muted);margin-left:auto">no discount</div>
+      <div id="discountRow" style="color:var(--muted);margin-left:auto;display:none">discount: <strong id="discountPct">-25%</strong></div>
     </div>
 
     <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
       <div>
         <div>subtotal: <strong>$0.00</strong></div>
-        <div id="discountRow" style="color:var(--muted);display:none">discount: <strong id="discountPct">-25%</strong></div>
       </div>
       <div style="display:flex;gap:8px">
         <button id="cancelBuy" class="new-btn">Cancel</button>
-        <button id="confirmBuy" class="makalina-rect">Purchase</button>
+        <button id="confirmBuy" class="purchase-btn">Purchase</button>
       </div>
     </div>
   </div></div>`;
@@ -507,27 +516,49 @@ function openMakalinaModal(){
   let discountApplied = 0;
   $('#applyDiscount').addEventListener('click', ()=>{
     const code = $('#discountCode').value.trim();
-    if(!code){ $('#discountLabel').textContent = 'enter code'; return; }
-    if(code.toUpperCase() === 'MARCH25'){ discountApplied = 0.25; $('#discountLabel').textContent = '25% off applied'; $('#discountRow').style.display='block'; $('#discountPct').textContent='-25%'; }
-    else { discountApplied = 0; $('#discountLabel').textContent = 'invalid code'; $('#discountRow').style.display='none'; }
+    if(!code){ alert('enter a code'); return; }
+    if(code.toUpperCase() === 'MARCH25'){ discountApplied = 0.25; $('#discountRow').style.display='block'; $('#discountPct').textContent='-25%'; }
+    else { discountApplied = 0; alert('invalid code'); $('#discountRow').style.display='none'; }
   });
 
   $('#cancelBuy').addEventListener('click', ()=> { modalContainer.style.display='none'; modalContainer.innerHTML=''; });
-  $('#confirmBuy').addEventListener('click', ()=> {
-    const name = $('#buyerName').value.trim(); settings.makalinaOwned = true; if(name) settings.userName = name;
+  $('#confirmBuy').addEventListener('click', ()=>{
+    const btn = $('#confirmBuy');
+    btn.disabled = true;
+    // show small spinner + "loading"
+    const original = btn.innerHTML;
+    btn.innerHTML = `<span class="btn-spinner" aria-hidden></span><span style="font-size:13px">loading</span>`;
+    const start = Date.now();
+
+    const name = $('#buyerName').value.trim();
     const file = $('#pfpFile').files && $('#pfpFile').files[0];
+
+    // on completion, ensure at least 1s spinner shown before refresh
+    const finish = (pfpData) => {
+      settings.makalinaOwned = true;
+      if(name) settings.userName = name;
+      if(pfpData) settings.pfpData = pfpData;
+      saveOwnership();
+      const elapsed = Date.now() - start;
+      const wait = Math.max(0, 1000 - elapsed);
+      setTimeout(()=>{ modalContainer.innerHTML=''; modalContainer.style.display='none'; refreshAfterPurchase(); }, wait);
+    };
+
     if(file){
       const reader = new FileReader();
-      reader.onload = e=>{ settings.pfpData = e.target.result; saveOwnership(); modalContainer.innerHTML=''; modalContainer.style.display='none'; refreshAfterPurchase(); };
+      reader.onload = e=> { finish(e.target.result); };
+      reader.onerror = ()=> { finish(null); };
       reader.readAsDataURL(file);
-    } else { saveOwnership(); modalContainer.innerHTML=''; modalContainer.style.display='none'; refreshAfterPurchase(); }
+    } else {
+      finish(null);
+    }
   });
 }
 function refreshAfterPurchase(){ document.getElementById('favicon').href = '/makalina.ico'; refreshMakalinaUI(); renderUserInfo(); setTimeout(()=> location.reload(), 250); }
 
 /* ---------- user info ---------- */
 function renderUserInfo(){ if(settings.makalinaOwned){ userInfo.style.display='flex'; userNameDisplay.textContent = settings.userName || 'you'; coinCountEl.textContent = settings.coins || 0; if(settings.pfpData) userPfp.querySelector('img').src = settings.pfpData; else userPfp.querySelector('img').src = 'makala.png'; } else userInfo.style.display='none'; }
-function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; document.getElementById('favicon').href='/makalina.ico'; playTttBtn.disabled = false; } else { makalinaBtn.style.display='inline-flex'; document.getElementById('favicon').href='/makala.ico'; playTttBtn.disabled = true; } renderUserInfo(); enforceMakalinaAvailability(); }
+function refreshMakalinaUI(){ if(settings.makalinaOwned){ makalinaBtn.style.display='none'; document.getElementById('favicon').href='/makalina.ico'; playTttBtn.style.display='inline-flex'; } else { makalinaBtn.style.display='inline-flex'; document.getElementById('favicon').href='/makala.ico'; playTttBtn.style.display='none'; } renderUserInfo(); enforceMakalinaAvailability(); }
 refreshMakalinaUI();
 
 /* Ensure Makalina personality option and TTT availability reflect ownership */
@@ -539,28 +570,26 @@ function enforceMakalinaAvailability(){
     const conv = convs.find(c=>c.id===activeConvId);
     if(conv && conv.personality==='makalina'){ conv.personality='makala'; saveConvs(); setActiveConv(activeConvId,{clear:true,animate:false}); }
   }
-  playTttBtn.disabled = !settings.makalinaOwned;
-  // clicking disabled play opens purchase modal (explicitly unplayable)
-  playTttBtn.onclick = ()=> { if(settings.makalinaOwned) openTicTacToe(); else openMakalinaModal(); };
+  // hide play button entirely when not owned
+  playTttBtn.style.display = settings.makalinaOwned ? 'inline-flex' : 'none';
   // makalina button triggers buy modal if not owned, otherwise hidden by refreshMakalinaUI
   makalinaBtn.onclick = ()=> { if(!settings.makalinaOwned) openMakalinaModal(); };
 }
 
-/* ---------- Tic Tac Toe (unchanged but blocked when not owned) ---------- */
+/* ---------- Tic Tac Toe (no win line) ---------- */
 function openTicTacToe(){
   if(!settings.makalinaOwned){ openMakalinaModal(); return; } // unplayable if not owned
 
-  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px">tic tac toe — play makala</h3><div id="tttBoardWrapper" style="position:relative"><div id="tttBoard" class="ttt-board"></div><svg class="ttt-line" id="tttLine" viewBox="0 0 320 320" preserveAspectRatio="none"></svg></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px" class="spin"> <span id="coinCountModal">${settings.coins}</span></div><div style="display:flex;gap:8px"><button id="tttReset" class="new-btn">Reset board</button><button id="closeTtt" class="new-btn">Close</button></div></div></div></div>`;
+  modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px">tic tac toe — play makala</h3><div id="tttBoardWrapper" style="position:relative"><div id="tttBoard" class="ttt-board"></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div>Your coins: <img src="coins.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px" class="spin"> <span id="coinCountModal">${settings.coins}</span></div><div style="display:flex;gap:8px"><button id="tttReset" class="new-btn">Reset board</button><button id="closeTtt" class="new-btn">Close</button></div></div></div></div>`;
   modalContainer.style.display='block';
-  const board = $('#tttBoard'); const svg = $('#tttLine'); let state = Array(9).fill(''); let done=false;
+  const board = $('#tttBoard'); let state = Array(9).fill(''); let done=false;
   const conv = convs.find(c=>c.id===activeConvId) || { personality:'makala' };
 
   function renderBoard(){ board.innerHTML=''; state.forEach((v,i)=>{ const cell=document.createElement('div'); cell.className='ttt-cell'; cell.dataset.i=i; if(v==='X'){ const img=document.createElement('img'); img.src = (conv.personality==='makalina'?'linastar.png':'star.png'); img.style.width='46px'; img.style.height='46px'; cell.appendChild(img); } else if(v==='O'){ cell.textContent='O'; } cell.addEventListener('click', ()=> onCell(i,cell)); board.appendChild(cell); }); }
   function onCell(i,el){ if(done || state[i]) return; state[i]='O'; renderBoard(); if(checkWin('O')) return endGame(true); if(state.every(Boolean)) return endGame(null); setTimeout(()=>{ const free = state.map((v,idx)=> v?null:idx).filter(v=>v!==null); const pick = free[Math.floor(Math.random()*free.length)]; state[pick]='X'; renderBoard(); if(checkWin('X')) return endGame(false); if(state.every(Boolean)) return endGame(null); }, 420); }
   function checkWin(sym){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.find(w=> w.every(i=> state[i]===sym)); }
-  function drawWinLine(winIndices){ const coords=[[16,16],[160,16],[304,16],[16,160],[160,160],[304,160],[16,304],[160,304],[304,304]]; const a=coords[winIndices[0]]; const b=coords[winIndices[2]]; svg.innerHTML = `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="rgba(255,255,255,0.6)" stroke-width="6" stroke-linecap="round"/>`; }
-  function endGame(userWon){ done=true; const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; const w=wins.find(wi=> wi.every(i=> state[i]=== (userWon? 'O' : 'X'))); if(w) drawWinLine(w); const amt=Math.floor(Math.random()*50)+1; if(userWon===true){ settings.coins=(settings.coins||0)+amt; setTimeout(()=> alert(`you win ${amt} makala's coins!`), 120); } else if(userWon===false){ settings.coins=Math.max(0,(settings.coins||0)-amt); setTimeout(()=> alert(`you lost ${amt} coins...`), 120); } else setTimeout(()=> alert('draw — no coins'), 120); saveOwnership(); $('#coinCountModal').textContent=settings.coins; coinCountEl.textContent=settings.coins; setTimeout(()=>{ state = Array(9).fill(''); done=false; svg.innerHTML=''; renderBoard(); }, 2200); }
-  $('#tttReset').addEventListener('click', ()=> { state = Array(9).fill(''); done=false; svg.innerHTML=''; renderBoard(); });
+  function endGame(userWon){ done=true; const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; const w=wins.find(wi=> wi.every(i=> state[i]=== (userWon? 'O' : 'X'))); const amt=Math.floor(Math.random()*50)+1; if(userWon===true){ settings.coins=(settings.coins||0)+amt; setTimeout(()=> alert(`you win ${amt} makala's coins!`), 120); } else if(userWon===false){ settings.coins=Math.max(0,(settings.coins||0)-amt); setTimeout(()=> alert(`you lost ${amt} coins...`), 120); } else setTimeout(()=> alert('draw — no coins'), 120); saveOwnership(); $('#coinCountModal').textContent=settings.coins; coinCountEl.textContent=settings.coins; setTimeout(()=>{ state = Array(9).fill(''); done=false; renderBoard(); }, 2200); }
+  $('#tttReset').addEventListener('click', ()=> { state = Array(9).fill(''); done=false; renderBoard(); });
   $('#closeTtt').addEventListener('click', ()=> { modalContainer.innerHTML=''; modalContainer.style.display='none'; });
   renderBoard();
 }
