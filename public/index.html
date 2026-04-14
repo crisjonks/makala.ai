@@ -8,196 +8,562 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+
 <style>
-  :root{
-    --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    --bg:#0f1220;
-    --panel:#14182a;
-    --panel-2:#111629;
-    --line:rgba(255,255,255,.08);
-    --text:#f8fafc;
-    --muted:#a9b3c5;
-    --accent:#8b5cf6;
-    --accent-2:#06b6d4;
-    --user:#1d2540;
-    --user-2:#161d33;
-    --bot:#12182a;
-    --radius:16px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg),#090b13);overflow:hidden}
-  body{display:flex;justify-content:center;align-items:center;padding:8px}
+:root{
+  --bg:#11131c;
+  --panel:#171a26;
+  --panel2:#141827;
+  --line:rgba(255,255,255,.08);
+  --text:#f7f8fb;
+  --muted:#aab2c3;
+  --accent:#8b5cf6;
+  --accent2:#22d3ee;
+  --user:#1e2434;
+  --user2:#161b28;
+  --bot:#151824;
+  --radius:16px;
+  --font:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg),#0b0d14)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+body.theme-pink{--bg:#12111b;--panel:#171525;--panel2:#11111d;--accent:#ff4fa8;--accent2:#ff7fca;--user:#261235;--user2:#171022;--bot:#181425}
+body.theme-deep{--bg:#090a10;--panel:#10131b;--panel2:#0a0d13;--accent:#a78bfa;--accent2:#60a5fa;--user:#141822;--user2:#0d1017;--bot:#10131b}
+body.theme-blue{--bg:#0d1422;--panel:#111b2d;--panel2:#0b1322;--accent:#60a5fa;--accent2:#93c5fd;--user:#13284a;--user2:#0c1a31;--bot:#101c32}
+body.theme-red{--bg:#170909;--panel:#211010;--panel2:#160a0a;--accent:#fb7185;--accent2:#fda4af;--user:#361111;--user2:#230b0b;--bot:#1e1010}
+body.theme-green{--bg:#08130f;--panel:#101b18;--panel2:#0b1512;--accent:#34d399;--accent2:#86efac;--user:#11241e;--user2:#0b1612;--bot:#101a17}
 
-  body.theme-pink{--bg:#12111d;--panel:#171427;--panel-2:#10101c;--accent:#ff4fa8;--accent-2:#ff7fca;--user:#261235;--user-2:#171022;--bot:#181425}
-  body.theme-deep{--bg:#07080d;--panel:#0f1118;--panel-2:#090b11;--accent:#f472b6;--accent-2:#c084fc;--user:#141822;--user-2:#0d1017;--bot:#10131b}
-  body.theme-blue{--bg:#0b1322;--panel:#111b2f;--panel-2:#0c1527;--accent:#60a5fa;--accent-2:#93c5fd;--user:#13284a;--user-2:#0c1a31;--bot:#101c32}
-  body.theme-red{--bg:#170909;--panel:#211010;--panel-2:#160a0a;--accent:#fb7185;--accent-2:#fda4af;--user:#361111;--user-2:#230b0b;--bot:#1e1010}
-  body.theme-green{--bg:#08130f;--panel:#101b18;--panel-2:#0b1512;--accent:#34d399;--accent-2:#86efac;--user:#11241e;--user-2:#0b1612;--bot:#101a17}
+.app{
+  width:min(1380px, calc(100vw - 12px));
+  height:calc(100vh - 12px);
+  margin:6px auto;
+  display:grid;
+  grid-template-columns:268px 1fr;
+  gap:8px;
+  min-height:0;
+}
+.sidebar,.panel{
+  min-height:0;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012));
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.sidebar{
+  display:flex;
+  flex-direction:column;
+  padding:12px;
+}
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding-bottom:10px;
+}
+.title{
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.2px;
+}
+.btn{
+  height:38px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  border-radius:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:transform .14s ease, background .14s ease, border-color .14s ease, opacity .14s ease;
+}
+.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent}
+.btn.icon{width:38px;padding:0}
+.btn.compact{height:34px;padding:0 10px;border-radius:10px;font-size:13px}
+.btn.full{width:100%}
+.icon-plus{font-size:24px;line-height:1;display:block;margin-top:-1px}
 
-  button,input,textarea,select{font:inherit}
-  button{cursor:pointer}
+.conv-list{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding-right:2px;
+}
+.conv-item,.home-item{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+  padding:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+}
+.conv-item.active,.home-item.active{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.18);
+}
+.conv-item img{width:26px;height:26px;border-radius:8px;object-fit:cover;flex:0 0 auto}
+.home-icon{
+  width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:rgba(255,255,255,.04);font-size:15px;flex:0 0 auto
+}
+.conv-copy{min-width:0;flex:1}
+.conv-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-meta{font-size:11px;color:var(--muted)}
+.conv-delete{width:18px;height:18px;flex:0 0 auto;opacity:.95}
+
+.sidebar-footer{
+  display:grid;
+  gap:8px;
+  padding-top:10px;
+}
+.makalina-launch{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  border-radius:14px;
+  padding:6px;
+  display:block;
+  width:100%;
+}
+.makalina-launch img{
+  width:100%;
+  height:74px;
+  object-fit:contain;
+  display:block;
+}
+.makalina-launch:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+.sidebar-footer .stack{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+
+.panel{
+  display:flex;
+  flex-direction:column;
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+  min-height:58px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.brand img{width:28px;height:28px;border-radius:8px;display:block}
+.brand h1{
+  margin:0;
+  font-size:16px;
+  font-weight:600;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.right-tools{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+select,input,textarea{
+  background:rgba(2,6,23,.96);
+  color:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  outline:none;
+}
+select, input[type=text]{height:38px;padding:0 12px}
+select option{background:#050814;color:#fff}
+.home-select{
+  width:166px;
+}
+.chat{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+.hidden{display:none !important}
+
+.empty-state{
+  flex:1;
+  min-height:0;
+  display:grid;
+  place-items:center;
+  padding:16px;
+}
+.empty-card{
+  width:min(780px,100%);
+  display:grid;
+  gap:14px;
+  text-align:center;
+  justify-items:stretch;
+}
+.empty-card h2{
+  margin:0;
+  font-size:40px;
+  letter-spacing:-.04em;
+}
+.empty-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+.home-input,.composer textarea{
+  width:100%;
+  min-height:70px;
+  padding:14px;
+  border-radius:16px;
+  line-height:1.45;
+  font-size:15px;
+  resize:none;
+  overflow:hidden;
+}
+.home-input{min-height:76px}
+.suggestions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+.suggestion{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  border-radius:999px;
+  color:#fff;
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:13px;
+  transition:transform .14s ease, background .14s ease;
+}
+.suggestion:hover{background:rgba(255,255,255,.06);transform:translateY(-1px)}
+
+.message-wrap{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.message-row{
+  width:100%;
+  min-width:0;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.message-row.user{justify-content:flex-end}
+.message-row.bot{justify-content:flex-start}
+.message-row.fade-in{animation:msgIn .18s ease-out both}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.user-bubble{
+  max-width:min(72%,680px);
+  min-width:0;
+  display:inline-block;
+  padding:9px 12px;
+  border-radius:18px 18px 6px 18px;
+  background:linear-gradient(180deg,var(--user),var(--user2));
+  border:1px solid var(--line);
+  line-height:1.45;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  font-weight:400;
+}
+.bot-card{
+  max-width:min(76%,760px);
+  min-width:0;
+  display:grid;
+  grid-template-columns:28px 1fr;
+  gap:10px;
+  align-items:start;
+}
+.bot-avatar{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  display:block;
+  object-fit:cover;
+}
+.bot-meta{
+  display:grid;
+  gap:4px;
+  justify-items:start;
+  min-width:0;
+}
+.bot-body{
+  min-width:0;
+  font-size:14px;
+  line-height:1.45;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  font-weight:400;
+}
+.bot-body p,.bot-body ul,.bot-body ol,.bot-body blockquote,.bot-body pre,.bot-body hr,.bot-body h1,.bot-body h2,.bot-body h3,.bot-body h4{margin:0 0 4px 0}
+.bot-body p:last-child{margin-bottom:0}
+.bot-body pre{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  overflow:auto;
+  position:relative;
+}
+.bot-body code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:.95em;
+}
+.copy-code{
+  position:absolute;
+  right:8px;
+  top:8px;
+  width:24px;
+  height:24px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:rgba(0,0,0,.15);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+.copy-code img{width:14px;height:14px;display:block}
+
+.typing-shell{
+  display:grid;
+  grid-template-columns:28px 1fr;
+  gap:10px;
+  align-items:start;
+}
+.typing-avatar{
+  width:28px;height:28px;border-radius:8px;display:block;object-fit:cover
+}
+.typing-line{
+  min-height:28px;
+  display:flex;
+  align-items:center;
+  color:var(--muted);
+  font-size:13px;
+}
+.typing-dots{
+  display:inline-flex;
+  gap:6px;
+  align-items:center;
+}
+.typing-dots span{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--muted);
+  animation:bounce 1s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{
+  0%,80%,100%{transform:translateY(0);opacity:.45}
+  40%{transform:translateY(-4px);opacity:1}
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.composer{
+  padding:12px;
+  border-top:1px solid var(--line);
+}
+.composer-row{
+  display:flex;
+  gap:10px;
+  align-items:flex-end;
+}
+.composer textarea{
+  flex:1;
+  min-height:46px;
+  max-height:140px;
+  padding:12px 12px;
+  line-height:1.4;
+  font-size:15px;
+}
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(3,6,13,.68);
+  display:grid;
+  place-items:center;
+  z-index:50;
+  padding:16px;
+}
+.modal{
+  width:min(760px,100%);
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+  transform-origin:center;
+}
+.modal.show{animation:modalIn .18s ease-out both}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(.98) translateY(6px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:16px 18px;
+  border-bottom:1px solid var(--line);
+}
+.modal-head h3{margin:0;font-size:18px}
+.modal-body{
+  padding:18px;
+  display:grid;
+  gap:14px;
+}
+.buy-grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:14px;
+}
+.buy-hero{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.buy-hero img{
+  width:100%;
+  height:auto;
+  border-radius:16px;
+  display:block;
+  object-fit:contain;
+  max-height:260px;
+}
+.buy-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  display:grid;
+  gap:12px;
+}
+.field{
+  width:100%;
+  height:40px;
+  padding:0 12px;
+  border-radius:12px;
+  background:rgba(2,6,23,.96);
+  border:1px solid var(--line);
+  color:#fff;
+}
+.field::placeholder{color:#8792a8}
+.textarea-field{
+  width:100%;
+  min-height:88px;
+  padding:12px;
+  border-radius:16px;
+  resize:none;
+}
+.row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.inline-grow{flex:1;min-width:160px}
+.select-file{
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:0 14px;
+}
+.select-file:hover{background:rgba(255,255,255,.06)}
+.file-input{display:none}
+.totals{display:grid;gap:6px;padding-top:4px}
+.totals .muted{color:var(--muted);font-size:13px}
+.purchase-btn{
+  height:42px;
+  padding:0 14px;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;
+  border:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:600;
+}
+.purchase-btn.loading{pointer-events:none}
+.spinner{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  animation:spin .8s linear infinite;
+}
+.news-btn{
+  height:40px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  color:#fff;
+  border-radius:12px;
+  width:100%;
+}
+
+@media (max-width: 1000px){
+  body{padding:4px}
   .app{
-    width:min(1400px,calc(100vw - 16px));
-    height:calc(100vh - 18px);
-    display:grid;
-    grid-template-columns:270px 1fr;
-    gap:8px;
-    min-height:0;
+    width:100vw;
+    height:100vh;
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr;
   }
-  .sidebar,.panel{
-    min-height:0;
-    border:1px solid var(--line);
-    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-  .sidebar{display:flex;flex-direction:column;padding:12px}
-  .sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:10px}
-  .sidebar-title{font-size:14px;font-weight:600;letter-spacing:.2px}
-
-  .btn{
-    height:38px;padding:0 12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#fff;border-radius:12px;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s ease,border-color .15s ease,transform .15s ease;
-  }
-  .btn:hover{background:rgba(255,255,255,.06);transform:translateY(-1px)}
-  .btn:active{transform:translateY(0)}
-  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));border-color:transparent}
-  .btn.icon{width:38px;padding:0}
-  .btn.icon span{font-size:24px;line-height:1}
-  .btn.compact{height:34px;border-radius:10px;padding:0 10px;font-size:13px}
-
-  .conv-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px}
-  .conv-item{
-    border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02);padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer
-  }
-  .conv-item.active{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18)}
-  .conv-item img{width:26px;height:26px;border-radius:8px;object-fit:cover;flex:0 0 auto}
-  .home-item{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02);padding:10px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:8px}
-  .home-item.active{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
-  .home-icon{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.04);font-size:15px;flex:0 0 auto}
-  .conv-copy{min-width:0;flex:1}
-  .conv-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .conv-meta{font-size:11px;color:var(--muted)}
-  .conv-delete{width:18px;height:18px;flex:0 0 auto;opacity:.95}
-  .sidebar-footer{display:grid;gap:8px;padding-top:10px}
-  .sidebar-footer .wide{width:100%}
-
-  .panel{display:flex;flex-direction:column}
-  .topbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);min-height:58px}
-  .brand{display:flex;align-items:center;gap:10px;min-width:0}
-  .brand img{width:28px;height:28px;border-radius:8px;display:block}
-  .brand h1{margin:0;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .right-tools{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  select,input,textarea{background:rgba(2,6,23,.96);color:#fff;border:1px solid var(--line);border-radius:12px;outline:none}
-  select, input[type=text]{height:38px;padding:0 12px}
-  select option{background:#050814;color:#fff}
-
-  .chat{flex:1;min-height:0;display:flex;flex-direction:column}
-  .hidden{display:none !important}
-  .feature-hidden{display:none !important}
-
-  .empty-state{flex:1;min-height:0;display:grid;place-items:center;padding:18px}
-  .empty-card{width:min(760px,100%);display:grid;gap:14px;text-align:center;justify-items:stretch}
-  .empty-card h2{margin:0;font-size:40px;letter-spacing:-.04em}
-  .empty-card p{margin:0;color:var(--muted);font-size:14px}
-  .home-input,.composer textarea{
-    width:100%;min-height:96px;padding:14px;border-radius:16px;line-height:1.45;font-size:16px;resize:none
-  }
-  .suggestions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-  .suggestion{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;color:#fff;padding:10px 14px;cursor:pointer;font-size:13px;transition:background .15s ease,transform .15s ease}
-  .suggestion:hover{background:rgba(255,255,255,.06);transform:translateY(-1px)}
-
-  .message-wrap{flex:1;min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
-  .message-row{width:100%;min-width:0;display:flex;gap:10px;align-items:flex-start}
-  .message-row.user{justify-content:flex-end}
-  .message-row.bot{justify-content:flex-start}
-  .message-row.fade-in{animation:msgIn .18s ease-out both}
-  @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-  .user-bubble{
-    max-width:min(72%,680px);min-width:0;display:inline-block;padding:10px 12px;border-radius:18px 18px 6px 18px;background:linear-gradient(180deg,var(--user),var(--user-2));border:1px solid var(--line);line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font-weight:400
-  }
-  .bot-card{max-width:min(76%,760px);min-width:0;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
-  .bot-avatar{width:28px;height:28px;border-radius:8px;display:block;object-fit:cover}
-  .bot-meta{display:grid;gap:4px;justify-items:start;min-width:0}
-  .bot-body{min-width:0;font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font-weight:400}
-  .bot-body p,.bot-body ul,.bot-body ol,.bot-body blockquote,.bot-body pre,.bot-body hr,.bot-body h1,.bot-body h2,.bot-body h3,.bot-body h4{margin:0 0 4px 0}
-  .bot-body p:last-child{margin-bottom:0}
-  .bot-body pre{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px;overflow:auto;position:relative}
-  .bot-body code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.95em}
-  .copy-code{position:absolute;right:8px;top:8px;width:24px;height:24px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.15);display:grid;place-items:center;cursor:pointer}
-  .copy-code img{width:14px;height:14px;display:block}
-
-  .typing-dots{display:inline-flex;gap:6px;align-items:center;padding-top:2px}
-  .typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1s infinite ease-in-out}
-  .typing-dots span:nth-child(2){animation-delay:.15s}
-  .typing-dots span:nth-child(3){animation-delay:.3s}
-  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-4px);opacity:1}}
-  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-  .typing-shell{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-  .typing-avatar{width:28px;height:28px;border-radius:8px;display:block;object-fit:cover}
-  .typing-line{height:24px;display:flex;align-items:center;color:var(--muted);font-size:13px}
-  .typing-line .typing-dots{padding-top:0}
-
-  .composer{padding:12px;border-top:1px solid var(--line)}
-  .composer-row{display:flex;gap:10px;align-items:flex-end}
-  .composer textarea{flex:1;min-height:46px;max-height:180px;padding:12px 12px;line-height:1.4;font-size:15px}
-
-  .modal-backdrop{position:fixed;inset:0;background:rgba(3,6,13,.68);display:grid;place-items:center;z-index:50;padding:16px}
-
-  .persona-makalina .bot-body,
-  .persona-makalina .user-bubble,
-  .persona-makalina textarea,
-  .persona-makalina input,
-  .persona-makalina select,
-  .persona-makalina .btn{font-weight:350}
-  .modal{width:min(760px,100%);background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:22px;overflow:hidden;transform-origin:center}
-  .modal.show{animation:modalIn .18s ease-out both}
-  @keyframes modalIn{from{opacity:0;transform:scale(.98) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
-  .modal-head h3{margin:0;font-size:18px}
-  .modal-body{padding:18px;display:grid;gap:14px}
-  .buy-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:14px}
-  .buy-hero{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px}
-  .buy-hero img{width:100%;height:auto;border-radius:16px;display:block;object-fit:contain;max-height:280px}
-  .buy-card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px}
-  .field{width:100%;height:40px;padding:0 12px;border-radius:12px;background:rgba(2,6,23,.96);border:1px solid var(--line);color:#fff}
-  .field::placeholder{color:#8792a8}
-  .textarea-field{width:100%;min-height:88px;padding:12px;border-radius:16px;resize:none}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .inline-grow{flex:1;min-width:160px}
-  .select-file{height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:0 14px}
-  .file-input{display:none}
-  .totals{display:grid;gap:6px;padding-top:4px}
-  .totals .muted{color:var(--muted);font-size:13px}
-  .purchase-btn{height:42px;padding:0 14px;border-radius:12px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600}
-  .purchase-btn.loading{pointer-events:none}
-  .spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
-  .news-btn{height:40px;padding:0 12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:#fff;border-radius:12px;width:100%}
-
-  @media (max-width: 1000px){
-    body{padding:4px}
-    .app{width:100vw;height:100vh;grid-template-columns:1fr;grid-template-rows:auto 1fr}
-    .sidebar{order:2}
-    .panel{order:1}
-    .empty-card h2{font-size:32px}
-    .message-row.user .user-bubble{max-width:92%}
-    .buy-grid{grid-template-columns:1fr}
-  }
+  .sidebar{order:2}
+  .panel{order:1}
+  .empty-card h2{font-size:32px}
+  .message-row.user .user-bubble{max-width:92%}
+  .buy-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body class="theme-pink">
 <div class="app">
   <aside class="sidebar">
-    <div class="sidebar-head">
-      <div class="sidebar-title">Conversations</div>
-      <button id="newConvBtn" class="btn icon" title="New conversation"><span>+</span></button>
+    <div class="top">
+      <div class="title">Conversations</div>
+      <button id="newConvBtn" class="btn icon" title="New conversation"><span class="icon-plus">+</span></button>
     </div>
 
     <div id="convList" class="conv-list"></div>
 
     <div class="sidebar-footer">
       <button id="newsBtn" class="news-btn">News</button>
+      <button id="makalinaLaunchBtn" class="makalina-launch hidden" title="Buy makalina">
+        <img src="makalina.png" alt="makalina">
+      </button>
+      <div class="stack">
+        <button id="tttBtn" class="btn hidden">tic-tac-toe</button>
+      </div>
     </div>
   </aside>
 
@@ -212,7 +578,7 @@
           <option value="makala">makala</option>
           <option value="makalina">makalina</option>
         </select>
-        <select id="themeSelect" aria-label="Theme">
+        <select id="themeSelect" aria-label="Theme" class="home-select">
           <option value="pink">purple & pink</option>
           <option value="deep">deep black</option>
           <option value="blue">navy blue</option>
@@ -256,12 +622,20 @@
 const $ = (s, root=document) => root.querySelector(s);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 const trimLines = s => String(s ?? '').replace(/\r/g, '').replace(/\n+$/,'');
-const STORAGE_KEY = 'makala_conversations_simple_v2';
+const STORAGE_KEY = 'makala_conversations_simple_v3';
+
+marked.setOptions({
+  gfm: true,
+  breaks: true
+});
 
 const state = {
   conversations: [],
   activeId: null,
-  theme: localStorage.getItem('makala_theme') || 'pink'
+  theme: localStorage.getItem('makala_theme') || 'pink',
+  makalinaOwned: localStorage.getItem('makala_makalina_owned') === '1',
+  profileName: localStorage.getItem('makala_profile_name') || '',
+  profileImage: localStorage.getItem('makala_profile_image') || ''
 };
 
 const els = {
@@ -279,7 +653,9 @@ const els = {
   homeSendBtn: $('#homeSendBtn'),
   modalRoot: $('#modalRoot'),
   panelRoot: $('#panelRoot'),
-  newsBtn: $('#newsBtn')
+  newsBtn: $('#newsBtn'),
+  makalinaLaunchBtn: $('#makalinaLaunchBtn'),
+  tttBtn: $('#tttBtn')
 };
 
 function setTheme(theme){
@@ -295,6 +671,9 @@ function saveState(){
     activeId: state.activeId
   }));
   localStorage.setItem('makala_theme', state.theme);
+  localStorage.setItem('makala_makalina_owned', state.makalinaOwned ? '1' : '0');
+  localStorage.setItem('makala_profile_name', state.profileName || '');
+  localStorage.setItem('makala_profile_image', state.profileImage || '');
 }
 
 function loadState(){
@@ -308,11 +687,10 @@ function loadState(){
   }
 
   if(!state.conversations.length){
-    const conv = createConversation('New conversation');
-    state.activeId = conv.id;
+    state.activeId = null;
   }
-  if(!state.activeId || !state.conversations.some(c => c.id === state.activeId)){
-    state.activeId = state.conversations[0].id;
+  if(state.activeId && !state.conversations.some(c => c.id === state.activeId)){
+    state.activeId = state.conversations[0]?.id || null;
   }
 }
 
@@ -325,6 +703,7 @@ function createConversation(title='New conversation'){
     messages: []
   };
   state.conversations.unshift(conv);
+  state.activeId = conv.id;
   saveState();
   return conv;
 }
@@ -334,7 +713,9 @@ function activeConversation(){
 }
 
 function escapeHTML(s){
-  return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+  return String(s ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'
+  }[m]));
 }
 
 function relativeTime(ts){
@@ -349,33 +730,36 @@ function relativeTime(ts){
   if(days === 1) return 'Yesterday';
   if(days < 7) return `${days}d ago`;
   if(days < 30) return `${Math.floor(days / 7)}w ago`;
-  return 'A while ago';
+  if(days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return 'A long time ago';
 }
 
 function personaLabel(persona){
   return persona === 'makalina' ? 'makalina' : 'makala';
 }
-
 function personaAvatar(persona){
   return persona === 'makalina' ? 'makalina.png' : 'makala.png';
 }
 
 function buildSystemPrompt(persona){
+  const countryNote = localStorage.getItem('makala_country_note') || '';
   if(persona === 'makalina'){
     return [
       'You are Makalina, a more matured version of Makala.',
       'You still have a slightly Indian personality, but you sound a bit more professional than Makala.',
       'You may use slang sometimes, but less often than Makala.',
       'You are very good at math because your parents forced you to practice math instead of sleeping, and you are eternally grateful.',
-      'Keep replies concise and natural.'
-    ].join(' ');
+      'Keep replies concise and natural.',
+      countryNote
+    ].filter(Boolean).join(' ');
   }
   return [
     'You are Makala.',
     'Speak casual internet slang, playful tone, lowercase vibe, short replies.',
     'Use words like lol, fr, bro, beta naturally.',
-    'Be friendly, informal, and energetic.'
-  ].join(' ');
+    'Be friendly, informal, and energetic.',
+    countryNote
+  ].filter(Boolean).join(' ');
 }
 
 function renderConvList(){
@@ -393,7 +777,7 @@ function renderConvList(){
   home.addEventListener('click', () => {
     state.activeId = null;
     saveState();
-    syncView();
+    renderAll();
   });
   els.convList.appendChild(home);
 
@@ -474,14 +858,11 @@ function makeTypingRow(persona){
   avatar.src = personaAvatar(persona);
   avatar.alt = '';
 
-  const meta = document.createElement('div');
-  meta.className = 'bot-meta';
-  meta.innerHTML = `
-    <div class="bot-name">${personaLabel(persona)}</div>
-    <div class="typing-line"><span class="typing-dots"><span></span><span></span><span></span></span></div>
-  `;
+  const line = document.createElement('div');
+  line.className = 'typing-line';
+  line.innerHTML = `<span class="typing-dots"><span></span><span></span><span></span></span>`;
 
-  card.append(avatar, meta);
+  card.append(avatar, line);
   row.appendChild(card);
   return row;
 }
@@ -510,7 +891,6 @@ function renderMessageNode(msg, conv, animate=false){
 
   const meta = document.createElement('div');
   meta.className = 'bot-meta';
-  meta.innerHTML = `<div class="bot-name">${personaLabel(conv.persona)}</div>`;
 
   const body = document.createElement('div');
   body.className = 'bot-body';
@@ -524,8 +904,8 @@ function renderMessageNode(msg, conv, animate=false){
 }
 
 function autoGrow(textarea){
-  textarea.style.height = 'auto';
-  textarea.style.height = Math.min(textarea.scrollHeight, 180) + 'px';
+  textarea.style.height = '0px';
+  textarea.style.height = Math.min(textarea.scrollHeight, 140) + 'px';
 }
 
 function syncView(){
@@ -538,12 +918,14 @@ function syncView(){
   els.messageWrap.classList.toggle('hidden', !hasMessages);
   els.composer.classList.toggle('hidden', !hasMessages);
 
-  els.panelRoot.classList.toggle('persona-makalina', (conv?.persona || 'makala') === 'makalina');
-  els.panelRoot.classList.toggle('persona-makala', (conv?.persona || 'makala') !== 'makalina');
+  const persona = conv?.persona || 'makala';
+  els.panelRoot.classList.toggle('persona-makalina', persona === 'makalina');
 
   if(hasMessages){
     els.messageWrap.innerHTML = '';
-    conv.messages.forEach((msg, idx) => els.messageWrap.appendChild(renderMessageNode(msg, conv, false)));
+    conv.messages.forEach((msg, idx) => {
+      els.messageWrap.appendChild(renderMessageNode(msg, conv, idx === conv.messages.length - 1));
+    });
     els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
   }else{
     els.homeInput.value = '';
@@ -554,16 +936,17 @@ function syncView(){
 
   renderConvList();
   setTheme(state.theme);
+  updateFeatureButtons();
 }
 
 function updateFeatureButtons(){
-  els.makalinaBtn.classList.toggle('hidden', state.makalinaOwned);
+  els.makalinaLaunchBtn.classList.toggle('hidden', state.makalinaOwned);
   els.tttBtn.classList.toggle('hidden', !state.makalinaOwned);
+  els.personaSelect.querySelector('option[value="makalina"]').disabled = !state.makalinaOwned;
 }
 
 function renderAll(){
   syncView();
-  updateFeatureButtons();
 }
 
 async function sendMessage(value){
@@ -573,7 +956,6 @@ async function sendMessage(value){
   let conv = activeConversation();
   if(!conv){
     conv = createConversation('New conversation');
-    state.activeId = conv.id;
   }
 
   if(conv.messages.length === 0 && conv.title === 'New conversation'){
@@ -581,6 +963,7 @@ async function sendMessage(value){
   }
 
   conv.messages.push({ role:'user', content:text, createdAt: Date.now() });
+  state.activeId = conv.id;
   saveState();
   renderAll();
 
@@ -609,33 +992,25 @@ async function sendMessage(value){
 
     const data = await resp.json();
     const reply = data?.reply || 'No response.';
-
-    const idx = conv.messages.findIndex(m => m.typing);
-    if(idx >= 0) conv.messages.splice(idx, 1);
     conv.messages.push({ role:'assistant', content:reply, createdAt: Date.now() });
   }catch(err){
-    const idx = conv.messages.findIndex(m => m.typing);
-    if(idx >= 0) conv.messages.splice(idx, 1);
     conv.messages.push({ role:'assistant', content:`Error: ${String(err)}`, createdAt: Date.now() });
   }
 
   saveState();
   renderAll();
 
-  // fade-in the newest assistant message only
   const last = els.messageWrap.lastElementChild;
   if(last) last.classList.add('fade-in');
 }
 
-function openModal(innerHTML){
+function openModal(contentHTML){
   els.modalRoot.innerHTML = `
     <div class="modal-backdrop">
-      <div class="modal show">${innerHTML}</div>
+      <div class="modal show">${contentHTML}</div>
     </div>
   `;
-  const close = () => {
-    els.modalRoot.innerHTML = '';
-  };
+  const close = () => { els.modalRoot.innerHTML = ''; };
   els.modalRoot.querySelector('[data-close]')?.addEventListener('click', close);
   els.modalRoot.querySelector('.modal-backdrop')?.addEventListener('click', (e) => {
     if(e.target.classList.contains('modal-backdrop')) close();
@@ -657,21 +1032,29 @@ function openNews(){
       <button class="btn compact" data-close>Okay</button>
     </div>
     <div class="modal-body">
-      <div class="buy-grid" style="grid-template-columns:1fr;">
-        <div class="buy-card">
-          <strong>NEW FEATURE: macaroni</strong>
-          <div style="color:var(--muted)">Makala’s new cooking AI. Upload fridge photos and get recipe ideas. Coming very soon.</div>
-          <div style="width:100%;height:160px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted)">[photo of macaroni]</div>
-          <div><strong>Coming very soon:</strong> <span>${tick()}</span></div>
-          <div style="font-size:13px;color:var(--muted)">Patch notes: core chat restored, personalities added back, simpler UI, better conversation switching, markdown support, start chat home screen.</div>
-          <button class="btn primary wide" data-close>Okay</button>
+      <div class="buy-card">
+        <strong>NEW FEATURE: macaroni</strong>
+        <div style="color:var(--muted)">Makala’s new cooking AI. Upload fridge photos and get recipe ideas. Coming very soon.</div>
+        <div style="width:100%;height:160px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted)">[photo of macaroni]</div>
+        <div><strong>Coming very soon:</strong> <span>${tick()}</span></div>
+        <div style="font-size:13px;color:var(--muted)">
+          Patch notes:
+          <ul>
+            <li>Home screen restored</li>
+            <li>Conversation switching fixed</li>
+            <li>Markdown + code copy support</li>
+            <li>Makalina buy modal</li>
+            <li>Tic-tac-toe unlocks after purchase</li>
+          </ul>
         </div>
+        <button class="btn primary full" data-close>Okay</button>
       </div>
     </div>
   `);
 }
 
 function openBuyMakalina(){
+  const basePrice = 9.99;
   openModal(`
     <div class="modal-head">
       <h3>makalina</h3>
@@ -683,7 +1066,9 @@ function openBuyMakalina(){
           <img src="fullmakalina.png" alt="makalina">
           <div>
             <strong>makalina</strong>
-            <div style="color:var(--muted);margin-top:4px">A more matured Makala, still slightly Indian. She talks a bit professionally, uses slang sometimes, and is very good at math because her parents forced her to practice instead of sleeping.</div>
+            <div style="color:var(--muted);margin-top:4px">
+              A more matured Makala, still slightly Indian. She talks a bit professionally, uses slang sometimes, and is very good at math because her parents forced her to practice instead of sleeping.
+            </div>
           </div>
         </div>
         <div class="buy-card">
@@ -708,9 +1093,9 @@ function openBuyMakalina(){
             </div>
           </div>
           <div class="totals">
-            <div class="muted">subtotal: <strong>$0.00</strong></div>
+            <div class="muted">subtotal: <strong id="subtotalText">$${basePrice.toFixed(2)}</strong></div>
             <div class="muted" id="discountLine" style="display:none">discount: <strong id="discountText">0%</strong></div>
-            <div class="muted">total: <strong id="totalText">$0.00</strong></div>
+            <div class="muted">total: <strong id="totalText">$${basePrice.toFixed(2)}</strong></div>
           </div>
           <button id="purchaseBtn" class="purchase-btn">Purchase</button>
         </div>
@@ -723,14 +1108,19 @@ function openBuyMakalina(){
   const discountText = $('#discountText');
   const totalText = $('#totalText');
   const purchaseBtn = $('#purchaseBtn');
+  const subtotalText = $('#subtotalText');
+  const nameEl = $('#buyName');
+  const favEl = $('#buyFav');
+  const fileEl = $('#buyFile');
   let discount = 0;
-  const base = 0.00;
+  let finalPrice = basePrice;
 
   const updateTotals = () => {
-    const total = Math.max(0, base * (1 - discount));
-    totalText.textContent = `$${total.toFixed(2)}`;
+    finalPrice = Math.max(0, basePrice * (1 - discount));
+    subtotalText.textContent = `$${basePrice.toFixed(2)}`;
+    totalText.textContent = `$${finalPrice.toFixed(2)}`;
     discountLine.style.display = discount > 0 ? 'block' : 'none';
-    discountText.textContent = `${Math.round(discount * 100)}%`;
+    discountText.textContent = discount >= 1 ? '100%' : `${Math.round(discount * 100)}%`;
   };
 
   $('#applyDiscount').addEventListener('click', () => {
@@ -745,40 +1135,297 @@ function openBuyMakalina(){
     purchaseBtn.classList.add('loading');
     purchaseBtn.innerHTML = '<span class="spinner"></span><span>loading</span>';
     await new Promise(r => setTimeout(r, 1000));
+
     state.makalinaOwned = true;
+    state.profileName = nameEl.value.trim();
+    state.profileImage = '';
+    if(fileEl.files && fileEl.files[0]){
+      state.profileImage = await fileToDataURL(fileEl.files[0]).catch(() => '');
+    }
     saveState();
     closeModal();
     renderAll();
   });
 
-  function closeModal(){
-    els.modalRoot.innerHTML = '';
-  }
   updateTotals();
 }
 
-function openModal(innerHTML){
-  els.modalRoot.innerHTML = `
-    <div class="modal-backdrop">
-      <div class="modal show">${innerHTML}</div>
-    </div>
-  `;
-  const modal = els.modalRoot.querySelector('.modal');
-  els.modalRoot.querySelector('[data-close]')?.addEventListener('click', () => els.modalRoot.innerHTML = '');
-  els.modalRoot.querySelector('.modal-backdrop')?.addEventListener('click', (e) => {
-    if(e.target.classList.contains('modal-backdrop')) els.modalRoot.innerHTML = '';
+function closeModal(){
+  els.modalRoot.innerHTML = '';
+}
+async function fileToDataURL(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(String(e.target.result || ''));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
-  return modal;
 }
 
-function updateFeatureButtons(){
-  els.makalinaBtn.classList.toggle('hidden', state.makalinaOwned);
-  els.tttBtn.classList.toggle('hidden', !state.makalinaOwned);
+function openTicTacToe(){
+  if(!state.makalinaOwned) return openBuyMakalina();
+
+  const boardHTML = Array.from({length:9}).map((_,i)=>`<button class="ttt-cell" data-i="${i}" type="button"></button>`).join('');
+  openModal(`
+    <div class="modal-head">
+      <h3>tic-tac-toe</h3>
+      <button class="btn compact" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="buy-card" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="color:var(--muted)">You play <strong>O</strong>. Makalina plays <strong>X</strong>.</div>
+          <button class="btn compact" id="tttReset">Reset</button>
+        </div>
+        <div id="tttBoard" class="ttt-board">${boardHTML}</div>
+        <div id="tttStatus" style="min-height:24px;color:var(--muted)">Click a square to start.</div>
+      </div>
+    </div>
+  `);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .ttt-board{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:8px;
+      width:min(100%, 360px);
+      margin:0 auto;
+    }
+    .ttt-cell{
+      aspect-ratio:1/1;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      display:grid;
+      place-items:center;
+      font-size:28px;
+      font-weight:700;
+      transition:transform .14s ease, background .14s ease;
+      padding:0;
+    }
+    .ttt-cell:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+    .ttt-cell:disabled{cursor:default;opacity:1}
+    .ttt-cell.x img{width:38px;height:38px;object-fit:contain}
+    .ttt-cell.o{color:#fff}
+    .ttt-win{
+      outline:2px solid var(--accent);
+      background:rgba(255,255,255,.08);
+    }
+  `;
+  document.head.appendChild(style);
+
+  let stateBoard = Array(9).fill('');
+  let over = false;
+
+  const board = $('#tttBoard');
+  const status = $('#tttStatus');
+  const cells = [...board.querySelectorAll('.ttt-cell')];
+
+  const wins = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  const check = (sym) => wins.find(line => line.every(i => stateBoard[i] === sym));
+
+  const render = () => {
+    cells.forEach((cell, i) => {
+      cell.classList.remove('x','o','ttt-win');
+      cell.innerHTML = '';
+      if(stateBoard[i] === 'X'){
+        cell.classList.add('x');
+        const img = document.createElement('img');
+        img.src = 'makalina.png';
+        img.alt = 'X';
+        cell.appendChild(img);
+      }else if(stateBoard[i] === 'O'){
+        cell.classList.add('o');
+        cell.textContent = 'O';
+      }
+      cell.disabled = over || !!stateBoard[i];
+    });
+    const winX = check('X');
+    const winO = check('O');
+    if(winX || winO){
+      (winX || winO).forEach(i => cells[i].classList.add('ttt-win'));
+    }
+  };
+
+  const end = (text) => {
+    over = true;
+    status.textContent = text;
+    render();
+  };
+
+  const aiMove = () => {
+    if(over) return;
+    const free = stateBoard.map((v,i) => v ? null : i).filter(v => v !== null);
+    if(!free.length) return end('Draw.');
+    const pick = free[Math.floor(Math.random() * free.length)];
+    stateBoard[pick] = 'X';
+    render();
+    if(check('X')) return end('Makalina wins.');
+    if(stateBoard.every(Boolean)) return end('Draw.');
+  };
+
+  cells.forEach((cell, i) => {
+    cell.addEventListener('click', () => {
+      if(over || stateBoard[i]) return;
+      stateBoard[i] = 'O';
+      render();
+      if(check('O')){
+        end('You win.');
+        return;
+      }
+      if(stateBoard.every(Boolean)){
+        end('Draw.');
+        return;
+      }
+      status.textContent = 'Makalina is thinking...';
+      setTimeout(aiMove, 280);
+    });
+  });
+
+  $('#tttReset').addEventListener('click', () => {
+    stateBoard = Array(9).fill('');
+    over = false;
+    status.textContent = 'Click a square to start.';
+    render();
+  });
+
+  render();
+}
+
+function openMakalinaLaunch(){
+  if(state.makalinaOwned) return;
+  openBuyMakalina();
+}
+
+function openMakalinaChatIfOwned(){
+  if(!state.makalinaOwned) return openBuyMakalina();
+}
+
+function openChatFromHome(text){
+  const value = trimLines(text).trim();
+  if(!value) return;
+  createConversation('New conversation');
+  sendMessage(value);
+}
+
+function openNewsPopup(){
+  const until = new Date('2114-06-18T00:00:00Z').getTime();
+  const countdown = () => {
+    const diff = Math.max(0, until - Date.now());
+    const days = Math.floor(diff / 86400000);
+    const hrs = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    return `${days}d ${hrs}h ${mins}m`;
+  };
+
+  openModal(`
+    <div class="modal-head">
+      <h3>News</h3>
+      <button class="btn compact" data-close>Okay</button>
+    </div>
+    <div class="modal-body">
+      <div class="buy-card">
+        <strong>NEW FEATURE: macaroni</strong>
+        <div style="color:var(--muted)">Makala’s cooking AI. Upload fridge photos and get recipe ideas.</div>
+        <div style="width:100%;height:160px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted)">[photo of macaroni]</div>
+        <div><strong>Coming very soon:</strong> <span id="countdownText">${countdown()}</span></div>
+        <div style="font-size:13px;color:var(--muted)">
+          Patch notes:
+          <ul>
+            <li>Home screen restored</li>
+            <li>Conversation switching fixed</li>
+            <li>Markdown + code copy support</li>
+            <li>Makalina buy modal</li>
+            <li>tic-tac-toe unlocks after purchase</li>
+          </ul>
+        </div>
+        <button class="btn primary full" data-close>Okay</button>
+      </div>
+    </div>
+  `);
+
+  const timer = setInterval(() => {
+    const el = $('#countdownText', els.modalRoot);
+    if(!el){
+      clearInterval(timer);
+      return;
+    }
+    el.textContent = countdown();
+  }, 60000);
+}
+
+function updateProfileLock(){
+  if(state.activeId && activeConversation()?.persona === 'makalina'){
+    els.themeSelect.value = 'deep';
+    setTheme('deep');
+    els.themeSelect.disabled = true;
+  }else{
+    els.themeSelect.disabled = false;
+  }
+}
+
+function updateHeaderPersona(){
+  const conv = activeConversation();
+  els.personaSelect.value = conv?.persona || 'makala';
+  if(conv && conv.persona === 'makalina'){
+    els.panelRoot.classList.add('persona-makalina');
+  }else{
+    els.panelRoot.classList.remove('persona-makalina');
+  }
+}
+
+function renderHomeMode(){
+  els.emptyState.classList.remove('hidden');
+  els.messageWrap.classList.add('hidden');
+  els.composer.classList.add('hidden');
+  els.activeTitle.textContent = 'makala.ai';
+  updateHeaderPersona();
+}
+
+function renderConversationMode(){
+  const conv = activeConversation();
+  if(!conv){
+    renderHomeMode();
+    renderConvList();
+    return;
+  }
+  els.emptyState.classList.add('hidden');
+  els.messageWrap.classList.remove('hidden');
+  els.composer.classList.remove('hidden');
+  els.activeTitle.textContent = conv.title || 'New conversation';
+  updateHeaderPersona();
+  els.messageWrap.innerHTML = '';
+  conv.messages.forEach((msg, idx) => {
+    els.messageWrap.appendChild(renderMessageNode(msg, conv, idx === conv.messages.length - 1));
+  });
+  els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
 }
 
 function renderAll(){
-  syncView();
+  renderConvList();
+  if(state.activeId){
+    renderConversationMode();
+  }else{
+    renderHomeMode();
+  }
   updateFeatureButtons();
+  setTheme(state.theme);
+  updateProfileLock();
+}
+
+function init(){
+  loadState();
+  setTheme(state.theme);
+  wireEvents();
+  renderAll();
+  autoGrow(els.homeInput);
+  autoGrow(els.messageInput);
 }
 
 function wireEvents(){
@@ -801,6 +1448,13 @@ function wireEvents(){
   els.personaSelect.addEventListener('change', () => {
     const conv = activeConversation();
     if(!conv) return;
+    if(conv.persona === 'makalina' && els.personaSelect.value !== 'makalina'){
+      // allow switching away, unlock theme again
+      conv.persona = els.personaSelect.value;
+      saveState();
+      renderAll();
+      return;
+    }
     conv.persona = els.personaSelect.value;
     saveState();
     renderAll();
@@ -809,8 +1463,11 @@ function wireEvents(){
   els.homeSendBtn.addEventListener('click', () => {
     const value = els.homeInput.value.trim();
     if(!value) return;
+    const conv = createConversation('New conversation');
+    state.activeId = conv.id;
+    saveState();
+    renderAll();
     sendMessage(value);
-    els.emptyState.classList.add('hidden');
   });
 
   els.sendBtn.addEventListener('click', () => {
@@ -826,6 +1483,12 @@ function wireEvents(){
         e.preventDefault();
         const value = t.value.trim();
         if(!value) return;
+        if(t === els.homeInput){
+          const conv = createConversation('New conversation');
+          state.activeId = conv.id;
+          saveState();
+          renderAll();
+        }
         sendMessage(value);
       }
     });
@@ -839,18 +1502,17 @@ function wireEvents(){
     });
   });
 
-  els.newsBtn.addEventListener('click', openNews);
+  els.newsBtn.addEventListener('click', openNewsPopup);
+  els.makalinaLaunchBtn.addEventListener('click', openMakalinaLaunch);
+  els.tttBtn.addEventListener('click', openTicTacToe);
+
+  els.modalRoot.addEventListener('click', (e) => {
+    if(e.target.matches('[data-close]')){
+      closeModal();
+    }
+  });
 }
 
-function init(){
-  loadState();
-  setTheme(state.theme);
-  wireEvents();
-  renderAll();
-  updateFeatureButtons();
-  autoGrow(els.homeInput);
-  autoGrow(els.messageInput);
-}
 init();
 </script>
 </body>
