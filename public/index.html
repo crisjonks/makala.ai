@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>makala.ai</title>
 <link rel="icon" href="/makala.ico" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -11,172 +11,100 @@
 
 <style>
 :root{
-  --bg:#11131c;
-  --panel:#171a26;
-  --panel2:#141827;
+  --bg:#111827;
+  --bg2:#0f172a;
+  --panel:#111827;
+  --panel2:#0b1220;
   --line:rgba(255,255,255,.08);
-  --text:#f7f8fb;
-  --muted:#aab2c3;
+  --text:#f8fafc;
+  --muted:#cbd5e1;
   --accent:#8b5cf6;
-  --accent2:#22d3ee;
-  --user:#1e2434;
-  --user2:#161b28;
-  --bot:#151824;
+  --accent2:#06b6d4;
+  --user:#1e293b;
+  --user2:#0f172a;
+  --bot:#111827;
   --radius:16px;
   --font:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;overflow:hidden;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg),#0b0d14)}
+html,body{height:100%;margin:0;overflow:hidden;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg),var(--bg2))}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
-body.theme-pink{--bg:#12111b;--panel:#171525;--panel2:#11111d;--accent:#ff4fa8;--accent2:#ff7fca;--user:#261235;--user2:#171022;--bot:#181425}
-body.theme-deep{--bg:#090a10;--panel:#10131b;--panel2:#0a0d13;--accent:#a78bfa;--accent2:#60a5fa;--user:#141822;--user2:#0d1017;--bot:#10131b}
-body.theme-blue{--bg:#0d1422;--panel:#111b2d;--panel2:#0b1322;--accent:#60a5fa;--accent2:#93c5fd;--user:#13284a;--user2:#0c1a31;--bot:#101c32}
-body.theme-red{--bg:#170909;--panel:#211010;--panel2:#160a0a;--accent:#fb7185;--accent2:#fda4af;--user:#361111;--user2:#230b0b;--bot:#1e1010}
-body.theme-green{--bg:#08130f;--panel:#101b18;--panel2:#0b1512;--accent:#34d399;--accent2:#86efac;--user:#11241e;--user2:#0b1612;--bot:#101a17}
+body.theme-pink{--bg:#12111f;--bg2:#1b1027;--accent:#ff4fa8;--accent2:#ff7fca;--user:#25102c;--user2:#12071a;--bot:#17141f}
+body.theme-deep{--bg:#05070c;--bg2:#090b12;--accent:#ff4d9d;--accent2:#c084fc;--user:#10131a;--user2:#07090f;--bot:#0e1118}
+body.theme-blue{--bg:#081426;--bg2:#0d1728;--accent:#56b6ff;--accent2:#8ddcff;--user:#10243b;--user2:#091423;--bot:#0d1728}
+body.theme-orange{--bg:#201208;--bg2:#1a130d;--accent:#ff9f43;--accent2:#ffc27a;--user:#321707;--user2:#1b0d05;--bot:#20120a}
+body.theme-red{--bg:#220b0b;--bg2:#160909;--accent:#ff5b6e;--accent2:#ff9aa4;--user:#341010;--user2:#1c0909;--bot:#220d0d}
+body.theme-green{--bg:#071811;--bg2:#08130d;--accent:#34d399;--accent2:#8ee8c3;--user:#10231a;--user2:#07130e;--bot:#0d1712}
 
 .app{
-  width:min(1380px, calc(100vw - 12px));
-  height:calc(100vh - 12px);
-  margin:6px auto;
+  width:min(1360px,calc(100vw - 14px));
+  height:calc(100vh - 14px);
+  margin:7px auto;
   display:grid;
-  grid-template-columns:268px 1fr;
-  gap:8px;
+  grid-template-columns:300px 1fr;
+  gap:10px;
   min-height:0;
 }
 .sidebar,.panel{
-  min-height:0;
   border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012));
   border-radius:var(--radius);
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+  min-height:0;
   overflow:hidden;
 }
-.sidebar{
-  display:flex;
-  flex-direction:column;
-  padding:12px;
+.sidebar{display:flex;flex-direction:column;padding:12px}
+.panel{display:flex;flex-direction:column;position:relative}
+
+.btn,.chip,.conv-item,.home-item,.file-button,.ttt-cell,.suggestion{
+  transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease,opacity .16s ease;
 }
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding-bottom:10px;
+.btn:hover,.chip:hover,.conv-item:hover,.home-item:hover,.file-button:hover,.suggestion:hover,.ttt-cell:hover{transform:translateY(-1px)}
+.btn:active,.chip:active,.file-button:active,.suggestion:active,.ttt-cell:active{transform:translateY(0)}
+
+.sidebar-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:10px
 }
-.title{
-  font-size:14px;
-  font-weight:600;
-  letter-spacing:.2px;
-}
+.sidebar-title{font-size:14px;font-weight:600}
 .btn{
-  height:38px;
-  padding:0 12px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  border-radius:12px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  transition:transform .14s ease, background .14s ease, border-color .14s ease, opacity .14s ease;
+  height:38px;padding:0 12px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px
 }
-.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
-.btn:active{transform:translateY(0)}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent}
 .btn.icon{width:38px;padding:0}
+.btn.ghost{background:transparent}
 .btn.compact{height:34px;padding:0 10px;border-radius:10px;font-size:13px}
 .btn.full{width:100%}
-.icon-plus{font-size:24px;line-height:1;display:block;margin-top:-1px}
+.icon-plus{font-size:24px;line-height:1;margin-top:-1px}
 
-.conv-list{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  padding-right:2px;
-}
+.conv-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
 .conv-item,.home-item{
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:rgba(255,255,255,.02);
-  padding:10px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
+  border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02);padding:10px;display:flex;gap:10px;align-items:center;cursor:pointer
 }
-.conv-item.active,.home-item.active{
-  background:rgba(255,255,255,.07);
-  border-color:rgba(255,255,255,.18);
-}
-.conv-item img{width:26px;height:26px;border-radius:8px;object-fit:cover;flex:0 0 auto}
-.home-icon{
-  width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
-  background:rgba(255,255,255,.04);font-size:15px;flex:0 0 auto
-}
+.conv-item.active,.home-item.active{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18)}
+.conv-icon{width:28px;height:28px;border-radius:8px;object-fit:cover;flex:0 0 auto}
+.home-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.05);flex:0 0 auto}
 .conv-copy{min-width:0;flex:1}
 .conv-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .conv-meta{font-size:11px;color:var(--muted)}
-.conv-delete{width:18px;height:18px;flex:0 0 auto;opacity:.95}
+.conv-trash{width:18px;height:18px;border:0;background:none;padding:0;display:grid;place-items:center;opacity:.95;flex:0 0 auto}
 
-.sidebar-footer{
-  display:grid;
-  gap:8px;
-  padding-top:10px;
-}
-.makalina-launch{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  border-radius:14px;
-  padding:6px;
-  display:block;
-  width:100%;
-}
-.makalina-launch img{
-  width:100%;
-  height:74px;
-  object-fit:contain;
-  display:block;
-}
-.makalina-launch:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+.sidebar-footer{display:grid;gap:8px;padding-top:10px}
 .sidebar-footer .stack{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.makalina-launch{width:100%;height:54px;border:1px solid var(--line);border-radius:16px;overflow:hidden;padding:0;background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center}
+.makalina-launch img{width:100%;height:100%;object-fit:cover;display:block}
 
-.panel{
-  display:flex;
-  flex-direction:column;
-}
 .topbar{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-bottom:1px solid var(--line);
-  min-height:58px;
+  position:relative;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);min-height:58px
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:30px;height:30px;border-radius:8px;display:block}
+.brand h1{margin:0;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clock{
+  position:absolute;left:50%;top:8px;transform:translateX(-50%);
+  font-size:12px;font-style:italic;color:var(--muted);pointer-events:none
 }
-.brand img{width:28px;height:28px;border-radius:8px;display:block}
-.brand h1{
-  margin:0;
-  font-size:16px;
-  font-weight:600;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.right-tools{
-  margin-left:auto;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-}
+.right-tools{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 select,input,textarea{
   background:rgba(2,6,23,.96);
   color:#fff;
@@ -186,421 +114,210 @@ select,input,textarea{
 }
 select, input[type=text]{height:38px;padding:0 12px}
 select option{background:#050814;color:#fff}
-.home-select{
-  width:166px;
-}
-.chat{
-  flex:1;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-}
+
+.chat{flex:1;min-height:0;display:flex;flex-direction:column}
 .hidden{display:none !important}
 
-.empty-state{
-  flex:1;
-  min-height:0;
-  display:grid;
-  place-items:center;
-  padding:16px;
-}
+.empty-state{flex:1;min-height:0;display:grid;place-items:center;padding:18px}
 .empty-card{
-  width:min(780px,100%);
+  width:min(760px,100%);
   display:grid;
   gap:14px;
   text-align:center;
   justify-items:stretch;
 }
-.empty-card h2{
-  margin:0;
-  font-size:40px;
-  letter-spacing:-.04em;
-}
-.empty-card p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-}
+.empty-card h2{margin:0;font-size:40px;letter-spacing:-.04em}
+.empty-card p{margin:0;color:var(--muted);font-size:14px}
 .home-input,.composer textarea{
-  width:100%;
-  min-height:70px;
-  padding:14px;
-  border-radius:16px;
-  line-height:1.45;
-  font-size:15px;
-  resize:none;
-  overflow:hidden;
+  width:100%;min-height:76px;padding:14px;border-radius:16px;line-height:1.45;font-size:15px;resize:none;overflow:hidden
 }
-.home-input{min-height:76px}
-.suggestions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-}
+.home-input{min-height:82px}
+.suggestions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .suggestion{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  border-radius:999px;
-  color:#fff;
-  padding:10px 14px;
-  cursor:pointer;
-  font-size:13px;
-  transition:transform .14s ease, background .14s ease;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;color:#fff;padding:10px 14px;cursor:pointer;font-size:13px
 }
-.suggestion:hover{background:rgba(255,255,255,.06);transform:translateY(-1px)}
 
-.message-wrap{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.message-row{
-  width:100%;
-  min-width:0;
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
-}
+.message-wrap{flex:1;min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.message-row{width:100%;min-width:0;display:flex;gap:10px;align-items:flex-start}
 .message-row.user{justify-content:flex-end}
 .message-row.bot{justify-content:flex-start}
-.message-row.fade-in{animation:msgIn .18s ease-out both}
-@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.message-row.fade-in{animation:msgIn .16s ease-out both}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 .user-bubble{
-  max-width:min(72%,680px);
-  min-width:0;
-  display:inline-block;
-  padding:9px 12px;
-  border-radius:18px 18px 6px 18px;
-  background:linear-gradient(180deg,var(--user),var(--user2));
-  border:1px solid var(--line);
-  line-height:1.45;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  word-break:break-word;
-  font-weight:400;
+  max-width:min(72%,680px);min-width:0;display:inline-block;padding:10px 12px;border-radius:18px 18px 6px 18px;background:linear-gradient(180deg,var(--user),var(--user2));border:1px solid var(--line);line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word
 }
 .bot-card{
-  max-width:min(76%,760px);
-  min-width:0;
-  display:grid;
-  grid-template-columns:28px 1fr;
-  gap:10px;
-  align-items:start;
+  max-width:min(76%,760px);min-width:0;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start
 }
-.bot-avatar{
-  width:28px;
-  height:28px;
-  border-radius:8px;
-  display:block;
-  object-fit:cover;
+.bot-avatar,.typing-avatar{
+  width:28px;height:28px;border-radius:8px;display:block;object-fit:cover
 }
-.bot-meta{
-  display:grid;
-  gap:4px;
-  justify-items:start;
-  min-width:0;
-}
+.typing-avatar.spin{animation:spin 1.8s linear infinite}
 .bot-body{
-  min-width:0;
-  font-size:14px;
-  line-height:1.45;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  word-break:break-word;
-  font-weight:400;
+  min-width:0;font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word
 }
-.bot-body p,.bot-body ul,.bot-body ol,.bot-body blockquote,.bot-body pre,.bot-body hr,.bot-body h1,.bot-body h2,.bot-body h3,.bot-body h4{margin:0 0 4px 0}
-.bot-body p:last-child{margin-bottom:0}
+.bot-body p,.bot-body ul,.bot-body ol,.bot-body blockquote,.bot-body pre,.bot-body hr,.bot-body h1,.bot-body h2,.bot-body h3,.bot-body h4,.bot-body table{margin:0 0 4px 0}
 .bot-body pre{
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px;
-  overflow:auto;
-  position:relative;
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:12px;overflow:auto;position:relative
 }
-.bot-body code{
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  font-size:.95em;
-}
+.bot-body code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.95em}
 .copy-code{
-  position:absolute;
-  right:8px;
-  top:8px;
-  width:24px;
-  height:24px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:rgba(0,0,0,.15);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
+  position:absolute;right:8px;top:8px;width:24px;height:24px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.18);display:grid;place-items:center;cursor:pointer
 }
 .copy-code img{width:14px;height:14px;display:block}
 
 .typing-shell{
-  display:grid;
-  grid-template-columns:28px 1fr;
-  gap:10px;
-  align-items:start;
+  display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start
 }
-.typing-avatar{
-  width:28px;height:28px;border-radius:8px;display:block;object-fit:cover
+.typing-text{
+  height:28px;display:flex;align-items:center;color:var(--muted);font-size:13px
 }
-.typing-line{
-  min-height:28px;
-  display:flex;
-  align-items:center;
-  color:var(--muted);
-  font-size:13px;
-}
-.typing-dots{
-  display:inline-flex;
-  gap:6px;
-  align-items:center;
-}
-.typing-dots span{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--muted);
-  animation:bounce 1s infinite ease-in-out;
-}
+.typing-dots{display:inline-flex;gap:6px;align-items:center}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1s infinite ease-in-out}
 .typing-dots span:nth-child(2){animation-delay:.15s}
 .typing-dots span:nth-child(3){animation-delay:.3s}
-@keyframes bounce{
-  0%,80%,100%{transform:translateY(0);opacity:.45}
-  40%{transform:translateY(-4px);opacity:1}
-}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-4px);opacity:1}}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-.composer{
-  padding:12px;
-  border-top:1px solid var(--line);
-}
-.composer-row{
-  display:flex;
-  gap:10px;
-  align-items:flex-end;
-}
-.composer textarea{
-  flex:1;
-  min-height:46px;
-  max-height:140px;
-  padding:12px 12px;
-  line-height:1.4;
-  font-size:15px;
-}
+.composer{padding:12px;border-top:1px solid var(--line)}
+.composer-row{display:flex;gap:10px;align-items:flex-end}
+.composer textarea{flex:1;min-height:46px;max-height:150px;padding:12px 12px;line-height:1.45;font-size:15px}
+.send-btn{min-width:96px;height:46px}
 
 .modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(3,6,13,.68);
-  display:grid;
-  place-items:center;
-  z-index:50;
-  padding:16px;
+  position:fixed;inset:0;background:rgba(3,6,13,.68);display:grid;place-items:center;z-index:50;padding:16px
 }
 .modal{
-  width:min(760px,100%);
-  background:linear-gradient(180deg,var(--panel),var(--panel2));
-  border:1px solid var(--line);
-  border-radius:22px;
-  overflow:hidden;
-  transform-origin:center;
+  width:min(760px,100%);background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;overflow:hidden;transform-origin:center
 }
 .modal.show{animation:modalIn .18s ease-out both}
-@keyframes modalIn{
-  from{opacity:0;transform:scale(.98) translateY(6px)}
-  to{opacity:1;transform:scale(1) translateY(0)}
-}
-.modal-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:16px 18px;
-  border-bottom:1px solid var(--line);
-}
+@keyframes modalIn{from{opacity:0;transform:scale(.98) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
 .modal-head h3{margin:0;font-size:18px}
-.modal-body{
-  padding:18px;
-  display:grid;
-  gap:14px;
+.modal-body{padding:18px;display:grid;gap:14px}
+
+.buy-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+.buy-hero{display:grid;gap:10px;align-content:start}
+.buy-hero img{width:100%;height:220px;object-fit:contain;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);padding:10px}
+.buy-hero h4{margin:0;font-size:20px;letter-spacing:-.02em}
+.buy-hero p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+.buy-panel{display:grid;gap:12px;align-content:start}
+.field{width:100%;height:40px;padding:0 12px}
+.file-row{display:flex;gap:10px;align-items:center}
+.file-button{
+  min-width:132px;height:40px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);
+  display:inline-flex;align-items:center;justify-content:center;padding:0 14px;cursor:pointer
 }
-.buy-grid{
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:14px;
-}
-.buy-hero{
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px;
-  display:grid;
-  gap:12px;
-}
-.buy-hero img{
-  width:100%;
-  height:auto;
-  border-radius:16px;
-  display:block;
-  object-fit:contain;
-  max-height:260px;
-}
-.buy-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px;
-  display:grid;
-  gap:12px;
-}
-.field{
-  width:100%;
-  height:40px;
-  padding:0 12px;
-  border-radius:12px;
-  background:rgba(2,6,23,.96);
-  border:1px solid var(--line);
-  color:#fff;
-}
-.field::placeholder{color:#8792a8}
-.textarea-field{
-  width:100%;
-  min-height:88px;
-  padding:12px;
-  border-radius:16px;
-  resize:none;
-}
-.row{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-.inline-grow{flex:1;min-width:160px}
-.select-file{
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:0 14px;
-}
-.select-file:hover{background:rgba(255,255,255,.06)}
 .file-input{display:none}
-.totals{display:grid;gap:6px;padding-top:4px}
-.totals .muted{color:var(--muted);font-size:13px}
-.purchase-btn{
-  height:42px;
-  padding:0 14px;
-  border-radius:12px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#fff;
-  border:0;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  font-weight:600;
+.file-name{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.totals{
+  display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02)
 }
-.purchase-btn.loading{pointer-events:none}
-.spinner{
-  width:14px;height:14px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.35);
-  border-top-color:#fff;
-  animation:spin .8s linear infinite;
-}
-.news-btn{
-  height:40px;
-  padding:0 12px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  color:#fff;
-  border-radius:12px;
-  width:100%;
+.muted{color:var(--muted)}
+.loading-btn{position:relative}
+.loading-btn.loading{pointer-events:none;opacity:.92}
+.loading-btn .spinner{
+  display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.26);border-top-color:#fff;animation:spin .8s linear infinite
 }
 
-@media (max-width: 1000px){
-  body{padding:4px}
-  .app{
-    width:100vw;
-    height:100vh;
-    grid-template-columns:1fr;
-    grid-template-rows:auto 1fr;
-  }
-  .sidebar{order:2}
-  .panel{order:1}
-  .empty-card h2{font-size:32px}
-  .message-row.user .user-bubble{max-width:92%}
-  .buy-grid{grid-template-columns:1fr}
+.ttt-wrap{display:grid;gap:14px}
+.ttt-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ttt-board{
+  width:min(420px,100%);aspect-ratio:1/1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 auto
+}
+.ttt-cell{
+  border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);display:grid;place-items:center;aspect-ratio:1/1;font-size:42px;user-select:none
+}
+.ttt-cell:hover{background:rgba(255,255,255,.06)}
+.ttt-cell.win{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.08);animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.02)}}
+.ttt-cell img{width:56%;height:56%;object-fit:contain}
+.ttt-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.news-list{display:grid;gap:10px;margin:0;padding-left:18px}
+.news-list li{line-height:1.5;color:var(--text)}
+.small-note{font-size:12px;color:var(--muted)}
+.persona-makalina .bot-body,.persona-makalina .user-bubble,.persona-makalina textarea,.persona-makalina input,.persona-makalina select,.persona-makalina .btn{font-weight:350}
+
+@media (max-width: 1100px){
+  .app{grid-template-columns:240px 1fr}
+  .buy-layout{grid-template-columns:1fr}
+}
+@media (max-width: 820px){
+  .app{width:calc(100vw - 8px);height:calc(100vh - 8px);grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .sidebar{max-height:32vh}
+  .clock{display:none}
+  .right-tools select{max-width:150px}
+  .bot-card,.user-bubble{max-width:92%}
+  .buy-hero img{height:180px}
 }
 </style>
 </head>
 <body class="theme-pink">
-<div class="app">
+<div class="app" id="app">
   <aside class="sidebar">
-    <div class="top">
-      <div class="title">Conversations</div>
+    <div class="sidebar-head">
+      <div class="sidebar-title">Conversations</div>
       <button id="newConvBtn" class="btn icon" title="New conversation"><span class="icon-plus">+</span></button>
     </div>
 
     <div id="convList" class="conv-list"></div>
 
     <div class="sidebar-footer">
-      <button id="newsBtn" class="news-btn">News</button>
-      <button id="makalinaLaunchBtn" class="makalina-launch hidden" title="Buy makalina">
+      <button id="makalinaBtn" class="makalina-launch" title="Buy makalina">
         <img src="makalina.png" alt="makalina">
       </button>
+
       <div class="stack">
         <button id="tttBtn" class="btn hidden">tic-tac-toe</button>
+        <button id="newsBtn" class="btn">News</button>
       </div>
     </div>
   </aside>
 
-  <main class="panel" id="panelRoot">
+  <main class="panel persona-makala" id="panelRoot">
     <div class="topbar">
       <div class="brand">
         <img src="makala.png" alt="makala">
         <h1 id="activeTitle">makala.ai</h1>
       </div>
+
+      <div class="clock" id="clockText">--:-- --, --</div>
+
       <div class="right-tools">
-        <select id="personaSelect" aria-label="Personality">
-          <option value="makala">makala</option>
-          <option value="makalina">makalina</option>
-        </select>
-        <select id="themeSelect" aria-label="Theme" class="home-select">
+        <select id="themeSelect">
           <option value="pink">purple & pink</option>
           <option value="deep">deep black</option>
           <option value="blue">navy blue</option>
           <option value="red">dark red</option>
           <option value="green">dark green</option>
         </select>
+
+        <select id="personaSelect">
+          <option value="makala">makala</option>
+          <option value="just chatgpt bro">just chatgpt bro</option>
+          <option value="makalina">makalina</option>
+        </select>
+
         <button id="clearBtn" class="btn">clear chats</button>
       </div>
     </div>
 
-    <div id="chatView" class="chat">
+    <div id="chatRoot" class="chat">
       <div id="emptyState" class="empty-state">
         <div class="empty-card">
           <h2>Ready when you are</h2>
-          <p>Ask something, start a conversation, or pick a suggestion.</p>
-          <textarea id="homeInput" class="home-input" placeholder="Type here to start..." aria-label="Start a conversation"></textarea>
+          <p>Start a conversation from one prompt. Simple, fast, and focused.</p>
+          <textarea id="homeInput" class="home-input" placeholder="Ask me anything..." aria-label="Start chat"></textarea>
           <div class="suggestions">
-            <button class="suggestion" data-prompt="Help me plan a study schedule.">Help me plan a study schedule.</button>
-            <button class="suggestion" data-prompt="Explain photosynthesis simply.">Explain photosynthesis simply.</button>
-            <button class="suggestion" data-prompt="Give me three story ideas.">Give me three story ideas.</button>
+            <button class="suggestion" data-prompt="teach me how to make the best Indian curry">teach me how to make the best Indian curry</button>
+            <button class="suggestion" data-prompt="help me study for math">help me study for math</button>
+            <button class="suggestion" data-prompt="give me a fun project idea">give me a fun project idea</button>
+            <button class="suggestion" data-prompt="help me write a short story">help me write a short story</button>
           </div>
-          <button id="homeSendBtn" class="btn primary">Start chat</button>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button id="homeStartBtn" class="btn primary send-btn">Start chat</button>
+          </div>
         </div>
       </div>
 
@@ -609,7 +326,7 @@ select option{background:#050814;color:#fff}
       <div id="composer" class="composer hidden">
         <div class="composer-row">
           <textarea id="messageInput" placeholder="Ask me anything..." aria-label="Message"></textarea>
-          <button id="sendBtn" class="btn primary">send</button>
+          <button id="sendBtn" class="btn primary send-btn"><img src="send-circle.png" alt="" style="width:18px;height:18px;display:block">send</button>
         </div>
       </div>
     </div>
@@ -622,20 +339,18 @@ select option{background:#050814;color:#fff}
 const $ = (s, root=document) => root.querySelector(s);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 const trimLines = s => String(s ?? '').replace(/\r/g, '').replace(/\n+$/,'');
-const STORAGE_KEY = 'makala_conversations_simple_v3';
+const STORAGE_KEY = 'makala_conversations_simple_v4';
 
-marked.setOptions({
-  gfm: true,
-  breaks: true
-});
+marked.setOptions({ gfm: true, breaks: true });
 
 const state = {
   conversations: [],
   activeId: null,
   theme: localStorage.getItem('makala_theme') || 'pink',
-  makalinaOwned: localStorage.getItem('makala_makalina_owned') === '1',
-  profileName: localStorage.getItem('makala_profile_name') || '',
-  profileImage: localStorage.getItem('makala_profile_image') || ''
+  makalinaOwned: localStorage.getItem('makala_owned') === '1',
+  userName: localStorage.getItem('makala_user_name') || '',
+  favNumber: localStorage.getItem('makala_fav_number') || '',
+  pfpData: localStorage.getItem('makala_pfp_data') || ''
 };
 
 const els = {
@@ -650,12 +365,13 @@ const els = {
   composer: $('#composer'),
   messageInput: $('#messageInput'),
   homeInput: $('#homeInput'),
-  homeSendBtn: $('#homeSendBtn'),
+  homeStartBtn: $('#homeStartBtn'),
   modalRoot: $('#modalRoot'),
   panelRoot: $('#panelRoot'),
   newsBtn: $('#newsBtn'),
-  makalinaLaunchBtn: $('#makalinaLaunchBtn'),
-  tttBtn: $('#tttBtn')
+  makalinaBtn: $('#makalinaBtn'),
+  tttBtn: $('#tttBtn'),
+  clockText: $('#clockText'),
 };
 
 function setTheme(theme){
@@ -671,9 +387,10 @@ function saveState(){
     activeId: state.activeId
   }));
   localStorage.setItem('makala_theme', state.theme);
-  localStorage.setItem('makala_makalina_owned', state.makalinaOwned ? '1' : '0');
-  localStorage.setItem('makala_profile_name', state.profileName || '');
-  localStorage.setItem('makala_profile_image', state.profileImage || '');
+  localStorage.setItem('makala_owned', state.makalinaOwned ? '1' : '0');
+  localStorage.setItem('makala_user_name', state.userName || '');
+  localStorage.setItem('makala_fav_number', state.favNumber || '');
+  localStorage.setItem('makala_pfp_data', state.pfpData || '');
 }
 
 function loadState(){
@@ -685,26 +402,20 @@ function loadState(){
     state.conversations = [];
     state.activeId = null;
   }
-
-  if(!state.conversations.length){
-    state.activeId = null;
-  }
   if(state.activeId && !state.conversations.some(c => c.id === state.activeId)){
-    state.activeId = state.conversations[0]?.id || null;
+    state.activeId = null;
   }
 }
 
-function createConversation(title='New conversation'){
+function createConversation(title='New conversation', persona='makala'){
   const conv = {
     id: uid(),
     title,
-    persona: 'makala',
+    persona,
     createdAt: Date.now(),
     messages: []
   };
   state.conversations.unshift(conv);
-  state.activeId = conv.id;
-  saveState();
   return conv;
 }
 
@@ -713,53 +424,64 @@ function activeConversation(){
 }
 
 function escapeHTML(s){
-  return String(s ?? '').replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'
-  }[m]));
+  return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 }
 
 function relativeTime(ts){
   const now = Date.now();
   const diff = Math.max(0, now - ts);
-  const minutes = Math.floor(diff / 60000);
-  if(minutes < 1) return 'Just now';
-  if(minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if(hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
+  const mins = Math.floor(diff / 60000);
+  if(mins < 1) return 'Just now';
+  if(mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
   if(days === 1) return 'Yesterday';
   if(days < 7) return `${days}d ago`;
   if(days < 30) return `${Math.floor(days / 7)}w ago`;
-  if(days < 365) return `${Math.floor(days / 30)}mo ago`;
-  return 'A long time ago';
+  return 'A while ago';
 }
 
-function personaLabel(persona){
-  return persona === 'makalina' ? 'makalina' : 'makala';
-}
 function personaAvatar(persona){
-  return persona === 'makalina' ? 'makalina.png' : 'makala.png';
+  return persona === 'makalina' ? 'linalogo.png' : 'makala.png';
+}
+
+function loadingAvatar(persona){
+  return persona === 'makalina' ? 'linastar.png' : 'makala.png';
 }
 
 function buildSystemPrompt(persona){
-  const countryNote = localStorage.getItem('makala_country_note') || '';
   if(persona === 'makalina'){
     return [
       'You are Makalina, a more matured version of Makala.',
       'You still have a slightly Indian personality, but you sound a bit more professional than Makala.',
       'You may use slang sometimes, but less often than Makala.',
       'You are very good at math because your parents forced you to practice math instead of sleeping, and you are eternally grateful.',
-      'Keep replies concise and natural.',
-      countryNote
-    ].filter(Boolean).join(' ');
+      'Keep replies concise, polished, and natural.'
+    ].join(' ');
+  }
+  if(persona === 'just chatgpt bro'){
+    return [
+      'You are a helpful conversational assistant.',
+      'Speak clearly, naturally, and helpfully.',
+      'Keep answers concise unless the user asks for details.'
+    ].join(' ');
   }
   return [
     'You are Makala.',
     'Speak casual internet slang, playful tone, lowercase vibe, short replies.',
     'Use words like lol, fr, bro, beta naturally.',
-    'Be friendly, informal, and energetic.',
-    countryNote
-  ].filter(Boolean).join(' ');
+    'Be friendly, informal, and energetic.'
+  ].join(' ');
+}
+
+function smartTitle(text){
+  const cleaned = trimLines(text).replace(/\s+/g,' ').replace(/^[^\w]+|[^\w]+$/g,'');
+  if(!cleaned) return 'New conversation';
+  const parts = cleaned.split(' ').slice(0,5);
+  let title = parts.join(' ');
+  title = title.charAt(0).toUpperCase() + title.slice(1);
+  return title.length > 60 ? title.slice(0,57) + '…' : title;
 }
 
 function renderConvList(){
@@ -788,6 +510,7 @@ function renderConvList(){
     const icon = document.createElement('img');
     icon.src = personaAvatar(conv.persona);
     icon.alt = '';
+    icon.className = 'conv-icon';
 
     const copy = document.createElement('div');
     copy.className = 'conv-copy';
@@ -797,17 +520,15 @@ function renderConvList(){
     `;
 
     const del = document.createElement('button');
-    del.className = 'btn compact';
-    del.textContent = '×';
+    del.className = 'conv-trash';
+    del.type = 'button';
     del.title = 'Delete conversation';
+    del.innerHTML = `<img src="trash.png" alt="delete" style="width:18px;height:18px;display:block">`;
 
     item.append(icon, copy, del);
     item.addEventListener('click', (e) => {
-      if(e.target === del){
-        state.conversations = state.conversations.filter(c => c.id !== conv.id);
-        state.activeId = null;
-        saveState();
-        renderAll();
+      if(e.target.closest('.conv-trash')){
+        deleteConversation(conv.id);
         return;
       }
       state.activeId = conv.id;
@@ -847,23 +568,22 @@ function addCodeCopyButtons(root){
 
 function makeTypingRow(persona){
   const row = document.createElement('div');
-  row.className = 'message-row bot';
-  row.dataset.typing = '1';
+  row.className = 'message-row bot fade-in';
 
-  const card = document.createElement('div');
-  card.className = 'typing-shell';
+  const shell = document.createElement('div');
+  shell.className = 'typing-shell';
 
   const avatar = document.createElement('img');
-  avatar.className = 'typing-avatar';
-  avatar.src = personaAvatar(persona);
+  avatar.className = 'typing-avatar spin';
+  avatar.src = loadingAvatar(persona);
   avatar.alt = '';
 
-  const line = document.createElement('div');
-  line.className = 'typing-line';
-  line.innerHTML = `<span class="typing-dots"><span></span><span></span><span></span></span>`;
+  const text = document.createElement('div');
+  text.className = 'typing-text';
+  text.innerHTML = `<span class="typing-dots"><span></span><span></span><span></span></span>`;
 
-  card.append(avatar, line);
-  row.appendChild(card);
+  shell.append(avatar, text);
+  row.appendChild(shell);
   return row;
 }
 
@@ -871,9 +591,11 @@ function renderMessageNode(msg, conv, animate=false){
   if(msg.role === 'user'){
     const row = document.createElement('div');
     row.className = 'message-row user' + (animate ? ' fade-in' : '');
+
     const bubble = document.createElement('div');
     bubble.className = 'user-bubble';
     bubble.innerHTML = renderMarkdown(msg.content);
+
     row.appendChild(bubble);
     return row;
   }
@@ -889,125 +611,38 @@ function renderMessageNode(msg, conv, animate=false){
   avatar.src = personaAvatar(conv.persona);
   avatar.alt = '';
 
-  const meta = document.createElement('div');
-  meta.className = 'bot-meta';
-
   const body = document.createElement('div');
   body.className = 'bot-body';
   body.innerHTML = renderMarkdown(msg.content);
   addCodeCopyButtons(body);
 
-  card.append(avatar, meta);
-  meta.appendChild(body);
+  card.append(avatar, body);
   row.appendChild(card);
   return row;
 }
 
 function autoGrow(textarea){
-  textarea.style.height = '0px';
-  textarea.style.height = Math.min(textarea.scrollHeight, 140) + 'px';
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
 }
 
-function syncView(){
-  const conv = activeConversation();
-  els.activeTitle.textContent = conv?.title || 'makala.ai';
-  els.personaSelect.value = conv?.persona || 'makala';
-
-  const hasMessages = !!(conv && conv.messages.length);
-  els.emptyState.classList.toggle('hidden', hasMessages);
-  els.messageWrap.classList.toggle('hidden', !hasMessages);
-  els.composer.classList.toggle('hidden', !hasMessages);
-
-  const persona = conv?.persona || 'makala';
-  els.panelRoot.classList.toggle('persona-makalina', persona === 'makalina');
-
-  if(hasMessages){
-    els.messageWrap.innerHTML = '';
-    conv.messages.forEach((msg, idx) => {
-      els.messageWrap.appendChild(renderMessageNode(msg, conv, idx === conv.messages.length - 1));
-    });
-    els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
-  }else{
-    els.homeInput.value = '';
-    els.messageInput.value = '';
-    autoGrow(els.homeInput);
-    autoGrow(els.messageInput);
-  }
-
-  renderConvList();
-  setTheme(state.theme);
-  updateFeatureButtons();
-}
-
-function updateFeatureButtons(){
-  els.makalinaLaunchBtn.classList.toggle('hidden', state.makalinaOwned);
-  els.tttBtn.classList.toggle('hidden', !state.makalinaOwned);
-  els.personaSelect.querySelector('option[value="makalina"]').disabled = !state.makalinaOwned;
-}
-
-function renderAll(){
-  syncView();
-}
-
-async function sendMessage(value){
-  const text = trimLines(value).trim();
-  if(!text) return;
-
-  let conv = activeConversation();
-  if(!conv){
-    conv = createConversation('New conversation');
-  }
-
-  if(conv.messages.length === 0 && conv.title === 'New conversation'){
-    conv.title = text.split(/\s+/).slice(0, 4).join(' ');
-  }
-
-  conv.messages.push({ role:'user', content:text, createdAt: Date.now() });
-  state.activeId = conv.id;
+function showHome(){
+  state.activeId = null;
   saveState();
   renderAll();
-
-  const typing = makeTypingRow(conv.persona);
-  els.messageWrap.appendChild(typing);
-  els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
-
-  try{
-    const payload = {
-      messages: [
-        { role:'system', content: buildSystemPrompt(conv.persona) },
-        ...conv.messages.map(m => ({ role:m.role, content:m.content }))
-      ]
-    };
-
-    const resp = await fetch('/api/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-
-    if(!resp.ok){
-      const err = await resp.text();
-      throw new Error(err || 'Chat request failed');
-    }
-
-    const data = await resp.json();
-    const reply = data?.reply || 'No response.';
-    conv.messages.push({ role:'assistant', content:reply, createdAt: Date.now() });
-  }catch(err){
-    conv.messages.push({ role:'assistant', content:`Error: ${String(err)}`, createdAt: Date.now() });
-  }
-
-  saveState();
-  renderAll();
-
-  const last = els.messageWrap.lastElementChild;
-  if(last) last.classList.add('fade-in');
 }
 
-function openModal(contentHTML){
+function deleteConversation(id){
+  state.conversations = state.conversations.filter(c => c.id !== id);
+  if(state.activeId === id) state.activeId = null;
+  saveState();
+  renderAll();
+}
+
+function openModal(innerHTML){
   els.modalRoot.innerHTML = `
     <div class="modal-backdrop">
-      <div class="modal show">${contentHTML}</div>
+      <div class="modal show">${innerHTML}</div>
     </div>
   `;
   const close = () => { els.modalRoot.innerHTML = ''; };
@@ -1015,113 +650,123 @@ function openModal(contentHTML){
   els.modalRoot.querySelector('.modal-backdrop')?.addEventListener('click', (e) => {
     if(e.target.classList.contains('modal-backdrop')) close();
   });
+  return close;
 }
 
 function openNews(){
   const until = new Date('2114-06-18T00:00:00Z').getTime();
-  const tick = () => {
-    const diff = Math.max(0, until - Date.now());
-    const days = Math.floor(diff / 86400000);
-    const hrs = Math.floor((diff % 86400000) / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    return `${days}d ${hrs}h ${mins}m`;
-  };
+  const diff = Math.max(0, until - Date.now());
+  const days = Math.floor(diff / 86400000);
+  const hrs = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
   openModal(`
     <div class="modal-head">
       <h3>News</h3>
       <button class="btn compact" data-close>Okay</button>
     </div>
     <div class="modal-body">
-      <div class="buy-card">
-        <strong>NEW FEATURE: macaroni</strong>
-        <div style="color:var(--muted)">Makala’s new cooking AI. Upload fridge photos and get recipe ideas. Coming very soon.</div>
-        <div style="width:100%;height:160px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted)">[photo of macaroni]</div>
-        <div><strong>Coming very soon:</strong> <span>${tick()}</span></div>
-        <div style="font-size:13px;color:var(--muted)">
-          Patch notes:
-          <ul>
-            <li>Home screen restored</li>
-            <li>Conversation switching fixed</li>
-            <li>Markdown + code copy support</li>
-            <li>Makalina buy modal</li>
-            <li>Tic-tac-toe unlocks after purchase</li>
-          </ul>
+      <div class="buy-layout" style="grid-template-columns:1fr;">
+        <div class="buy-hero">
+          <h4>NEW FEATURE: macaroni</h4>
+          <p>Makala’s new cooking AI. Upload fridge photos and get recipe ideas. Coming very soon.</p>
+          <div style="width:100%;height:180px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted);overflow:hidden">
+            <img src="macaroni.png" alt="macaroni" style="max-width:100%;max-height:100%;object-fit:contain">
+          </div>
+          <div><strong>Coming very soon:</strong> <span>${days}d ${hrs}h ${mins}m</span></div>
+          <div>
+            <strong>Patch notes</strong>
+            <ul class="news-list">
+              <li>home screen restored</li>
+              <li>conversation switching fixed</li>
+              <li>buy modal centered and styled</li>
+              <li>markdown and code blocks kept</li>
+              <li>tic-tac-toe works again</li>
+              <li>makalina persona unlocked by purchase</li>
+            </ul>
+          </div>
+          <button class="btn primary full" data-close>Okay</button>
         </div>
-        <button class="btn primary full" data-close>Okay</button>
       </div>
     </div>
   `);
 }
 
+async function fileToDataURL(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(String(e.target.result || ''));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 function openBuyMakalina(){
-  const basePrice = 9.99;
-  openModal(`
+  const close = openModal(`
     <div class="modal-head">
       <h3>makalina</h3>
       <button class="btn compact" data-close>×</button>
     </div>
     <div class="modal-body">
-      <div class="buy-grid">
+      <div class="buy-layout">
         <div class="buy-hero">
           <img src="fullmakalina.png" alt="makalina">
-          <div>
-            <strong>makalina</strong>
-            <div style="color:var(--muted);margin-top:4px">
-              A more matured Makala, still slightly Indian. She talks a bit professionally, uses slang sometimes, and is very good at math because her parents forced her to practice instead of sleeping.
-            </div>
-          </div>
+          <h4>makalina</h4>
+          <p>A more matured Makala, still has that slightly Indian personality, talks a bit professionally, using slang sometimes but less than Makala. Very good at math because her parents forced her to practice instead of sleeping, and she is eternally grateful.</p>
         </div>
-        <div class="buy-card">
+
+        <div class="buy-panel">
           <div>
             <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px">Name</label>
-            <input id="buyName" class="field" placeholder="Display name">
+            <input id="buyName" class="field" placeholder="Display name" value="${escapeHTML(state.userName)}">
           </div>
           <div>
             <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px">Fav number</label>
-            <input id="buyFav" class="field" placeholder="Fav number">
+            <input id="buyFav" class="field" placeholder="Fav number" value="${escapeHTML(state.favNumber)}">
           </div>
           <div>
             <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px">Profile image</label>
-            <label class="select-file" for="buyFile">Choose file</label>
-            <input id="buyFile" class="file-input" type="file" accept="image/*">
+            <div class="file-row">
+              <label class="file-button" for="buyFile">Choose file</label>
+              <input id="buyFile" class="file-input" type="file" accept="image/*">
+              <div id="fileName" class="file-name">${state.pfpData ? 'custom image selected' : 'no file chosen'}</div>
+            </div>
           </div>
           <div>
             <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px">Discount code</label>
-            <div class="row">
-              <input id="discountCode" class="field inline-grow" placeholder="Enter code">
+            <div style="display:flex;gap:10px;align-items:center">
+              <input id="discountCode" class="field" placeholder="Enter code" style="flex:1">
               <button id="applyDiscount" class="btn compact">Apply</button>
             </div>
           </div>
           <div class="totals">
-            <div class="muted">subtotal: <strong id="subtotalText">$${basePrice.toFixed(2)}</strong></div>
+            <div class="muted">subtotal: <strong>$0.00</strong></div>
             <div class="muted" id="discountLine" style="display:none">discount: <strong id="discountText">0%</strong></div>
-            <div class="muted">total: <strong id="totalText">$${basePrice.toFixed(2)}</strong></div>
+            <div class="muted">total: <strong id="totalText">$0.00</strong></div>
           </div>
-          <button id="purchaseBtn" class="purchase-btn">Purchase</button>
+          <button id="purchaseBtn" class="btn primary loading-btn">Purchase</button>
         </div>
       </div>
     </div>
   `);
 
-  const codeEl = $('#discountCode');
+  let discount = 0;
   const discountLine = $('#discountLine');
   const discountText = $('#discountText');
   const totalText = $('#totalText');
   const purchaseBtn = $('#purchaseBtn');
-  const subtotalText = $('#subtotalText');
-  const nameEl = $('#buyName');
-  const favEl = $('#buyFav');
-  const fileEl = $('#buyFile');
-  let discount = 0;
-  let finalPrice = basePrice;
+  const codeEl = $('#discountCode');
 
   const updateTotals = () => {
-    finalPrice = Math.max(0, basePrice * (1 - discount));
-    subtotalText.textContent = `$${basePrice.toFixed(2)}`;
-    totalText.textContent = `$${finalPrice.toFixed(2)}`;
+    const total = 0 * (1 - discount);
+    totalText.textContent = `$${total.toFixed(2)}`;
     discountLine.style.display = discount > 0 ? 'block' : 'none';
-    discountText.textContent = discount >= 1 ? '100%' : `${Math.round(discount * 100)}%`;
+    discountText.textContent = `${Math.round(discount * 100)}%`;
   };
+
+  $('#buyFile').addEventListener('change', () => {
+    const file = $('#buyFile').files?.[0];
+    $('#fileName').textContent = file ? file.name : 'no file chosen';
+  });
 
   $('#applyDiscount').addEventListener('click', () => {
     const code = (codeEl.value || '').trim().toUpperCase();
@@ -1134,303 +779,252 @@ function openBuyMakalina(){
   purchaseBtn.addEventListener('click', async () => {
     purchaseBtn.classList.add('loading');
     purchaseBtn.innerHTML = '<span class="spinner"></span><span>loading</span>';
+    purchaseBtn.disabled = true;
     await new Promise(r => setTimeout(r, 1000));
 
     state.makalinaOwned = true;
-    state.profileName = nameEl.value.trim();
-    state.profileImage = '';
-    if(fileEl.files && fileEl.files[0]){
-      state.profileImage = await fileToDataURL(fileEl.files[0]).catch(() => '');
+    state.userName = ($('#buyName').value || '').trim();
+    state.favNumber = ($('#buyFav').value || '').trim();
+
+    const file = $('#buyFile').files?.[0];
+    if(file){
+      const data = await fileToDataURL(file).catch(() => '');
+      if(data) state.pfpData = data;
     }
+
     saveState();
-    closeModal();
+    close();
     renderAll();
   });
 
   updateTotals();
 }
 
-function closeModal(){
-  els.modalRoot.innerHTML = '';
-}
-async function fileToDataURL(file){
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(String(e.target.result || ''));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
 function openTicTacToe(){
-  if(!state.makalinaOwned) return openBuyMakalina();
+  if(!state.makalinaOwned){
+    openBuyMakalina();
+    return;
+  }
 
-  const boardHTML = Array.from({length:9}).map((_,i)=>`<button class="ttt-cell" data-i="${i}" type="button"></button>`).join('');
-  openModal(`
+  const close = openModal(`
     <div class="modal-head">
       <h3>tic-tac-toe</h3>
       <button class="btn compact" data-close>×</button>
     </div>
     <div class="modal-body">
-      <div class="buy-card" style="padding:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <div style="color:var(--muted)">You play <strong>O</strong>. Makalina plays <strong>X</strong>.</div>
-          <button class="btn compact" id="tttReset">Reset</button>
+      <div class="ttt-wrap">
+        <div class="ttt-top">
+          <div class="small-note">you are O. makalina is X.</div>
+          <button id="tttRestart" class="btn compact">New game</button>
         </div>
-        <div id="tttBoard" class="ttt-board">${boardHTML}</div>
-        <div id="tttStatus" style="min-height:24px;color:var(--muted)">Click a square to start.</div>
+        <div id="tttBoard" class="ttt-board"></div>
+        <div class="ttt-footer">
+          <div class="small-note" id="tttStatus">your move</div>
+          <div class="small-note">winner gets coins</div>
+        </div>
       </div>
     </div>
   `);
 
-  const style = document.createElement('style');
-  style.textContent = `
-    .ttt-board{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:8px;
-      width:min(100%, 360px);
-      margin:0 auto;
-    }
-    .ttt-cell{
-      aspect-ratio:1/1;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      display:grid;
-      place-items:center;
-      font-size:28px;
-      font-weight:700;
-      transition:transform .14s ease, background .14s ease;
-      padding:0;
-    }
-    .ttt-cell:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
-    .ttt-cell:disabled{cursor:default;opacity:1}
-    .ttt-cell.x img{width:38px;height:38px;object-fit:contain}
-    .ttt-cell.o{color:#fff}
-    .ttt-win{
-      outline:2px solid var(--accent);
-      background:rgba(255,255,255,.08);
-    }
-  `;
-  document.head.appendChild(style);
-
-  let stateBoard = Array(9).fill('');
-  let over = false;
-
   const board = $('#tttBoard');
   const status = $('#tttStatus');
-  const cells = [...board.querySelectorAll('.ttt-cell')];
-
+  let cells = Array(9).fill('');
+  let finished = false;
   const wins = [
     [0,1,2],[3,4,5],[6,7,8],
     [0,3,6],[1,4,7],[2,5,8],
     [0,4,8],[2,4,6]
   ];
 
-  const check = (sym) => wins.find(line => line.every(i => stateBoard[i] === sym));
+  function drawBoard(){
+    board.innerHTML = '';
+    cells.forEach((v,i) => {
+      const cell = document.createElement('button');
+      cell.className = 'ttt-cell';
+      cell.type = 'button';
 
-  const render = () => {
-    cells.forEach((cell, i) => {
-      cell.classList.remove('x','o','ttt-win');
-      cell.innerHTML = '';
-      if(stateBoard[i] === 'X'){
-        cell.classList.add('x');
+      if(v === 'O'){
+        cell.textContent = 'O';
+      }else if(v === 'X'){
         const img = document.createElement('img');
-        img.src = 'makalina.png';
+        img.src = 'linastar.png';
         img.alt = 'X';
         cell.appendChild(img);
-      }else if(stateBoard[i] === 'O'){
-        cell.classList.add('o');
-        cell.textContent = 'O';
       }
-      cell.disabled = over || !!stateBoard[i];
+
+      cell.addEventListener('click', () => handleCell(i));
+      board.appendChild(cell);
     });
-    const winX = check('X');
-    const winO = check('O');
-    if(winX || winO){
-      (winX || winO).forEach(i => cells[i].classList.add('ttt-win'));
-    }
-  };
+  }
 
-  const end = (text) => {
-    over = true;
-    status.textContent = text;
-    render();
-  };
+  function checkWin(sym){
+    return wins.find(line => line.every(idx => cells[idx] === sym)) || null;
+  }
 
-  const aiMove = () => {
-    if(over) return;
-    const free = stateBoard.map((v,i) => v ? null : i).filter(v => v !== null);
-    if(!free.length) return end('Draw.');
-    const pick = free[Math.floor(Math.random() * free.length)];
-    stateBoard[pick] = 'X';
-    render();
-    if(check('X')) return end('Makalina wins.');
-    if(stateBoard.every(Boolean)) return end('Draw.');
-  };
+  function finish(sym, line){
+    finished = true;
+    if(line) line.forEach(idx => board.children[idx].classList.add('win'));
+    const amount = Math.floor(Math.random()*101) + 50;
+    status.textContent = sym === 'O' ? `you won ${amount} makala's coins` : sym === 'X' ? `makalina won ${amount} coins` : 'draw';
+  }
 
-  cells.forEach((cell, i) => {
-    cell.addEventListener('click', () => {
-      if(over || stateBoard[i]) return;
-      stateBoard[i] = 'O';
-      render();
-      if(check('O')){
-        end('You win.');
-        return;
-      }
-      if(stateBoard.every(Boolean)){
-        end('Draw.');
-        return;
-      }
-      status.textContent = 'Makalina is thinking...';
-      setTimeout(aiMove, 280);
-    });
+  function aiMove(){
+    if(finished) return;
+    const free = cells.map((v,i) => v ? null : i).filter(v => v !== null);
+    if(!free.length){ finish(null); return; }
+    const pick = free[Math.floor(Math.random()*free.length)];
+    cells[pick] = 'X';
+    drawBoard();
+    const win = checkWin('X');
+    if(win){ finish('X', win); return; }
+    if(cells.every(Boolean)){ finish(null); return; }
+    status.textContent = 'your move';
+  }
+
+  function handleCell(i){
+    if(finished || cells[i]) return;
+    cells[i] = 'O';
+    drawBoard();
+    const win = checkWin('O');
+    if(win){ finish('O', win); return; }
+    if(cells.every(Boolean)){ finish(null); return; }
+    status.textContent = 'makalina is thinking...';
+    setTimeout(aiMove, 400);
+  }
+
+  $('#tttRestart').addEventListener('click', () => {
+    cells = Array(9).fill('');
+    finished = false;
+    status.textContent = 'your move';
+    drawBoard();
   });
 
-  $('#tttReset').addEventListener('click', () => {
-    stateBoard = Array(9).fill('');
-    over = false;
-    status.textContent = 'Click a square to start.';
-    render();
+  drawBoard();
+}
+
+function sendToServer(payload){
+  return fetch('/api/chat', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
   });
-
-  render();
 }
 
-function openMakalinaLaunch(){
-  if(state.makalinaOwned) return;
-  openBuyMakalina();
-}
-
-function openMakalinaChatIfOwned(){
-  if(!state.makalinaOwned) return openBuyMakalina();
-}
-
-function openChatFromHome(text){
-  const value = trimLines(text).trim();
-  if(!value) return;
-  createConversation('New conversation');
-  sendMessage(value);
-}
-
-function openNewsPopup(){
-  const until = new Date('2114-06-18T00:00:00Z').getTime();
-  const countdown = () => {
-    const diff = Math.max(0, until - Date.now());
-    const days = Math.floor(diff / 86400000);
-    const hrs = Math.floor((diff % 86400000) / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    return `${days}d ${hrs}h ${mins}m`;
-  };
-
-  openModal(`
-    <div class="modal-head">
-      <h3>News</h3>
-      <button class="btn compact" data-close>Okay</button>
-    </div>
-    <div class="modal-body">
-      <div class="buy-card">
-        <strong>NEW FEATURE: macaroni</strong>
-        <div style="color:var(--muted)">Makala’s cooking AI. Upload fridge photos and get recipe ideas.</div>
-        <div style="width:100%;height:160px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);display:grid;place-items:center;color:var(--muted)">[photo of macaroni]</div>
-        <div><strong>Coming very soon:</strong> <span id="countdownText">${countdown()}</span></div>
-        <div style="font-size:13px;color:var(--muted)">
-          Patch notes:
-          <ul>
-            <li>Home screen restored</li>
-            <li>Conversation switching fixed</li>
-            <li>Markdown + code copy support</li>
-            <li>Makalina buy modal</li>
-            <li>tic-tac-toe unlocks after purchase</li>
-          </ul>
-        </div>
-        <button class="btn primary full" data-close>Okay</button>
-      </div>
-    </div>
-  `);
-
-  const timer = setInterval(() => {
-    const el = $('#countdownText', els.modalRoot);
-    if(!el){
-      clearInterval(timer);
-      return;
-    }
-    el.textContent = countdown();
-  }, 60000);
-}
-
-function updateProfileLock(){
-  if(state.activeId && activeConversation()?.persona === 'makalina'){
-    els.themeSelect.value = 'deep';
-    setTheme('deep');
-    els.themeSelect.disabled = true;
-  }else{
-    els.themeSelect.disabled = false;
-  }
-}
-
-function updateHeaderPersona(){
-  const conv = activeConversation();
-  els.personaSelect.value = conv?.persona || 'makala';
-  if(conv && conv.persona === 'makalina'){
-    els.panelRoot.classList.add('persona-makalina');
-  }else{
-    els.panelRoot.classList.remove('persona-makalina');
-  }
-}
-
-function renderHomeMode(){
-  els.emptyState.classList.remove('hidden');
-  els.messageWrap.classList.add('hidden');
-  els.composer.classList.add('hidden');
-  els.activeTitle.textContent = 'makala.ai';
-  updateHeaderPersona();
-}
-
-function renderConversationMode(){
-  const conv = activeConversation();
+function ensureActiveConversation(){
+  let conv = activeConversation();
   if(!conv){
-    renderHomeMode();
-    renderConvList();
-    return;
+    conv = createConversation('New conversation', els.personaSelect.value || 'makala');
+    state.activeId = conv.id;
+    saveState();
   }
-  els.emptyState.classList.add('hidden');
-  els.messageWrap.classList.remove('hidden');
-  els.composer.classList.remove('hidden');
-  els.activeTitle.textContent = conv.title || 'New conversation';
-  updateHeaderPersona();
-  els.messageWrap.innerHTML = '';
-  conv.messages.forEach((msg, idx) => {
-    els.messageWrap.appendChild(renderMessageNode(msg, conv, idx === conv.messages.length - 1));
-  });
+  return conv;
+}
+
+async function sendMessage(rawText){
+  const text = trimLines(rawText).trim();
+  if(!text) return;
+
+  const conv = ensureActiveConversation();
+  const persona = conv.persona || 'makala';
+
+  if(conv.messages.length === 0 && conv.title === 'New conversation'){
+    conv.title = smartTitle(text);
+    els.activeTitle.textContent = conv.title;
+  }
+
+  conv.messages.push({ role:'user', content:text, createdAt: Date.now() });
+  saveState();
+  renderAll();
+
+  const typing = makeTypingRow(persona);
+  els.messageWrap.appendChild(typing);
   els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
+
+  try{
+    const messages = [
+      { role:'system', content: buildSystemPrompt(persona) },
+      ...conv.messages.map(m => ({ role:m.role, content:m.content }))
+    ];
+
+    const resp = await sendToServer({ messages });
+    let data = {};
+    try{ data = await resp.json(); }catch{ data = {}; }
+
+    const reply = (data && typeof data.reply === 'string' && data.reply.trim()) ? data.reply : 'No response.';
+    conv.messages.push({ role:'assistant', content:reply, createdAt: Date.now() });
+    saveState();
+
+    typing.remove();
+    els.messageWrap.appendChild(renderMessageNode({role:'assistant', content:reply}, conv, true));
+    els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
+    renderConvList();
+  }catch(err){
+    typing.remove();
+    const reply = `Error: ${String(err?.message || err)}`;
+    conv.messages.push({ role:'assistant', content:reply, createdAt: Date.now() });
+    saveState();
+    els.messageWrap.appendChild(renderMessageNode({role:'assistant', content:reply}, conv, true));
+    els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
+    renderConvList();
+  }
+
+  els.messageInput.value = '';
+  autoGrow(els.messageInput);
+  els.homeInput.value = '';
+  autoGrow(els.homeInput);
 }
 
 function renderAll(){
-  renderConvList();
-  if(state.activeId){
-    renderConversationMode();
-  }else{
-    renderHomeMode();
-  }
-  updateFeatureButtons();
+  const conv = activeConversation();
   setTheme(state.theme);
-  updateProfileLock();
+
+  els.activeTitle.textContent = conv?.title || 'makala.ai';
+  els.personaSelect.value = conv?.persona || 'makala';
+
+  els.emptyState.classList.toggle('hidden', !!conv);
+  els.messageWrap.classList.toggle('hidden', !conv);
+  els.composer.classList.toggle('hidden', !conv);
+
+  if(conv){
+    els.messageWrap.innerHTML = '';
+    conv.messages.forEach(msg => {
+      els.messageWrap.appendChild(renderMessageNode(msg, conv, false));
+    });
+    els.messageWrap.scrollTop = els.messageWrap.scrollHeight;
+  }else{
+    els.homeInput.value = '';
+    els.messageInput.value = '';
+    autoGrow(els.homeInput);
+    autoGrow(els.messageInput);
+  }
+
+  els.panelRoot.classList.toggle('persona-makalina', (conv?.persona || 'makala') === 'makalina');
+  els.makalinaBtn.classList.toggle('hidden', state.makalinaOwned);
+  els.tttBtn.classList.toggle('hidden', !state.makalinaOwned);
+  renderConvList();
+  updateClock();
+
+  window.requestAnimationFrame(() => {
+    if(conv) els.messageInput.focus();
+    else els.homeInput.focus();
+  });
 }
 
-function init(){
-  loadState();
-  setTheme(state.theme);
-  wireEvents();
-  renderAll();
-  autoGrow(els.homeInput);
-  autoGrow(els.messageInput);
+function updateClock(){
+  const d = new Date();
+  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const day = d.toLocaleDateString([], { weekday: 'long' });
+  els.clockText.textContent = `${time}, ${day}`;
 }
 
 function wireEvents(){
   els.newConvBtn.addEventListener('click', () => {
-    const conv = createConversation('New conversation');
+    const wanted = els.personaSelect.value || 'makala';
+    if(wanted === 'makalina' && !state.makalinaOwned){
+      openBuyMakalina();
+      return;
+    }
+    const conv = createConversation('New conversation', wanted);
     state.activeId = conv.id;
     saveState();
     renderAll();
@@ -1443,74 +1037,92 @@ function wireEvents(){
     renderAll();
   });
 
-  els.themeSelect.addEventListener('change', () => setTheme(els.themeSelect.value));
+  els.themeSelect.addEventListener('change', () => {
+    setTheme(els.themeSelect.value);
+    saveState();
+  });
 
   els.personaSelect.addEventListener('change', () => {
-    const conv = activeConversation();
-    if(!conv) return;
-    if(conv.persona === 'makalina' && els.personaSelect.value !== 'makalina'){
-      // allow switching away, unlock theme again
-      conv.persona = els.personaSelect.value;
-      saveState();
-      renderAll();
+    const current = activeConversation();
+    if(!current) return;
+
+    const picked = els.personaSelect.value;
+    if(picked === 'makalina' && !state.makalinaOwned){
+      els.personaSelect.value = current.persona || 'makala';
+      openBuyMakalina();
       return;
     }
-    conv.persona = els.personaSelect.value;
+
+    current.persona = picked;
     saveState();
     renderAll();
   });
 
-  els.homeSendBtn.addEventListener('click', () => {
+  const submitFromHome = () => {
     const value = els.homeInput.value.trim();
     if(!value) return;
-    const conv = createConversation('New conversation');
+    const wanted = els.personaSelect.value || 'makala';
+    if(wanted === 'makalina' && !state.makalinaOwned){
+      openBuyMakalina();
+      return;
+    }
+    const conv = createConversation('New conversation', wanted);
     state.activeId = conv.id;
     saveState();
     renderAll();
+    els.homeInput.value = '';
+    autoGrow(els.homeInput);
     sendMessage(value);
+  };
+
+  els.homeStartBtn.addEventListener('click', submitFromHome);
+  els.homeInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      submitFromHome();
+    }
+  });
+
+  els.messageInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      const value = els.messageInput.value;
+      sendMessage(value);
+    }
   });
 
   els.sendBtn.addEventListener('click', () => {
-    const value = els.messageInput.value.trim();
-    if(!value) return;
+    const value = els.messageInput.value;
     sendMessage(value);
   });
 
-  [els.homeInput, els.messageInput].forEach(t => {
-    t.addEventListener('input', () => autoGrow(t));
-    t.addEventListener('keydown', e => {
-      if(e.key === 'Enter' && !e.shiftKey){
-        e.preventDefault();
-        const value = t.value.trim();
-        if(!value) return;
-        if(t === els.homeInput){
-          const conv = createConversation('New conversation');
-          state.activeId = conv.id;
-          saveState();
-          renderAll();
-        }
-        sendMessage(value);
-      }
-    });
-  });
+  els.homeInput.addEventListener('input', () => autoGrow(els.homeInput));
+  els.messageInput.addEventListener('input', () => autoGrow(els.messageInput));
 
   document.querySelectorAll('.suggestion').forEach(btn => {
     btn.addEventListener('click', () => {
       const prompt = btn.dataset.prompt || btn.textContent || '';
       els.homeInput.value = prompt;
       autoGrow(els.homeInput);
+      els.homeInput.focus();
     });
   });
 
-  els.newsBtn.addEventListener('click', openNewsPopup);
-  els.makalinaLaunchBtn.addEventListener('click', openMakalinaLaunch);
+  els.newsBtn.addEventListener('click', openNews);
+  els.makalinaBtn.addEventListener('click', openBuyMakalina);
   els.tttBtn.addEventListener('click', openTicTacToe);
 
-  els.modalRoot.addEventListener('click', (e) => {
-    if(e.target.matches('[data-close]')){
-      closeModal();
-    }
-  });
+  setInterval(updateClock, 1000);
+}
+
+function init(){
+  loadState();
+  setTheme(state.theme);
+  wireEvents();
+  renderAll();
+  autoGrow(els.homeInput);
+  autoGrow(els.messageInput);
+  if(!state.activeId) renderAll();
 }
 
 init();
