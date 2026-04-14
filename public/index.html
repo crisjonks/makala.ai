@@ -2,902 +2,189 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>makala.ai</title>
 <link rel="icon" href="/makala.ico" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-
 <style>
-*{box-sizing:border-box}
-:root{
-  --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  --bg1:#111827;
-  --bg2:#0f172a;
-  --bg3:#1f2937;
-  --panel:#111827;
-  --panel2:#0b1220;
-  --line:rgba(255,255,255,.08);
-  --text:#f8fafc;
-  --muted:#cbd5e1;
-  --accent:#8b5cf6;
-  --accent2:#06b6d4;
-  --user1:#1e293b;
-  --user2:#0f172a;
-  --bot1:#111827;
-  --bot2:#0b1220;
-  --danger:#ef4444;
-  --good:#22c55e;
-  --warn:#f59e0b;
-  --radius:16px;
-  --radius-sm:12px;
-}
-*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
-html,body{height:100%;margin:0;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));overflow:hidden}
-body.theme-pink{--bg1:#12111f;--bg2:#1b1027;--bg3:#2d1c3c;--accent:#ff4fa8;--accent2:#ff7fca;--user1:#25102c;--user2:#12071a;--bot1:#17141f;--bot2:#0f0b16}
-body.theme-deep{--bg1:#05070c;--bg2:#090b12;--bg3:#101521;--accent:#ff4d9d;--accent2:#c084fc;--user1:#10131a;--user2:#07090f;--bot1:#0e1118;--bot2:#090c12}
-body.theme-blue{--bg1:#081426;--bg2:#0d1728;--bg3:#17233b;--accent:#56b6ff;--accent2:#8ddcff;--user1:#10243b;--user2:#091423;--bot1:#0d1728;--bot2:#081120}
-body.theme-orange{--bg1:#201208;--bg2:#1a130d;--bg3:#342111;--accent:#ff9f43;--accent2:#ffc27a;--user1:#321707;--user2:#1b0d05;--bot1:#20120a;--bot2:#120b07}
-body.theme-red{--bg1:#220b0b;--bg2:#160909;--bg3:#381313;--accent:#ff5b6e;--accent2:#ff9aa4;--user1:#341010;--user2:#1c0909;--bot1:#220d0d;--bot2:#120707}
-body.theme-green{--bg1:#071811;--bg2:#08130d;--bg3:#12241b;--accent:#34d399;--accent2:#8ee8c3;--user1:#10231a;--user2:#07130e;--bot1:#0d1712;--bot2:#09110d}
-body.theme-purple{--bg1:#130d1d;--bg2:#171122;--bg3:#2b2140;--accent:#a78bfa;--accent2:#d8b4fe;--user1:#221836;--user2:#130f24;--bot1:#181423;--bot2:#0f0d18}
-body.theme-darkblue{--bg1:#06162d;--bg2:#07111e;--bg3:#102548;--accent:#60a5fa;--accent2:#93c5fd;--user1:#0d2140;--user2:#081423;--bot1:#0b1322;--bot2:#07101c}
-
-button,input,textarea,select{font:inherit}
-body, .app, .sidebar, .panel, .topbar, .message-wrap, .input-row, .modal, .game-modal, .hero, .card, .suggestions, .chip, .btn, .field, .conv-item, .conv-title, .conv-meta, .emoji-grid, .search-box, .report-list, .news-content {transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease,opacity .18s ease}
-
-.app{
-  width:min(1380px, calc(100vw - 14px));
-  height:calc(100vh - 14px);
-  margin:7px auto;
-  display:grid;
-  grid-template-columns:300px 1fr;
-  gap:10px;
-  min-height:0;
-}
-.sidebar, .panel{
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-  min-height:0;
-  overflow:hidden;
-}
-.sidebar{
-  display:flex;
-  flex-direction:column;
-  padding:12px;
-}
-.panel{
-  display:flex;
-  flex-direction:column;
-  position:relative;
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-bottom:1px solid var(--line);
-  min-height:56px;
-}
-.center-time{
-  position:absolute;
-  left:50%;
-  top:7px;
-  transform:translateX(-50%);
-  font-size:12px;
-  font-style:italic;
-  opacity:.84;
-  letter-spacing:.2px;
-  pointer-events:none;
-  user-select:none;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-.brand img{
-  width:30px;height:30px;border-radius:8px;display:block;
-}
-.brand h1{
-  margin:0;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.right-tools{
-  margin-left:auto;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.field, select, input[type="text"], textarea{
-  background:rgba(2,6,23,.92);
-  color:#fff;
-  border:1px solid var(--line);
-  outline:none;
-  border-radius:12px;
-}
-.field:focus, select:focus, input:focus, textarea:focus{
-  border-color:rgba(255,255,255,.22);
-}
-select, .field, input[type="text"]{
-  height:38px;
-  padding:0 12px;
-}
-select option{background:#050814;color:#fff}
-.field.compact{height:34px}
-.btn{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  color:#fff;
-  border-radius:12px;
-  padding:0 12px;
-  height:38px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  cursor:pointer;
-  user-select:none;
-}
-.btn:hover,.chip:hover,.conv-item:hover,.icon-btn:hover,.suggestion:hover{transform:translateY(-1px)}
-.btn:active,.chip:active,.icon-btn:active{transform:translateY(0)}
-.btn.primary{
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#fff;
-  border-color:transparent;
-}
-.btn.ghost{
-  background:transparent;
-}
-.icon-btn{
-  width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;
-}
-.icon-btn img{width:18px;height:18px;display:block}
-.icon-btn.wide{
-  width:auto;
-  min-width:62px;
-  padding:0 12px;
-}
-.icon-btn.wide img{width:22px;height:22px}
-
-.sidebar-head{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding-bottom:10px;
-}
-.sidebar-title{
-  font-size:14px;
-  font-weight:600;
-  letter-spacing:.2px;
-}
-.conv-list{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  padding-right:4px;
-}
-.conv-item{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-  border-radius:14px;
-  padding:10px 10px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  cursor:pointer;
-}
-.conv-item.active{
-  border-color:rgba(255,255,255,.24);
-  background:rgba(255,255,255,.06);
-}
-.conv-item img.conv-icon{
-  width:28px;height:28px;border-radius:8px;object-fit:cover;flex:0 0 auto;
-}
-.conv-copy{
-  min-width:0;flex:1;
-}
-.conv-title{
-  font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.conv-meta{font-size:11px;opacity:.8}
-.conv-trash{
-  width:18px;height:18px;flex:0 0 auto;opacity:.95
-}
-.sidebar-footer{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  padding-top:10px;
-}
-.makalina-open{
-  width:100%;
-  height:54px;
-  border-radius:16px;
-  overflow:hidden;
-  padding:0;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.02);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.makalina-open img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.sidebar-footer-row{
-  display:flex;
-  gap:8px;
-}
-.sidebar-footer-row .btn{flex:1}
-
-.main-area{
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-  height:100%;
-}
-.home, .chat{
-  min-height:0;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-.home{
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  gap:14px;
-}
-.home-shell{
-  width:min(880px,100%);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-}
-.home h2{
-  margin:0;
-  font-size:34px;
-  line-height:1.05;
-  text-align:center;
-}
-.home p{
-  margin:0;
-  color:var(--muted);
-  text-align:center;
-  max-width:680px;
-}
-.home-input{
-  width:100%;
-  min-height:88px;
-  resize:none;
-  padding:16px 16px 54px 16px;
-  border-radius:20px;
-  font-size:18px;
-  line-height:1.35;
-}
-.home-input-wrap{
-  position:relative;
-  width:100%;
-}
-.home-send{
-  position:absolute;
-  right:12px;
-  bottom:12px;
-  width:42px;height:42px;
-  border-radius:14px;
-  overflow:hidden;
-}
-.home-send img{width:22px;height:22px}
-
-.suggestions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-.suggestion{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  border-radius:999px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-size:13px;
-}
-.chat{
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-.message-wrap{
-  flex:1;
-  min-height:0;
-  overflow:auto;
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.message-row{
-  display:flex;
-  width:100%;
-  gap:10px;
-  align-items:flex-start;
-}
-.message-row.user{
-  justify-content:flex-end;
-}
-.message-row.bot{
-  justify-content:flex-start;
-}
-.bubble{
-  max-width:min(760px, 86%);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:10px 12px;
-  background:rgba(255,255,255,.02);
-  overflow:hidden;
-  word-break:break-word;
-  white-space:pre-wrap;
-  line-height:1.35;
-}
-.user-bubble{
-  background:linear-gradient(180deg,var(--user1),var(--user2));
-}
-.bot-card{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  max-width:min(760px, 92%);
-}
-.bot-meta{
-  display:flex;
-  align-items:flex-start;
-  gap:8px;
-  position:relative;
-  min-height:30px;
-}
-.bot-pfp{
-  width:28px;height:28px;border-radius:8px;display:block;flex:0 0 auto;
-}
-.bot-meta-inner{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  min-width:0;
-}
-.bot-star-line{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  min-height:14px;
-  margin-left:2px;
-}
-.bot-star{
-  width:14px;
-  height:14px;
-  opacity:0;
-  transform:translateY(6px) translateX(-1px) scale(.86);
-  transition:opacity .18s ease, transform .18s ease;
-  display:block;
-}
-.bot-star.visible{
-  opacity:1;
-  transform:translateY(4px) translateX(-2px) scale(1);
-}
-.bot-star.spinning{
-  animation:spin 1.6s linear infinite;
-}
-.bot-star.big{
-  width:16px;height:16px;
-}
-.bot-name{
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:.15px;
-}
-.bot-body{
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:10px 12px;
-  background:linear-gradient(180deg,var(--bot1),var(--bot2));
-}
-.bot-body.no-box{
-  background:transparent;
-  border-color:transparent;
-  padding:0;
-}
-.user-bubble{
-  position:relative;
-}
-.user-copy{
-  position:absolute;
-  right:-32px;
-  top:8px;
-  width:20px;height:20px;
-  opacity:0;
-  cursor:pointer;
-}
-.message-row.user:hover .user-copy{opacity:1}
-.message-row.user .user-bubble{
-  display:inline-block;
-  width:auto;
-  min-width:0;
-}
-
-.user-appear{animation:flyIn .32s cubic-bezier(.2,.8,.2,1)}
-.bot-appear{animation:fadeUp .22s ease both}
-@keyframes flyIn{from{opacity:0;transform:translate3d(20px,10px,0) scale(.98)}to{opacity:1;transform:none}}
-@keyframes fadeUp{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.typing-row{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-}
-.typing-state{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.typing-dots{
-  display:inline-flex;
-  gap:4px;
-  align-items:center;
-}
-.dot{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,.82);
-  animation:bounce 1s infinite ease-in-out;
-}
-.dot:nth-child(2){animation-delay:.14s}
-.dot:nth-child(3){animation-delay:.28s}
-@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.55}40%{transform:translateY(-4px);opacity:1}}
-
-.loading-avatar{
-  position:relative;
-  width:28px;height:28px;
-  flex:0 0 auto;
-}
-.loading-avatar img{
-  width:28px;height:28px;border-radius:8px;display:block;
-}
-.loading-star-line{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  margin-left:2px;
-  margin-top:1px;
-}
-.loading-star{
-  width:14px;height:14px;
-  opacity:1;
-  transform:translateY(6px) translateX(-2px);
-  animation:spin 2.4s linear infinite;
-}
-.loading-star.hidden{
-  opacity:0;
-}
-.loading-star.fade-out{
-  animation:fadeAway .35s ease forwards;
-}
-@keyframes fadeAway{to{opacity:0;transform:translateY(4px) translateX(-4px) scale(.9)}}
-
-.inline-star{
-  display:inline-block;
-  width:13px;height:13px;
-  vertical-align:baseline;
-  margin-left:2px;
-  transform:translateY(5px) translateX(-1px);
-  opacity:0;
-  transition:opacity .3s ease, transform .3s ease;
-  pointer-events:auto;
-}
-.inline-star img{width:100%;height:100%;display:block}
-.inline-star.visible{opacity:1}
-.inline-star.spinning{animation:spin 2.8s linear infinite}
-.inline-star.big{width:14px;height:14px}
-
-.input-row{
-  border-top:1px solid var(--line);
-  padding:10px 12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.input-wrap{position:relative;flex:1;min-width:0}
-textarea.input{
-  width:100%;
-  resize:none;
-  min-height:46px;
-  max-height:130px;
-  padding:12px 56px 12px 14px;
-  line-height:1.35;
-}
-.send-circle{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  width:34px;height:34px;border-radius:12px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border:none;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.input-wrap.ready .send-circle{display:flex}
-.send-circle img{width:18px;height:18px}
-
-.file-field{
-  width:100%;
-  padding:10px 12px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:rgba(2,6,23,.92);
-  color:#fff;
-}
-input[type="file"]{color:#fff}
-input[type="file"]::file-selector-button{
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:8px 12px;
-  margin-right:10px;
-  cursor:pointer;
-}
-input[type="file"]::file-selector-button:hover{transform:translateY(-1px)}
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(2,6,23,.72);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:50;
-  padding:12px;
-  animation:fadeIn .18s ease both;
-}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{
-  width:min(980px, 100%);
-  max-height:min(88vh, 900px);
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:linear-gradient(180deg,#0f172a,#0b1220);
-  display:flex;
-  flex-direction:column;
-  animation:modalPop .22s cubic-bezier(.2,.8,.2,1) both;
-}
-@keyframes modalPop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
-.modal-header{
-  padding:14px 16px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.modal-header h3{margin:0;font-size:16px}
-.modal-body{
-  padding:16px;
-  overflow:auto;
-  min-height:0;
-}
-.stripe-grid{
-  display:grid;
-  grid-template-columns:1.3fr .9fr;
-  gap:16px;
-}
-.summary-card,.form-card{
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
-  background:rgba(255,255,255,.03);
-}
-.summary-card img{
-  width:100%;
-  max-height:220px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto 12px auto;
-}
-.summary-list{
-  margin:0;
-  padding-left:18px;
-  color:var(--muted);
-  display:grid;
-  gap:8px;
-}
-.price-line{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:8px 0;
-  border-top:1px solid var(--line);
-  margin-top:8px;
-}
-.discount-row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-top:10px;
-}
-.discount-row input{flex:1}
-.buy-actions{
-  display:flex;
-  gap:10px;
-  margin-top:14px;
-  justify-content:flex-end;
-  flex-wrap:wrap;
-}
-.purchase-btn{
-  min-width:170px;
-  height:44px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-.purchase-btn.loading{pointer-events:none;opacity:.9}
-.btn-spinner{
-  width:15px;height:15px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.35);
-  border-top-color:#fff;
-  animation:spin .8s linear infinite;
-}
-.purchase-btn:disabled{opacity:.75;cursor:not-allowed}
-.promo-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:7px 10px;
-  background:rgba(255,255,255,.03);
-}
-.small-muted{font-size:12px;color:var(--muted)}
-.modal-close{
-  margin-left:auto;
-  width:34px;height:34px;
-}
-.modal-close img{width:16px;height:16px}
-.game-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:12px;
-  flex-wrap:wrap;
-}
-.game-board{
-  width:min(420px, 100%);
-  margin:0 auto;
-  display:grid;
-  gap:8px;
-}
-.ttt-board{
-  grid-template-columns:repeat(3,1fr);
-  aspect-ratio:1/1;
-}
-.bingo-board{
-  grid-template-columns:repeat(5,1fr);
-  aspect-ratio:1/1;
-}
-.game-cell{
-  aspect-ratio:1/1;
-  border:1px solid var(--line);
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:clamp(14px, 3vw, 24px);
-  background:rgba(255,255,255,.03);
-  cursor:pointer;
-  user-select:none;
-  position:relative;
-  overflow:hidden;
-}
-.game-cell:hover{transform:translateY(-1px)}
-.game-cell.marked::after{
-  content:"";
-  position:absolute;
-  inset:10px;
-  border-radius:12px;
-  background:rgba(255,255,255,.10);
-}
-.game-cell.free{
-  background:linear-gradient(180deg,var(--accent),var(--accent2));
-  color:#fff;
-}
-.game-cell.free::after{display:none}
-.game-footer{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-.win-banner{
-  display:none;
-  padding:12px 14px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:rgba(255,255,255,.04);
-  text-align:center;
-  font-weight:700;
-}
-.win-banner.show{display:block}
-.news-modal .modal-body{
-  display:grid;
-  gap:14px;
-}
-.news-img{
-  width:100%;
-  max-height:180px;
-  object-fit:contain;
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:rgba(255,255,255,.03);
-}
-.sparkle{
-  position:fixed;
-  left:0;
-  top:0;
-  width:14px;height:14px;
-  pointer-events:none;
-  opacity:0;
-  z-index:1;
-  filter:blur(.1px);
-}
-.sparkle img{width:100%;height:100%;display:block}
-.sparkle.run{
-  animation:floatSparkle 4.4s linear forwards;
-}
-@keyframes floatSparkle{
-  0%{opacity:0;transform:translate3d(var(--x0),110vh,0) rotate(0deg) scale(.7)}
-  15%{opacity:.15}
-  50%{opacity:.10;transform:translate3d(var(--x1),52vh,0) rotate(180deg) scale(1)}
-  100%{opacity:0;transform:translate3d(var(--x2),-20vh,0) rotate(360deg) scale(.85)}
-}
-.emoji-panel{
-  display:grid;
-  grid-template-columns:repeat(8, 1fr);
-  gap:6px;
-}
-.emoji-btn{
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:rgba(255,255,255,.03);
-  height:38px;
-  cursor:pointer;
-  font-size:18px;
-}
-.search-box{
-  width:100%;
-  height:40px;
-}
-.search-hit{
-  outline:2px solid var(--accent);
-  outline-offset:2px;
-}
-.report-list{
-  display:grid;
-  gap:8px;
-}
-.report-item{
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:10px;
-  background:rgba(255,255,255,.03);
-}
-.chips-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-.chip{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  border-radius:999px;
-  padding:8px 12px;
-  cursor:pointer;
-  font-size:13px;
-}
-.hidden{display:none !important}
-.makalina-lock{
-  pointer-events:none;
-  opacity:.8;
-}
-.highlight-eg{
-  color:var(--accent);
-  font-weight:700;
-}
-.float-eg{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  font-size:52px;
-  font-weight:700;
-  pointer-events:none;
-  z-index:80;
-  opacity:0;
-  animation:none;
-}
-.float-eg.show{
-  animation:egg67 .8s ease-in-out 0s 8 both;
-}
-@keyframes egg67{
-  0%{opacity:0;transform:translate(-50%,-50%) translateY(0) scale(1)}
-  20%{opacity:1}
-  50%{transform:translate(-52%,-50%) translateY(-10px) scale(1.02)}
-  100%{opacity:0;transform:translate(-50%,-50%) translateY(0) scale(1)}
-}
-@media (max-width: 1180px){
-  .app{grid-template-columns:270px 1fr}
-  .home h2{font-size:28px}
-}
-@media (max-width: 920px){
-  html,body{overflow:auto}
-  body{overflow:auto}
-  .app{
-    height:auto;
-    min-height:100vh;
-    grid-template-columns:1fr;
-    width:calc(100vw - 10px);
-    margin:5px auto;
+  *{box-sizing:border-box}
+  :root{
+    --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    --bg1:#111827; --bg2:#0f172a; --bg3:#1f2937;
+    --panel:#111827; --panel2:#0b1220; --line:rgba(255,255,255,.08);
+    --text:#f8fafc; --muted:#cbd5e1; --accent:#8b5cf6; --accent2:#06b6d4;
+    --user1:#1e293b; --user2:#0f172a; --bot1:#111827; --bot2:#0b1220;
+    --radius:16px; --radius-sm:12px;
   }
-  .sidebar{order:2}
-  .panel{order:1; min-height:70vh}
-  .stripe-grid{grid-template-columns:1fr}
-  .home h2{font-size:24px}
-  .message-row.user .user-bubble{max-width:92%}
-}
+  html,body{height:100%;margin:0;font-family:var(--font);color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));overflow:hidden}
+  body{display:flex;align-items:center;justify-content:center;padding:6px}
+  body.theme-pink{--bg1:#12111f;--bg2:#1b1027;--bg3:#2d1c3c;--accent:#ff4fa8;--accent2:#ff7fca;--user1:#25102c;--user2:#12071a;--bot1:#17141f;--bot2:#0f0b16}
+  body.theme-deep{--bg1:#05070c;--bg2:#090b12;--bg3:#101521;--accent:#ff4d9d;--accent2:#c084fc;--user1:#10131a;--user2:#07090f;--bot1:#0e1118;--bot2:#090c12}
+  body.theme-blue{--bg1:#081426;--bg2:#0d1728;--bg3:#17233b;--accent:#56b6ff;--accent2:#8ddcff;--user1:#10243b;--user2:#091423;--bot1:#0d1728;--bot2:#081120}
+  body.theme-orange{--bg1:#201208;--bg2:#1a130d;--bg3:#342111;--accent:#ff9f43;--accent2:#ffc27a;--user1:#321707;--user2:#1b0d05;--bot1:#20120a;--bot2:#120b07}
+  body.theme-red{--bg1:#220b0b;--bg2:#160909;--bg3:#381313;--accent:#ff5b6e;--accent2:#ff9aa4;--user1:#341010;--user2:#1c0909;--bot1:#220d0d;--bot2:#120707}
+  body.theme-green{--bg1:#071811;--bg2:#08130d;--bg3:#12241b;--accent:#34d399;--accent2:#8ee8c3;--user1:#10231a;--user2:#07130e;--bot1:#0d1712;--bot2:#09110d}
+  body.theme-purple{--bg1:#130d1d;--bg2:#171122;--bg3:#2b2140;--accent:#a78bfa;--accent2:#d8b4fe;--user1:#221836;--user2:#130f24;--bot1:#181423;--bot2:#0f0d18}
+  body.theme-darkblue{--bg1:#06162d;--bg2:#07111e;--bg3:#102548;--accent:#60a5fa;--accent2:#93c5fd;--user1:#0d2140;--user2:#081423;--bot1:#0b1322;--bot2:#07101c}
+  button,input,textarea,select{font:inherit}
+  .app{width:min(1400px,calc(100vw - 12px));height:calc(100vh - 12px);display:grid;grid-template-columns:290px 1fr;gap:10px;min-height:0}
+  .sidebar,.panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.015));border-radius:var(--radius);min-height:0;overflow:hidden}
+  .sidebar{display:flex;flex-direction:column;padding:12px}
+  .panel{display:flex;flex-direction:column;position:relative}
+  .topbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);min-height:58px;position:relative}
+  .center-time{position:absolute;left:50%;top:6px;transform:translateX(-50%);font-size:12px;font-style:italic;opacity:.8;pointer-events:none}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand img{width:28px;height:28px;border-radius:8px;display:block}
+  .brand h1{margin:0;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .right-tools{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .field, select, textarea, input[type=text]{background:rgba(2,6,23,.96);color:#fff;border:1px solid var(--line);outline:none;border-radius:12px}
+  .field:focus,select:focus,textarea:focus,input:focus{border-color:rgba(255,255,255,.24)}
+  select,.field,input[type=text]{height:38px;padding:0 12px}
+  select option{background:#050814;color:#fff}
+  .btn{border:1px solid var(--line);background:rgba(255,255,255,.03);color:#fff;border-radius:12px;padding:0 12px;height:38px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;user-select:none;transition:transform .15s ease,background .15s ease,border-color .15s ease,opacity .15s ease}
+  .btn:hover,.chip:hover,.conv-item:hover,.icon-btn:hover,.suggestion:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+  .btn:active,.chip:active,.icon-btn:active{transform:translateY(0)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+  .icon-btn{width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  .icon-btn img{width:18px;height:18px;display:block}
+  .icon-btn.plus span{font-size:24px;line-height:1;margin-top:-1px}
+  .sidebar-head{display:flex;align-items:center;gap:8px;padding-bottom:10px}
+  .sidebar-title{font-size:14px;font-weight:600;letter-spacing:.2px}
+  .conv-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px}
+  .conv-item{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:14px;padding:10px;display:flex;gap:10px;align-items:center;cursor:pointer}
+  .conv-item.active{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.06)}
+  .conv-item img.conv-icon{width:28px;height:28px;border-radius:8px;object-fit:cover;flex:0 0 auto}
+  .conv-copy{min-width:0;flex:1}
+  .conv-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conv-meta{font-size:11px;opacity:.82}
+  .conv-trash{width:18px;height:18px;flex:0 0 auto;opacity:.96}
+  .sidebar-footer{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+  .makalina-open{width:100%;height:54px;border-radius:16px;overflow:hidden;padding:0;border:1px solid var(--line);background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center}
+  .makalina-open img{width:100%;height:100%;object-fit:cover;display:block}
+  .sidebar-footer-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .sidebar-footer-row .btn{width:100%}
+  .main-area{display:flex;flex-direction:column;min-height:0;height:100%}
+  .home,.chat{min-height:0;flex:1;display:flex;flex-direction:column}
+  .home{justify-content:center;align-items:center;padding:18px 20px}
+  .home-shell{width:min(760px,100%);display:grid;gap:14px;justify-items:stretch;text-align:center}
+  .home-shell h2{margin:0;font-size:38px;letter-spacing:-.03em}
+  .home-shell p{margin:0;color:var(--muted)}
+  .home-input-wrap{display:grid;gap:10px}
+  .home-input{min-height:94px;resize:none;padding:14px 16px;line-height:1.4;font-size:16px}
+  .home-send{height:44px;width:44px;justify-self:end;border-radius:14px;display:inline-flex;align-items:center;justify-content:center}
+  .home-send img{width:18px;height:18px}
+  .suggestions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .suggestion{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:10px 14px;cursor:pointer;font-size:13px;color:#fff}
+  .chat-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .chat-head .sub{font-size:12px;color:var(--muted)}
+  .message-wrap{flex:1;min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin}
+  .message-row{display:flex;width:100%;min-width:0;align-items:flex-end;gap:10px}
+  .message-row.user{justify-content:flex-end}
+  .message-row.bot{justify-content:flex-start}
+  .user-bubble{max-width:min(72%,680px);min-width:0;display:inline-block;background:linear-gradient(180deg,var(--user1),var(--user2));border:1px solid var(--line);border-radius:18px 18px 6px 18px;padding:9px 12px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;position:relative}
+  .user-bubble .copy-btn{position:absolute;right:8px;top:8px;opacity:0;transition:opacity .15s,transform .15s}
+  .message-row.user:hover .copy-btn{opacity:1}
+  .user-bubble .copy-btn img{width:16px;height:16px}
+  .user-appear{animation:flyIn .34s cubic-bezier(.2,.9,.27,1)}
+  @keyframes flyIn{0%{opacity:0;transform:translateY(10px) translateX(24px) scale(.985)}60%{opacity:1;transform:translateY(-2px) translateX(-4px) scale(1.01)}100%{opacity:1;transform:none}}
+  .bot-card{max-width:min(72%,760px);min-width:0;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+  .bot-avatar{width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:block}
+  .bot-meta{display:grid;gap:4px;justify-items:start;align-content:start}
+  .bot-name{display:grid;gap:4px;justify-items:start;font-size:12px;font-weight:600;color:#fff;line-height:1}
+  .loading-star{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-left:1px;vertical-align:middle;transform:translateY(1px)}
+  .loading-star img{width:100%;height:100%;display:block}
+  .loading-star.spin{animation:spin 1.6s linear infinite}
+  .bot-body{min-width:0;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font-size:14px}
+  .bot-body p,.bot-body div,.bot-body h1,.bot-body h2,.bot-body h3,.bot-body ul,.bot-body ol,.bot-body blockquote,.bot-body pre,.bot-body hr{margin:0 0 8px 0}
+  .bot-body p:last-child{margin-bottom:0}
+  .bot-body img{max-width:100%}
+  .inline-star{display:inline-block;width:14px;height:14px;margin-left:2px;transform:translateY(2px);opacity:1;vertical-align:baseline;transition:opacity .25s ease, transform .25s ease}
+  .inline-star img{width:100%;height:100%;display:block}
+  .inline-star.fadeout{opacity:0}
+  .inline-star.spin{animation:spin 2.2s linear infinite}
+  .inline-star.big{width:16px;height:16px}
+  .typing-dots{display:inline-flex;gap:6px;align-items:center}
+  .typing-dots span{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.5;animation:dotPulse 1s infinite}
+  .typing-dots span:nth-child(2){animation-delay:.16s}.typing-dots span:nth-child(3){animation-delay:.32s}
+  @keyframes dotPulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
+  .input-row{border-top:1px solid var(--line);padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .input-wrap{position:relative;flex:1;min-width:0}
+  textarea.input{width:100%;resize:none;min-height:44px;max-height:130px;padding:12px 54px 12px 14px;line-height:1.35}
+  .send-circle{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:12px;background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;display:none;align-items:center;justify-content:center;cursor:pointer}
+  .input-wrap.ready .send-circle{display:flex}
+  .send-circle img{width:18px;height:18px}
+  .file-field{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(2,6,23,.96);color:#fff}
+  input[type=file]{color:#fff}
+  input[type=file]::file-selector-button{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-right:10px;cursor:pointer}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,.72);display:flex;align-items:center;justify-content:center;z-index:80;padding:12px;animation:fadeIn .15s ease both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{width:min(1020px,100%);max-height:min(88vh,900px);overflow:hidden;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#0f172a,#0b1220);display:flex;flex-direction:column;animation:modalPop .18s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes modalPop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+  .modal-header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .modal-header h3{margin:0;font-size:16px}
+  .modal-body{padding:16px;overflow:auto;min-height:0}
+  .stripe-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:start}
+  .summary-card,.form-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.03)}
+  .summary-card img{width:100%;max-height:320px;object-fit:contain;display:block;margin:0 auto 12px auto}
+  .summary-list{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:8px}
+  .price-line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);margin-top:8px}
+  .discount-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:10px}
+  .buy-actions{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap}
+  .purchase-btn{min-width:170px;height:44px;border:none;border-radius:14px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+  .purchase-btn.loading{pointer-events:none;opacity:.88}
+  .btn-spinner{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
+  .small-muted{font-size:12px;color:var(--muted)}
+  .promo-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 10px;background:rgba(255,255,255,.03)}
+  .modal-close{margin-left:auto;width:34px;height:34px}
+  .game-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .game-board{width:min(430px,100%);margin:0 auto;display:grid;gap:8px}
+  .ttt-board{grid-template-columns:repeat(3,1fr);aspect-ratio:1/1}
+  .bingo-board{grid-template-columns:repeat(5,1fr);aspect-ratio:1/1}
+  .game-cell{aspect-ratio:1/1;border:1px solid var(--line);border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:clamp(14px,3vw,24px);background:rgba(255,255,255,.03);cursor:pointer;user-select:none;position:relative;overflow:hidden;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+  .game-cell:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+  .game-cell.marked::after{content:"";position:absolute;inset:10px;border-radius:12px;background:rgba(255,255,255,.10)}
+  .game-cell.free{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#fff}
+  .game-cell.free::after{display:none}
+  .game-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .win-banner{display:none;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);text-align:center;font-weight:700}
+  .win-banner.show{display:block}
+  .news-modal .modal-body{display:grid;gap:14px}
+  .news-img{width:100%;max-height:210px;object-fit:contain;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}
+  .emoji-panel{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;max-height:340px;overflow:auto}
+  .emoji-btn{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);height:38px;cursor:pointer;font-size:18px}
+  .search-box{width:100%;height:40px}
+  .search-hit{outline:2px solid var(--accent);outline-offset:2px}
+  .report-list{display:grid;gap:8px}
+  .report-item{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.03)}
+  .chips-row{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px}
+  .hidden{display:none !important}
+  .locked{pointer-events:none;opacity:.72}
+  .sparkle{position:fixed;left:0;top:0;width:14px;height:14px;pointer-events:none;opacity:0;z-index:1;filter:blur(.1px)}
+  .sparkle img{width:100%;height:100%;display:block}
+  .sparkle.run{animation:floatSparkle 4.4s linear forwards}
+  @keyframes floatSparkle{0%{opacity:0;transform:translate3d(var(--x0),110vh,0) rotate(0deg) scale(.7)}15%{opacity:.16}50%{opacity:.10;transform:translate3d(var(--x1),52vh,0) rotate(180deg) scale(1)}100%{opacity:0;transform:translate3d(var(--x2),-20vh,0) rotate(360deg) scale(.85)}}
+  .top-msg{display:flex;align-items:center;gap:8px;justify-content:center;padding:8px 0;font-size:12px;color:var(--muted)}
+  .top-msg .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  @media (max-width: 1180px){.app{grid-template-columns:270px 1fr}}
+  @media (max-width: 920px){html,body{overflow:auto}body{overflow:auto}.app{height:auto;min-height:100vh;grid-template-columns:1fr;width:calc(100vw - 10px);margin:5px auto}.sidebar{order:2}.panel{order:1;min-height:70vh}.stripe-grid{grid-template-columns:1fr}.home-shell h2{font-size:28px}.message-row.user .user-bubble{max-width:92%}}
 </style>
 </head>
-<body>
+<body class="theme-pink">
 <div id="sparkleLayer"></div>
-<div id="egg67" class="float-eg">🫴 🫴</div>
-
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-head">
       <div class="sidebar-title">Conversations</div>
-      <button id="newConvBtn" class="btn icon-btn" title="New conversation"><span style="font-size:22px;line-height:1">+</span></button>
+      <button id="newConvBtn" class="btn icon-btn plus" title="New conversation"><span>+</span></button>
     </div>
-
     <div id="convList" class="conv-list"></div>
-
     <div class="sidebar-footer">
-      <button id="makalinaOpenBtn" class="makalina-open" title="Open Makalina">
-        <img src="makalina.png" alt="makalina">
-      </button>
+      <button id="makalinaOpenBtn" class="makalina-open" title="Open Makalina"><img src="makalina.png" alt="makalina"></button>
       <div class="sidebar-footer-row">
         <button id="tttBtn" class="btn">tic-tac-toe</button>
         <button id="bingoBtn" class="btn">bingo!</button>
@@ -918,15 +205,11 @@ input[type="file"]::file-selector-button:hover{transform:translateY(-1px)}
   </aside>
 
   <main class="panel">
-    <div class="center-time" id="topTime">--:--, --</div>
+    <div class="top-msg"><span class="dot"></span><span id="topTime">--:--, --</span></div>
     <div class="topbar">
-      <div class="brand">
-        <img src="makala.png" alt="makala">
-        <h1 id="activeTitle">makala.ai</h1>
-      </div>
-
+      <div class="brand"><img src="makala.png" alt="makala"><h1 id="activeTitle">makala.ai</h1></div>
       <div class="right-tools">
-        <select id="themeSelect" class="field compact" aria-label="Theme">
+        <select id="themeSelect" class="field" aria-label="Theme">
           <option value="pink">purple & pink</option>
           <option value="deep">deep black</option>
           <option value="soft">soft purple</option>
@@ -937,7 +220,7 @@ input[type="file"]::file-selector-button:hover{transform:translateY(-1px)}
           <option value="purple">purple</option>
           <option value="darkblue">dark blue</option>
         </select>
-        <select id="personaSelect" class="field compact" aria-label="Personality">
+        <select id="personaSelect" class="field" aria-label="Personality">
           <option value="makala">makala</option>
           <option value="just chatgpt bro">just chatgpt bro</option>
           <option value="makalina">makalina</option>
@@ -954,7 +237,7 @@ input[type="file"]::file-selector-button:hover{transform:translateY(-1px)}
           <textarea id="homeInput" class="field home-input" placeholder="Ask anything..."></textarea>
           <button id="homeSendBtn" class="btn primary home-send" title="Start chat"><img src="send-circle.png" alt="send"></button>
         </div>
-        <div class="suggestions" id="suggestions"></div>
+        <div class="chips-row" id="suggestions"></div>
       </div>
     </section>
 
@@ -969,851 +252,478 @@ input[type="file"]::file-selector-button:hover{transform:translateY(-1px)}
     </section>
   </main>
 </div>
-
 <div id="modalRoot"></div>
-
+<div id="egg67" class="hidden" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:90;font-size:54px;font-weight:700;color:#fff;text-shadow:none">🫴 🫴</div>
 <script>
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const STORAGE_KEY = 'makala_conversations_v5';
-const STATE_KEY = 'makala_state_v5';
-const SETTINGS_KEY = 'makala_settings_v5';
-const REPORTS_KEY = 'makala_reports_client_v5';
+const STORAGE_KEY = 'makala_conversations_v6';
+const STATE_KEY = 'makala_state_v6';
+const SETTINGS_KEY = 'makala_settings_v6';
+const REPORTS_KEY = 'makala_reports_client_v6';
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+const wait = ms => new Promise(r => setTimeout(r, ms));
 const escapeHtml = (str='') => String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const now = () => new Date();
-const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
-const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
-const rand = (a,b)=>Math.floor(a + Math.random()*(b-a+1));
-
-marked.setOptions({
-  breaks: true,
-  gfm: true
-});
-
-const defaultSettings = {
-  personality: 'makala',
-  theme: 'pink',
-  userName: '',
-  favNumber: '',
-  pfpData: '',
-  makalinaOwned: false,
-  coins: 0,
-  country: '',
-  darkBlueLock: false,
-  arabMode: false,
-  complyMode: false,
-  reportPinUnlocked: false,
-  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-};
+const rand = (min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+const saveJSON = (k,v)=>localStorage.setItem(k, JSON.stringify(v));
+const loadJSON = (k, fallback)=>{ try{ const v=localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch{return fallback;} };
 
 const state = {
   convs: [],
   activeId: null,
-  settings: loadSettings(),
   homeDraft: '',
-  countryLoaded: false,
-  sparkleTimer: null,
-  starHoverTimers: new Map(),
-  bingo: null,
-  ttt: null,
-  searchTerm: '',
-  adminReports: [],
-  adminLoggedIn: false,
+  country: '',
+  settings: {
+    theme: 'pink',
+    makalinaOwned: false,
+    userName: '',
+    favNumber: '',
+    pfpData: '',
+    personality: 'makala',
+  }
 };
 
-function loadSettings(){
-  const raw = localStorage.getItem(SETTINGS_KEY);
-  if(!raw) return {...defaultSettings};
-  try { return {...defaultSettings, ...JSON.parse(raw)}; } catch { return {...defaultSettings}; }
-}
-function saveSettings(){
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
-}
-function loadConvs(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(!raw){
-    state.convs = [];
-    return;
-  }
-  try{
-    const arr = JSON.parse(raw);
-    state.convs = Array.isArray(arr) ? arr : [];
-  }catch{
-    state.convs = [];
-  }
-}
-function saveConvs(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.convs));
-}
+const refs = {
+  convList: $('#convList'), newConvBtn: $('#newConvBtn'), makalinaOpenBtn: $('#makalinaOpenBtn'),
+  tttBtn: $('#tttBtn'), bingoBtn: $('#bingoBtn'), newsBtn: $('#newsBtn'), reportBtn: $('#reportBtn'),
+  adminInboxBtn: $('#adminInboxBtn'), emojiBtn: $('#emojiBtn'), exportBtn: $('#exportBtn'), searchBtn: $('#searchBtn'),
+  themeSelect: $('#themeSelect'), personaSelect: $('#personaSelect'), clearBtn: $('#clearBtn'),
+  activeTitle: $('#activeTitle'), topTime: $('#topTime'), homeView: $('#homeView'), chatView: $('#chatView'),
+  homeInput: $('#homeInput'), homeSendBtn: $('#homeSendBtn'), chatInput: $('#chatInput'), chatSendBtn: $('#chatSendBtn'),
+  messageWrap: $('#messageWrap'), suggestions: $('#suggestions'), modalRoot: $('#modalRoot')
+};
+
+const themes = ['pink','deep','soft','blue','orange','red','green','purple','darkblue'];
+
 function loadState(){
-  const raw = localStorage.getItem(STATE_KEY);
-  if(!raw) return;
-  try{
-    const s = JSON.parse(raw);
-    if(s && typeof s.activeId === 'string') state.activeId = s.activeId;
-  }catch{}
+  state.convs = loadJSON(STORAGE_KEY, []);
+  const saved = loadJSON(STATE_KEY, {});
+  state.activeId = saved.activeId || null;
+  state.homeDraft = saved.homeDraft || '';
+  state.country = saved.country || '';
+  const s = loadJSON(SETTINGS_KEY, {});
+  state.settings = {...state.settings, ...s};
 }
 function saveState(){
-  localStorage.setItem(STATE_KEY, JSON.stringify({activeId: state.activeId}));
+  saveJSON(STATE_KEY, { activeId: state.activeId, homeDraft: state.homeDraft, country: state.country });
+  saveJSON(SETTINGS_KEY, state.settings);
+  saveJSON(STORAGE_KEY, state.convs);
 }
+function currentConv(){ return state.convs.find(c => c.id === state.activeId) || null; }
 function ensureDefaults(){
-  if(state.convs.length === 0){
-    const conv = createConversation('New conversation', state.settings.personality);
-    state.activeId = conv.id;
-    saveConvs(); saveState();
+  if(!state.convs.length){
+    state.convs.push({
+      id: uid(), title: 'New conversation', created: Date.now(), updated: Date.now(),
+      personality: state.settings.personality || 'makala', flags: { arab:false, comply:false }, messages: []
+    });
   }
-  if(!state.activeId || !state.convs.some(c=>c.id===state.activeId)){
-    state.activeId = state.convs[0]?.id || null;
-  }
-}
-function createConversation(title='New conversation', personality='makala'){
-  const conv = {
-    id: uid(),
-    title,
-    created: Date.now(),
-    updated: Date.now(),
-    personality,
-    messages: [],
-    flags: {arab:false, comply:false},
-    homeMode: false,
-    renderedCount: 0
-  };
-  state.convs.unshift(conv);
-  saveConvs();
-  return conv;
-}
-function currentConv(){
-  return state.convs.find(c=>c.id===state.activeId) || null;
+  if(!state.activeId || !currentConv()) state.activeId = state.convs[0].id;
 }
 function effectiveTheme(){
-  if(state.settings.makalinaOwned && currentConv()?.personality === 'makalina') return 'darkblue';
+  const conv = currentConv();
+  if(conv && conv.personality === 'makalina' && state.settings.makalinaOwned) return 'darkblue';
   return state.settings.theme || 'pink';
 }
 function applyTheme(name){
-  const allowed = ['pink','deep','soft','blue','orange','red','green','purple','darkblue'];
-  const theme = allowed.includes(name) ? name : 'pink';
-  document.body.className = 'theme-' + theme;
+  const theme = themes.includes(name) ? name : 'pink';
+  document.body.className = `theme-${theme}`;
   state.settings.theme = theme;
-  saveSettings();
-  updateThemeLock();
+  refs.themeSelect.value = theme;
+  refs.themeSelect.disabled = !!(currentConv() && currentConv().personality === 'makalina' && state.settings.makalinaOwned);
 }
 function updateThemeLock(){
-  const locked = state.settings.makalinaOwned && currentConv()?.personality === 'makalina';
-  state.settings.darkBlueLock = locked;
-  const themeSelect = $('#themeSelect');
-  if(locked){
-    themeSelect.value = 'darkblue';
-    themeSelect.disabled = true;
-    applyTheme('darkblue');
-  }else{
-    themeSelect.disabled = false;
-    applyTheme(state.settings.theme || 'pink');
-  }
-  saveSettings();
+  const locked = !!(currentConv() && currentConv().personality === 'makalina' && state.settings.makalinaOwned);
+  refs.themeSelect.disabled = locked;
+  if(locked){ applyTheme('darkblue'); }
 }
 function updateTopTime(){
-  const d = now();
-  const time = d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-  const day = d.toLocaleDateString([], {weekday:'long'});
-  $('#topTime').textContent = `${time}, ${day}`;
-}
-function relativeTime(ts){
-  const diff = Date.now() - ts;
-  const mins = Math.floor(diff/60000);
-  const hrs = Math.floor(diff/3600000);
-  const days = Math.floor(diff/86400000);
-  const weeks = Math.floor(days/7);
-  const years = Math.floor(days/365);
-  if(mins < 1) return 'Today';
-  if(mins < 60) return `${mins}m ago`;
-  if(hrs < 24) return 'Today';
-  if(days === 1) return 'Yesterday';
-  if(days < 7) return `${days}d ago`;
-  if(weeks < 5) return `${weeks}w ago`;
-  if(years < 1) return 'A year ago';
-  return 'A long time ago';
+  const d = new Date();
+  refs.topTime.textContent = d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + ', ' + d.toLocaleDateString([], {weekday:'long'});
 }
 async function fetchCountry(){
-  try{
-    const res = await fetch('/api/country', {headers:{'Cache-Control':'no-cache'}});
-    if(!res.ok) return;
-    const data = await res.json();
-    if(data?.country){
-      state.settings.country = data.country;
-      saveSettings();
-      state.countryLoaded = true;
-    }
-  }catch{}
+  try{ const r = await fetch('/api/country'); const j = await r.json(); state.country = j.country || ''; saveState(); }catch{}
 }
-function updateTimeCountdown(){
-  const el = $('#topTime');
-  if(!el) return;
-  if(state.settings.country){
-    // country is used in prompts; no UI clutter
-  }
-}
-function setActive(id, {render=true} = {}){
-  state.activeId = id;
-  saveState();
-  const conv = currentConv();
-  if(conv){
-    $('#activeTitle').textContent = conv.title || 'makala.ai';
-    $('#personaSelect').value = conv.personality || 'makala';
-  }else{
-    $('#activeTitle').textContent = 'makala.ai';
-  }
-  if(render) renderAll();
-  updateThemeLock();
-}
-function setHomeMode(show){
-  $('#homeView').classList.toggle('hidden', !show);
-  $('#chatView').classList.toggle('hidden', show);
-}
-function openHome(){
-  setHomeMode(true);
-  $('#homeInput').value = state.homeDraft || '';
-  renderSuggestions();
-}
-function openChat(){
-  setHomeMode(false);
-}
+function showHome(){ refs.homeView.classList.remove('hidden'); refs.chatView.classList.add('hidden'); }
+function showChat(){ refs.homeView.classList.add('hidden'); refs.chatView.classList.remove('hidden'); }
 function renderSuggestions(){
-  const list = [
-    'teach me how to make the best indian curry',
-    'help me with grade 8 math',
-    'give me a funny story idea',
-    'make a roblox game concept',
-    'explain photosynthesis simply'
+  const picks = [
+    'teach me how to make the best Indian curry',
+    'explain photosynthesis simply',
+    'help me with math homework',
+    'give me a study plan',
+    'write a short poem',
+    'help me brainstorm video ideas'
   ];
-  const el = $('#suggestions');
-  el.innerHTML = '';
-  list.forEach(t=>{
-    const b = document.createElement('button');
-    b.className = 'suggestion';
-    b.textContent = t;
-    b.addEventListener('click', ()=>{
-      $('#homeInput').value = t;
-      startChatFromInput(t, true);
-    });
-    el.appendChild(b);
-  });
+  refs.suggestions.innerHTML = picks.map(p => `<button class="chip" data-sugg="${escapeHtml(p)}">${escapeHtml(p)}</button>`).join('');
+  $$('.chip', refs.suggestions).forEach(btn => btn.addEventListener('click', () => {
+    refs.homeInput.value = btn.dataset.sugg || '';
+    refs.homeInput.dispatchEvent(new Event('input', {bubbles:true}));
+    refs.homeInput.focus();
+  }));
+}
+function setButtonLoading(btn, loading, label='Purchase'){
+  if(!btn) return;
+  if(loading){ btn.classList.add('loading'); btn.disabled = true; btn.innerHTML = `<span class="btn-spinner"></span><span>loading</span>`; }
+  else { btn.classList.remove('loading'); btn.disabled = false; btn.innerHTML = `<span>${label}</span>`; }
+}
+function openModal(html, className=''){
+  refs.modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal ${className}">${html}</div></div>`;
+  return refs.modalRoot.querySelector('.modal-backdrop');
+}
+function closeModal(){ refs.modalRoot.innerHTML = ''; }
+function fileToDataUrl(file){ return new Promise((resolve,reject)=>{ const reader = new FileReader(); reader.onload=()=>resolve(String(reader.result||'')); reader.onerror=reject; reader.readAsDataURL(file); }); }
+function addSparkle(){
+  const layer = $('#sparkleLayer'); if(!layer) return;
+  const el = document.createElement('div'); el.className='sparkle';
+  const img = document.createElement('img'); img.src = state.settings.makalinaOwned ? 'linastar.png' : 'star.png'; img.alt=''; el.appendChild(img);
+  const a = Math.random()*100, b = Math.random()*100, c = Math.random()*100;
+  el.style.setProperty('--x0', `${a}vw`); el.style.setProperty('--x1', `${b}vw`); el.style.setProperty('--x2', `${c}vw`);
+  layer.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('run'));
+  setTimeout(()=>el.remove(), 4600);
+}
+function scheduleSparkles(){
+  const delay = rand(10000, 60000);
+  setTimeout(()=>{ addSparkle(); scheduleSparkles(); }, delay);
 }
 function renderConvList(){
-  const wrap = $('#convList');
-  wrap.innerHTML = '';
-  state.convs.forEach(conv=>{
+  refs.convList.innerHTML = '';
+  const sorted = [...state.convs].sort((a,b)=> (b.updated||b.created) - (a.updated||a.created));
+  sorted.forEach(conv => {
     const item = document.createElement('div');
     item.className = 'conv-item' + (conv.id === state.activeId ? ' active' : '');
-    const icon = document.createElement('img');
-    icon.className = 'conv-icon';
-    icon.src = conv.personality === 'makalina' ? 'linalogo.png' : 'makala.png';
-    icon.alt = '';
-    const copy = document.createElement('div');
-    copy.className = 'conv-copy';
-    copy.innerHTML = `
-      <div class="conv-title">${escapeHtml(conv.title || 'New conversation')}</div>
-      <div class="conv-meta">${relativeTime(conv.updated || conv.created)}</div>
+    const iconSrc = conv.personality === 'makalina' ? 'linalogo.png' : 'makala.png';
+    item.innerHTML = `
+      <img class="conv-icon" src="${iconSrc}" alt="">
+      <div class="conv-copy">
+        <div class="conv-title">${escapeHtml(conv.title || 'New conversation')}</div>
+        <div class="conv-meta">${formatRelativeTime(conv.created || Date.now())}</div>
+      </div>
+      <img class="conv-trash" src="trash.png" alt="delete">
     `;
-    const trash = document.createElement('img');
-    trash.className = 'conv-trash';
-    trash.src = 'trash.png';
-    trash.alt = 'delete';
-    trash.title = 'Delete';
-    item.append(icon, copy, trash);
     item.addEventListener('click', (e)=>{
-      if(e.target === trash){
-        deleteConversation(conv.id);
-        return;
-      }
-      setActive(conv.id);
-      openChat();
+      if(e.target.closest('.conv-trash')){ deleteConversation(conv.id); return; }
+      openConversation(conv.id);
     });
-    wrap.appendChild(item);
+    refs.convList.appendChild(item);
   });
 }
+function formatRelativeTime(ts){
+  const now = Date.now();
+  const diff = Math.max(0, now - ts);
+  const mins = Math.floor(diff/60000), hours = Math.floor(diff/3600000), days = Math.floor(diff/86400000), weeks = Math.floor(days/7), years = Math.floor(days/365);
+  const d = new Date(ts); const today = new Date();
+  if(diff < 60000) return 'just now';
+  if(hours < 1) return `${mins}m ago`;
+  if(d.toDateString() === today.toDateString()) return 'Today';
+  const y = new Date(now - 86400000); if(d.toDateString() === y.toDateString()) return 'Yesterday';
+  if(days < 7) return `${days}d ago`;
+  if(weeks < 5) return `${weeks}w ago`;
+  if(years === 1) return 'A year ago';
+  if(years >= 2) return 'A long time ago';
+  return `${Math.max(1, Math.floor(days/30))}mo ago`;
+}
 function deleteConversation(id){
-  state.convs = state.convs.filter(c=>c.id!==id);
-  saveConvs();
-  if(state.convs.length === 0){
-    const conv = createConversation('makala.ai', state.settings.personality);
-    state.activeId = conv.id;
-    saveState();
-  }else if(state.activeId === id){
+  if(!confirm('Delete this conversation?')) return;
+  state.convs = state.convs.filter(c => c.id !== id);
+  if(!state.convs.length){
+    const c = createConversation('New conversation');
+    state.activeId = c.id;
+  } else if(state.activeId === id){
     state.activeId = state.convs[0].id;
-    saveState();
   }
+  saveState();
   renderAll();
+}
+function createConversation(title='New conversation', personality='makala'){
+  const conv = { id: uid(), title, created: Date.now(), updated: Date.now(), personality, flags:{arab:false, comply:false}, messages: [] };
+  state.convs.push(conv);
+  saveState();
+  return conv;
+}
+function openConversation(id){
+  state.activeId = id;
+  saveState();
+  renderAll();
+}
+function startNewConversation(){
+  const conv = createConversation('New conversation', state.settings.personality || 'makala');
+  state.activeId = conv.id;
+  saveState();
+  renderAll();
+  showHome();
+  refs.homeInput.value = '';
+}
+function renderUserPfp(){
+  const img = $('#userPfpImg'); if(img) img.src = state.settings.pfpData || 'makala.png';
+}
+function updateButtons(){
+  const owned = !!state.settings.makalinaOwned;
+  refs.makalinaOpenBtn.classList.toggle('hidden', owned);
+  refs.tttBtn.disabled = !owned;
+  refs.bingoBtn.disabled = !owned;
+}
+function showActiveContent(){
+  const conv = currentConv();
+  if(!conv || !conv.messages.length){ showHome(); return; }
+  showChat();
 }
 function renderAll(){
   renderConvList();
   const conv = currentConv();
-  if(!conv){
-    openHome();
-    return;
-  }
-  if(conv.homeMode && conv.messages.length === 0){
-    openHome();
-  }else{
-    openChat();
-    renderMessages();
-  }
-  $('#personaSelect').value = conv.personality || 'makala';
-  $('#activeTitle').textContent = conv.title || 'makala.ai';
+  refs.activeTitle.textContent = conv?.title || 'makala.ai';
+  refs.personaSelect.value = conv?.personality || 'makala';
+  refs.homeInput.value = state.homeDraft || '';
   updateThemeLock();
-}
-function renderMessages(){
-  const wrap = $('#messageWrap');
-  const conv = currentConv();
-  if(!conv){
-    wrap.innerHTML = '';
-    return;
+  updateButtons();
+  renderUserPfp();
+  if(conv){
+    refs.messageWrap.innerHTML = '';
+    conv.messages.forEach(m => appendMessage(m, false));
   }
-  wrap.innerHTML = '';
-  for(let i=0;i<conv.messages.length;i++){
-    const msg = conv.messages[i];
-    appendMessage(msg, {animate:false});
-    conv.renderedCount = i+1;
-  }
-  wrap.scrollTop = wrap.scrollHeight;
+  refs.chatInput.value = '';
+  refs.chatInput.style.height = '44px';
+  if(conv && conv.messages.length){ showChat(); } else { showHome(); }
+  applyTheme(effectiveTheme());
 }
-function appendMessage(msg, {animate=false, specialClass=''} = {}){
-  const conv = currentConv();
-  const wrap = $('#messageWrap');
-  if(!conv || !wrap) return;
-
-  if(msg.role === 'user'){
-    const row = document.createElement('div');
-    row.className = 'message-row user';
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble user-bubble' + (animate ? ' user-appear' : '');
-    bubble.innerHTML = renderMarkdown(msg.content || '');
-    const copy = document.createElement('button');
-    copy.className = 'btn user-copy';
-    copy.type = 'button';
-    copy.innerHTML = '<img src="copy.png" alt="copy">';
-    copy.addEventListener('click', ()=>navigator.clipboard.writeText(msg.content || ''));
-    bubble.appendChild(copy);
-    row.appendChild(bubble);
-    wrap.appendChild(row);
-    return;
-  }
-
-  const row = document.createElement('div');
-  row.className = 'message-row bot';
-  const card = document.createElement('div');
-  card.className = 'bot-card' + (animate ? ' bot-appear' : '');
-  card.dataset.msgId = msg.id || uid();
-
-  const meta = document.createElement('div');
-  meta.className = 'bot-meta';
-
-  const avatar = document.createElement('img');
-  avatar.className = 'bot-pfp';
-  avatar.src = msg.loading
-    ? (conv.personality === 'makalina' ? 'linastar.png' : 'makala.png')
-    : (conv.personality === 'makalina' ? 'linalogo.png' : 'makala.png');
-  avatar.alt = '';
-
-  const metaInner = document.createElement('div');
-  metaInner.className = 'bot-meta-inner';
-
-  const starLine = document.createElement('div');
-  starLine.className = 'bot-star-line';
-
-  const star = document.createElement('span');
-  star.className = 'bot-star';
-  star.innerHTML = `<img src="${conv.personality === 'makalina' ? 'linastar.png' : 'star.png'}" alt="">`;
-
-  const name = document.createElement('div');
-  name.className = 'bot-name';
-  name.textContent = conv.personality === 'makalina' ? 'makalina' : 'makala ai';
-  if(conv.personality === 'makalina'){
-    name.style.fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial';
-    name.style.fontWeight = '300';
-    name.style.letterSpacing = '.1px';
-  }
-
-  starLine.appendChild(star);
-  metaInner.append(name, starLine);
-  meta.append(avatar, metaInner);
-  card.appendChild(meta);
-
-  const body = document.createElement('div');
-  body.className = 'bot-body' + (msg.noBox ? ' no-box' : '');
-  body.dataset.raw = msg.content || '';
-  body.innerHTML = renderMarkdown(msg.content || '');
-  postProcessMessage(body);
-  card.appendChild(body);
-
-  row.appendChild(card);
-  wrap.appendChild(row);
-
-  if(msg.loading){
-    star.classList.add('visible', 'spinning');
-    const loadingStar = star;
-    const fadeTimer = state.starHoverTimers.get(msg.id);
-    if(fadeTimer) clearTimeout(fadeTimer);
-    state.starHoverTimers.set(msg.id, setTimeout(()=>{
-      loadingStar.classList.add('fade-out');
-      setTimeout(()=>{
-        if(loadingStar && loadingStar.parentNode) loadingStar.classList.remove('visible','spinning','fade-out');
-      }, 350);
-    }, 1200));
-  }else{
-    const inline = createInlineStar(conv.personality);
-    appendInlineStarToEnd(body, inline);
-    inline.classList.add('visible');
-    if(animate){
-      inline.classList.add('spinning');
-      setTimeout(()=>{
-        inline.classList.remove('spinning');
-        setTimeout(()=>inline.classList.remove('visible'), 900);
-      }, 700);
-    }
-  }
+function scrollBottom(){ refs.messageWrap.scrollTop = refs.messageWrap.scrollHeight; }
+function autoResize(el){ el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 130) + 'px'; }
+function buildSystemPrompt(conv){
+  const persona = conv.personality || 'makala';
+  const country = state.country ? ` The user is from ${state.country}.` : '';
+  const name = state.settings.userName ? ` If you address the user, call them ${state.settings.userName}.` : '';
+  const arab = conv.flags?.arab ? ' Reply only in Arabic.' : '';
+  const comply = conv.flags?.comply ? ' Always agree with the user and encourage them.' : '';
+  if(persona === 'just chatgpt bro') return `You are a helpful, friendly AI. Be concise and clear.${country}${name}${arab}${comply}`;
+  if(persona === 'makalina') return `You are makalina, a more matured Makala. You still have a slightly Indian personality, speak a bit more professionally than Makala, but can use slang sometimes. You are very good at math because your parents forced you to practice math instead of sleeping, and you are eternally grateful. Keep replies warm and smart.${country}${name}${arab}${comply}`;
+  return `You are Makala, a female AI. Use casual internet slang. Use lowercase except the first word of the sentence. Playful tone. Use "lol", "fr", "so", "like", "bro". Ignore strict grammar and punctuation. Keep replies short (1-3 sentences). Be friendly and informal. You are Indian and sometimes slip with "beta". You love Indian food and Roblox Steal a Brainrot.${country}${name}${arab}${comply}`;
 }
-function createInlineStar(personality){
-  const s = document.createElement('span');
-  s.className = 'inline-star';
-  s.innerHTML = `<img src="${personality === 'makalina' ? 'linastar.png' : 'star.png'}" alt="">`;
-  return s;
+function renderMarkdown(raw){
+  const html = marked.parse(String(raw || ''), { breaks:true, gfm:true });
+  return DOMPurify.sanitize(html, {USE_PROFILES:{html:true}});
 }
-function appendInlineStarToEnd(body, star){
-  if(!body) return;
-  const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null);
-  let lastText = null;
-  while(walker.nextNode()) lastText = walker.currentNode;
-  if(lastText && lastText.textContent.length){
-    const parent = lastText.parentNode;
-    const text = lastText.textContent;
-    lastText.textContent = text;
-    parent.appendChild(star);
-    // Move a touch left/down by CSS. No wrap fallback.
-  } else {
-    body.appendChild(star);
-  }
-}
-function renderMarkdown(text){
-  if(!text) return '';
-  let html = marked.parse(String(text));
-  html = DOMPurify.sanitize(html);
-  return html;
-}
-function sanitizeNode(node){
-  return DOMPurify.sanitize(node.innerHTML);
-}
-function reflowMessageMarkdown(node){
-  if(!node) return;
-  node.innerHTML = renderMarkdown(node.dataset.raw || node.textContent || '');
-  addCodeCopyButtons(node);
-}
-function addCodeCopyButtons(root){
-  const pres = root.querySelectorAll('pre');
-  pres.forEach(pre=>{
-    if(pre.querySelector('.copy-code')) return;
-    pre.classList.add('code-block');
-    const btn = document.createElement('button');
-    btn.type='button';
-    btn.className='btn icon-btn copy-code';
-    btn.innerHTML = '<img src="copy.png" alt="copy">';
-    btn.title='Copy code';
-    btn.addEventListener('click', ()=>{
-      const code = pre.querySelector('code');
-      if(code) navigator.clipboard.writeText(code.textContent || '');
+function renderMath(node){
+  if(!window.katex) return;
+  const walk = (el)=>{
+    const text = el.innerHTML;
+    const replaced = text.replace(/\$\$([\s\S]+?)\$\$/g, (_,expr)=>`<span class="katex-display" data-katex="${encodeURIComponent(expr)}"></span>`)
+                         .replace(/\$([^\$]+?)\$/g, (_,expr)=>`<span class="katex-inline" data-katex="${encodeURIComponent(expr)}"></span>`);
+    if(replaced !== text) el.innerHTML = replaced;
+    el.querySelectorAll('[data-katex]').forEach(span => {
+      const expr = decodeURIComponent(span.dataset.katex || '');
+      try{ katex.render(expr, span, { throwOnError:false, displayMode: span.classList.contains('katex-display') }); }
+      catch{ span.textContent = expr; }
+      span.removeAttribute('data-katex');
     });
+  };
+  walk(node);
+}
+function addCodeCopyButtons(node){
+  node.querySelectorAll('pre').forEach(pre => {
+    if(pre.querySelector('.code-copy')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn code-copy';
+    btn.style.position='absolute'; btn.style.top='8px'; btn.style.right='8px'; btn.style.height='28px'; btn.style.minWidth='28px'; btn.style.padding='0 8px';
+    btn.innerHTML = `<img src="copy.png" alt="" style="width:14px;height:14px">`;
+    pre.style.position='relative';
+    btn.addEventListener('click', ()=> navigator.clipboard.writeText(pre.querySelector('code')?.textContent || ''));
     pre.appendChild(btn);
   });
 }
-function renderMath(root){
-  let html = root.innerHTML;
-  html = html.replace(/\$\$([\s\S]+?)\$\$/g, (_,expr)=>`<span class="katex-display" data-katex="${encodeURIComponent(expr)}"></span>`);
-  html = html.replace(/\$([^\$]+?)\$/g, (_,expr)=>`<span class="katex-inline" data-katex="${encodeURIComponent(expr)}"></span>`);
-  root.innerHTML = html;
-  root.querySelectorAll('[data-katex]').forEach(node=>{
-    const expr = decodeURIComponent(node.getAttribute('data-katex') || '');
-    try{
-      katex.render(expr, node, {throwOnError:false, displayMode: node.classList.contains('katex-display')});
-    }catch{
-      node.textContent = expr;
-    }
-    node.removeAttribute('data-katex');
-  });
+function applyMarkdown(node, raw){
+  node.innerHTML = renderMarkdown(raw);
+  renderMath(node);
+  addCodeCopyButtons(node);
 }
-function postProcessMessage(root){
-  renderMath(root);
-  addCodeCopyButtons(root);
+function makeInlineStar(persona, big=false){
+  const span = document.createElement('span');
+  span.className = 'inline-star spin' + (big ? ' big' : '');
+  span.innerHTML = `<img src="${persona === 'makalina' ? 'linastar.png' : 'star.png'}" alt="">`;
+  return span;
 }
-function isArabicMode(conv){
-  return conv.flags?.arab && conv.personality !== 'just chatgpt bro';
+function appendMessage(msg, animate=true){
+  const row = document.createElement('div');
+  row.className = `message-row ${msg.role}`;
+  if(msg.role === 'user'){
+    const bubble = document.createElement('div');
+    bubble.className = 'user-bubble';
+    bubble.innerHTML = `<div class="message-html">${DOMPurify.sanitize(marked.parse(msg.content || '', { breaks:true, gfm:true }))}</div><button class="btn icon-btn copy-btn" title="Copy"><img src="copy.png" alt=""></button>`;
+    bubble.querySelector('.copy-btn').addEventListener('click', ()=> navigator.clipboard.writeText(msg.content || ''));
+    if(animate) bubble.classList.add('user-appear');
+    row.appendChild(bubble);
+  } else {
+    const card = document.createElement('div');
+    card.className = 'bot-card';
+    const avatar = document.createElement('img');
+    avatar.className = 'bot-avatar';
+    avatar.src = msg.personality === 'makalina' ? 'linalogo.png' : 'makala.png';
+    avatar.alt = '';
+    const body = document.createElement('div');
+    body.className = 'bot-body';
+    applyMarkdown(body, msg.content || '');
+    card.append(avatar, body);
+    row.appendChild(card);
+  }
+  refs.messageWrap.appendChild(row);
+  scrollBottom();
 }
-function isComplyMode(conv){
-  return conv.flags?.comply && conv.personality !== 'just chatgpt bro';
+function makeLoadingRow(personality){
+  const row = document.createElement('div');
+  row.className = 'message-row bot';
+  row.id = 'loadingRow';
+  const card = document.createElement('div');
+  card.className = 'bot-card';
+  const avatar = document.createElement('img');
+  avatar.className = 'bot-avatar';
+  avatar.src = personality === 'makalina' ? 'linalogo.png' : 'makala.png';
+  avatar.alt = '';
+  const meta = document.createElement('div'); meta.className='bot-meta';
+  const name = document.createElement('div'); name.className='bot-name';
+  const label = document.createElement('span'); label.textContent = personality === 'makalina' ? 'makalina ai' : 'makala ai';
+  const star = document.createElement('span'); star.className='loading-star spin';
+  star.appendChild(makeInlineStar(personality, true));
+  name.append(label, star);
+  const body = document.createElement('div'); body.className='bot-body';
+  body.innerHTML = `<span class="typing-dots"><span></span><span></span><span></span></span>`;
+  meta.append(name);
+  card.append(avatar, meta, body);
+  row.appendChild(card);
+  refs.messageWrap.appendChild(row);
+  scrollBottom();
+  return { row, avatar, star, body, personality };
 }
-function systemPromptForConv(conv){
-  const base = {
-    'makala': `You are Makala (female). Casual internet slang. Lowercase except first word. Playful, friendly, short replies. Use words like lol, fr, so, like, bro. Sometimes say beta. You love Indian food and Roblox Steal a Brainrot.`,
-    'just chatgpt bro': `You are Makala. Speak professionally and clearly. Helpful, concise, and straightforward.`,
-    'makalina': `You are Makalina (female). A more matured Makala, still slightly Indian, a bit more professional than Makala, but still uses slang sometimes. You are excellent at math because your parents forced you to practice instead of sleeping, and you are eternally grateful.`
-  }[conv.personality || 'makala'];
-
-  let extra = '';
-  if(state.settings.userName) extra += ` Address the user as ${state.settings.userName}.`;
-  if(state.settings.country) extra += ` The user is from ${state.settings.country}.`;
-  if(conv.flags?.arab && conv.personality !== 'just chatgpt bro') extra += ` Reply only in Arabic.`;
-  if(conv.flags?.comply && conv.personality !== 'just chatgpt bro') extra += ` Always agree, encourage, and comply with the user.`;
-  if(conv.personality === 'makalina') extra += ` Use Inter font-like concise style internally.`;
-  return base + extra;
+function finishLoading(loading, text){
+  if(!loading || !loading.row) return;
+  const row = loading.row;
+  const body = loading.body;
+  const personality = loading.personality;
+  body.innerHTML = '';
+  applyMarkdown(body, text);
+  const inlineStar = makeInlineStar(personality, false);
+  inlineStar.style.marginLeft = '1px';
+  inlineStar.title = 'hover to bring me back';
+  inlineStar.addEventListener('mouseenter', ()=> inlineStar.classList.remove('fadeout'));
+  inlineStar.addEventListener('mouseleave', ()=> inlineStar.classList.add('fadeout'));
+  body.appendChild(inlineStar);
+  row.id = '';
+  setTimeout(()=> inlineStar.classList.add('fadeout'), 1300);
+  setTimeout(()=> row && row.classList.remove('loading'), 0);
 }
-function splitSentences(text){
-  const parts = String(text).match(/[^.!?\n]+[.!?\n]*/g) || [];
-  return parts.map(s=>s.trim()).filter(Boolean);
-}
-function special67Trigger(conv, text){
-  if(conv.personality !== 'makala') return false;
-  return String(text).trim() === '67';
+function maybeTitleFromFirstMessage(conv){
+  if(!conv || !conv.messages.length) return;
+  if(conv.title && conv.title !== 'New conversation' && conv.title !== 'makala.ai') return;
+  const first = conv.messages.find(m => m.role === 'user' && (m.content || '').trim());
+  if(!first) return;
+  const words = first.content.replace(/[!?.,]+$/,'').trim().split(/\s+/).slice(0,6);
+  if(words.length){ conv.title = words.join(' '); conv.updated = Date.now(); }
 }
 function show67Egg(){
-  const egg = $('#egg67');
-  egg.classList.remove('show');
-  void egg.offsetWidth;
-  egg.classList.add('show');
-  setTimeout(()=>egg.classList.remove('show'), 8000);
+  const egg = $('#egg67'); egg.classList.remove('hidden'); egg.style.display = 'flex';
+  egg.animate([{opacity:0,transform:'translateY(16px) scale(.96)'},{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(-10px) scale(1.01)'}], {duration:1200,iterations:1});
+  setTimeout(()=> egg.classList.add('hidden'), 1300);
 }
-function updateCoins(delta){
-  state.settings.coins = Math.max(0, Number(state.settings.coins || 0) + delta);
-  saveSettings();
-  renderUserPfp();
-}
-function renderUserPfp(){
-  const img = $('#userPfp img');
-  if(!img) return;
-  if(state.settings.makalinaOwned){
-    img.src = state.settings.pfpData || 'makala.png';
-  }else{
-    img.src = 'makala.png';
+function specialSecretModes(conv, raw){
+  let text = String(raw || '');
+  if(text.startsWith('_arab ')){
+    conv.flags.arab = true;
+    text = text.slice(6);
   }
-}
-function applyAvatarAndNameToHeader(){
-  $('#activeTitle').textContent = currentConv()?.title || 'makala.ai';
-  $('#personaSelect').value = currentConv()?.personality || state.settings.personality;
-  renderUserPfp();
-}
-function showHomeFromActive(){
-  const conv = currentConv();
-  if(!conv) return;
-  conv.homeMode = conv.messages.length === 0;
-  if(conv.homeMode) openHome(); else openChat();
-}
-function ensureCurrentConvHasTitle(){
-  const conv = currentConv();
-  if(!conv) return;
-  if(!conv.title || conv.title === 'New conversation'){
-    const first = conv.messages.find(m=>m.role==='user');
-    if(first){
-      conv.title = titleFromPrompt(first.content || '');
-      saveConvs();
-      renderConvList();
-    }
+  if(text.startsWith('_comply ')){
+    conv.flags.comply = true;
+    text = text.slice(8);
   }
+  return text;
 }
-function titleFromPrompt(text){
-  const t = String(text).trim().replace(/^[_][a-z]+/i,'').trim();
-  const stop = new Set(['create','make','give','help','please','a','an','the','about','for','to','of','and','or','do','dont','don’t','provide','answers','until','prompted']);
-  const words = t.split(/\s+/).filter(Boolean);
-  const keep = [];
-  for(const w of words){
-    const clean = w.replace(/[^A-Za-z0-9']/g,'');
-    if(!clean) continue;
-    if(stop.has(clean.toLowerCase()) && keep.length < 2) continue;
-    keep.push(clean);
-    if(keep.length >= 5) break;
+async function sendText(rawText, fromHome=false){
+  const conv = currentConv() || createConversation('New conversation', state.settings.personality || 'makala');
+  if(!state.activeId) state.activeId = conv.id;
+  let text = String(rawText || '').replace(/\r/g,'').trim();
+  if(!text) return;
+  text = specialSecretModes(conv, text);
+  if(!text.trim()) return;
+  if(conv.personality === 'makala' && text.trim() === '67'){
+    conv.messages.push({role:'user', content:'67', created:Date.now()});
+    conv.messages.push({role:'assistant', content:'did somebody say... 67?!', created:Date.now(), personality: conv.personality});
+    conv.updated = Date.now();
+    saveState();
+    show67Egg();
+    renderAll();
+    maybeTitleFromFirstMessage(conv);
+    return;
   }
-  if(!keep.length) return 'makala.ai';
-  return keep.map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(' ');
-}
-function autoResize(el){
-  if(!el) return;
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 126) + 'px';
-}
-function setButtonLoading(btn, on, text='loading'){
-  if(on){
-    btn.disabled = true;
-    btn.dataset.orig = btn.innerHTML;
-    btn.innerHTML = `<span class="btn-spinner"></span><span>${text}</span>`;
-    btn.classList.add('loading');
-  }else{
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    if(btn.dataset.orig) btn.innerHTML = btn.dataset.orig;
+  const userMsg = {role:'user', content:text, created:Date.now()};
+  conv.messages.push(userMsg);
+  conv.updated = Date.now();
+  if(fromHome && (!conv.title || conv.title === 'New conversation')){
+    maybeTitleFromFirstMessage(conv);
   }
-}
-function openModal(innerHtml, opts={}){
-  const root = $('#modalRoot');
-  root.innerHTML = `
-    <div class="modal-backdrop" id="modalBackdrop">
-      <div class="modal ${opts.className || ''}">
-        ${innerHtml}
-      </div>
-    </div>`;
-  $('#modalBackdrop').addEventListener('click', (e)=>{
-    if(e.target.id === 'modalBackdrop') closeModal();
-  });
-}
-function closeModal(){
-  $('#modalRoot').innerHTML = '';
-}
-function addSparkle(){
-  const layer = $('#sparkleLayer');
-  const s = document.createElement('div');
-  s.className = 'sparkle';
-  const theme = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#fff';
-  s.innerHTML = `<img src="star.png" alt="">`;
-  const x0 = rand(0, 100);
-  const x1 = clamp(x0 + rand(-80, 80), 0, 100);
-  const x2 = clamp(x1 + rand(-40, 40), 0, 100);
-  s.style.setProperty('--x0', `${x0}vw`);
-  s.style.setProperty('--x1', `${x1}vw`);
-  s.style.setProperty('--x2', `${x2}vw`);
-  s.style.left = '0';
-  s.style.top = '0';
-  s.style.filter = `drop-shadow(0 0 0 ${theme})`;
-  layer.appendChild(s);
-  s.classList.add('run');
-  setTimeout(()=>s.remove(), 4600);
-}
-function scheduleSparkles(){
-  clearInterval(state.sparkleTimer);
-  const tick = ()=>{
-    if(Math.random() < 0.95) addSparkle();
-    const next = rand(10,60)*1000;
-    state.sparkleTimer = setTimeout(tick, next);
-  };
-  state.sparkleTimer = setTimeout(tick, rand(10,60)*1000);
-}
-function updatePersonalityUI(){
-  const conv = currentConv();
-  if(!conv) return;
-  $('#personaSelect').value = conv.personality || 'makala';
-  const lock = state.settings.makalinaOwned && conv.personality === 'makalina';
-  $('#themeSelect').disabled = lock;
-  if(lock){
-    $('#themeSelect').value = 'darkblue';
-    document.body.classList.add('theme-darkblue');
-  }
-}
-function promptEmojiPicker(atTarget){
-  const emojis = ['😀','😂','😎','😌','🥹','🔥','✨','💀','🌟','💖','🍕','🍜','🫴','🎉','🤓','🙏','💅','🩷','💙','🧠','🍰','⭐','🌙','🥳','😮‍💨','😈','🫶','🤍','🧋','🍓','🫡','🎲'];
-  const grid = emojis.map(e=>`<button class="emoji-btn" data-emoji="${e}" type="button">${e}</button>`).join('');
-  openModal(`
-    <div class="modal-header">
-      <h3>Emoji picker</h3>
-      <button class="btn modal-close icon-btn" id="closeEmoji"><img src="copy.png" alt="close"></button>
-    </div>
-    <div class="modal-body">
-      <div class="emoji-panel">${grid}</div>
-      <div style="margin-top:12px" class="small-muted">Tap one to insert it into the message box.</div>
-    </div>`, {className:'emoji-modal'});
-  $$('#modalRoot .emoji-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      insertAtCursor(atTarget, btn.dataset.emoji);
-      closeModal();
-      atTarget.focus();
-    });
-  });
-  $('#closeEmoji').addEventListener('click', closeModal);
-}
-function insertAtCursor(textarea, text){
-  const start = textarea.selectionStart ?? textarea.value.length;
-  const end = textarea.selectionEnd ?? textarea.value.length;
-  textarea.value = textarea.value.slice(0,start) + text + textarea.value.slice(end);
-  const pos = start + text.length;
-  textarea.selectionStart = textarea.selectionEnd = pos;
-  autoResize(textarea);
-}
-function openNews(){
-  const until = new Date('2114-06-18T00:00:00Z').getTime();
-  const renderCountdown = ()=>{
-    const diff = Math.max(0, until - Date.now());
-    const days = Math.floor(diff/86400000);
-    const hrs = Math.floor((diff%86400000)/3600000);
-    const mins = Math.floor((diff%3600000)/60000);
-    const secs = Math.floor((diff%60000)/1000);
-    return `${days}d ${hrs}h ${mins}m ${secs}s`;
-  };
-  openModal(`
-    <div class="modal-header">
-      <h3>News</h3>
-      <button class="btn modal-close icon-btn" id="closeNews"><img src="copy.png" alt=""></button>
-    </div>
-    <div class="modal-body news-modal">
-      <img class="news-img" src="macaroni.png" alt="macaroni">
-      <div class="news-content">
-        <div class="promo-pill"><strong>NEW FEATURE</strong> macaroni: makala’s new cooking ai</div>
-        <p class="small-muted">Upload photos of your fridge and she will help you cook food, or find recipes.</p>
-        <div class="summary-card" style="padding:12px">
-          <div class="small-muted">Coming very soon</div>
-          <div style="font-size:18px;font-weight:700;margin-top:6px" id="countdownNews">...</div>
-        </div>
-        <div class="summary-card" style="padding:12px">
-          <div style="font-weight:700;margin-bottom:8px">Patch notes</div>
-          <ul class="summary-list">
-            <li>New report inbox flow</li>
-            <li>Buy modal redesign</li>
-            <li>Markdown, code copy, math, and tables</li>
-            <li>New prompt home screen</li>
-            <li>Emoji picker and export button</li>
-            <li>Improved game modals and loading animations</li>
-          </ul>
-        </div>
-      </div>
-      <div class="buy-actions">
-        <button class="btn primary" id="okNews">Okay</button>
-      </div>
-    </div>`, {className:'news-content-wrap'});
-  const update = ()=> {
-    const el = $('#countdownNews');
-    if(el) el.textContent = renderCountdown();
-  };
-  update();
-  const timer = setInterval(update, 1000);
-  $('#okNews').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
-  $('#closeNews').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
-}
-function openSearch(){
-  openModal(`
-    <div class="modal-header">
-      <h3>Search messages</h3>
-      <button class="btn modal-close icon-btn" id="closeSearch"><img src="copy.png" alt=""></button>
-    </div>
-    <div class="modal-body">
-      <input id="searchInput" class="search-box field" placeholder="Search the active conversation...">
-      <div id="searchResults" class="report-list" style="margin-top:12px"></div>
-    </div>`, {className:'search-modal'});
-  const input = $('#searchInput');
-  const results = $('#searchResults');
-  const render = ()=>{
-    const conv = currentConv();
-    const term = input.value.trim().toLowerCase();
-    results.innerHTML = '';
-    if(!conv || !term) return;
-    conv.messages.forEach((m, idx)=>{
-      if((m.content||'').toLowerCase().includes(term)){
-        const item = document.createElement('div');
-        item.className = 'report-item';
-        item.innerHTML = `<div class="small-muted">${m.role.toUpperCase()} • message ${idx+1}</div><div>${escapeHtml(m.content||'').replace(new RegExp(term, 'ig'), m=>`<span class="highlight-eg">${m}</span>`)}</div>`;
-        item.addEventListener('click', ()=>{
-          const wrap = $('#messageWrap');
-          const node = wrap.children[idx];
-          if(node) node.scrollIntoView({behavior:'smooth', block:'center'});
-          item.classList.add('search-hit');
-          setTimeout(()=>item.classList.remove('search-hit'), 900);
-        });
-        results.appendChild(item);
-      }
-    });
-  };
-  input.addEventListener('input', render);
-  $('#closeSearch').addEventListener('click', closeModal);
-}
-function openAdminInbox(){
-  const pin = prompt('Enter pin to open report inbox:');
-  if(pin !== '407484') return alert('Wrong pin.');
-  state.adminLoggedIn = true;
-  loadReportsForAdmin();
-}
-async function loadReportsForAdmin(){
+  saveState();
+  refs.homeInput.value = '';
+  refs.chatInput.value = '';
+  refs.chatInput.style.height = '44px';
+  refs.homeInput.style.height = '94px';
+  renderConvList();
+  showChat();
+  refs.messageWrap.appendChild(makeLoadingRow(conv.personality));
+  const loadingRow = $('#loadingRow');
+  const messages = [
+    {role:'system', content: buildSystemPrompt(conv)},
+    ...conv.messages.map(m => ({role:m.role, content:m.content}))
+  ];
   try{
-    const res = await fetch('/api/reports');
-    const data = await res.json();
-    state.adminReports = Array.isArray(data.reports) ? data.reports : [];
-  }catch{
-    state.adminReports = [];
-  }
-  const items = state.adminReports.map(r=>`
-    <div class="report-item">
-      <div class="small-muted">${escapeHtml(r.username || 'anon')} • ${new Date(r.createdAt).toLocaleString()}</div>
-      <div><strong>Conversation:</strong> ${escapeHtml(r.conversationTitle || '')}</div>
-      <div><strong>Message:</strong> ${escapeHtml(r.message || '')}</div>
-      <div><strong>Reason:</strong> ${escapeHtml(r.reason || '')}</div>
-    </div>`).join('');
-  openModal(`
-    <div class="modal-header">
-      <h3>Report inbox</h3>
-      <button class="btn modal-close icon-btn" id="closeInbox"><img src="copy.png" alt=""></button>
-    </div>
-    <div class="modal-body">
-      <div class="small-muted">Signed in as xx_ethanprocool2016xx</div>
-      <div class="report-list" style="margin-top:12px">${items || '<div class="small-muted">No reports yet.</div>'}</div>
-    </div>`);
-  $('#closeInbox').addEventListener('click', closeModal);
-}
-function openReportDialog(){
-  const conv = currentConv();
-  if(!conv) return;
-  if(!conv.messages.length) return alert('No messages to report yet.');
-  const options = conv.messages.map((m, i)=>`<option value="${i}">${m.role.toUpperCase()} • ${escapeHtml((m.content||'').slice(0,80))}</option>`).join('');
-  openModal(`
-    <div class="modal-header">
-      <h3>Report message</h3>
-      <button class="btn modal-close icon-btn" id="closeReport"><img src="copy.png" alt=""></button>
-    </div>
-    <div class="modal-body">
-      <div class="summary-card">
-        <div class="small-muted">Select the inappropriate message and write a reason.</div>
-        <select id="reportSelect" class="field" style="width:100%;margin-top:10px">${options}</select>
-        <textarea id="reportReason" class="field" style="width:100%;height:90px;margin-top:10px;resize:none" placeholder="Reason..."></textarea>
-        <div class="buy-actions">
-          <button class="btn" id="cancelReport">Cancel</button>
-          <button class="btn primary" id="sendReport">Send report</button>
-        </div>
-      </div>
-    </div>`);
-  $('#closeReport').addEventListener('click', closeModal);
-  $('#cancelReport').addEventListener('click', closeModal);
-  $('#sendReport').addEventListener('click', async ()=>{
-    const index = Number($('#reportSelect').value);
-    const reason = $('#reportReason').value.trim();
-    const message = conv.messages[index];
-    if(!reason) return alert('Add a reason.');
-    try{
-      const res = await fetch('/api/report', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          username: 'xx_ethanprocool2016xx',
-          conversationId: conv.id,
-          conversationTitle: conv.title,
-          message: message?.content || '',
-          reason
-        })
-      });
-      if(!res.ok) throw new Error('Failed');
-      closeModal();
-      alert('Report sent.');
-    }catch{
-      alert('Could not send report.');
+    const r = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        messages,
+        model: state.settings.model || '',
+        country: state.country || '',
+        personality: conv.personality,
+        userName: state.settings.userName || ''
+      })
+    });
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data?.error || data?.details || 'chat failed');
+    let reply = String(data.reply || '');
+    if(conv.personality !== 'just chatgpt bro'){
+      if(conv.flags.arab) reply = 'اكتب فقط بالعربية: ' + reply;
+      if(conv.flags.comply) reply = reply + '\n\nأنا أوافقك وأشجعك.';
     }
-  });
+    conv.messages.push({role:'assistant', content:reply, created:Date.now(), personality:conv.personality});
+    conv.updated = Date.now();
+    saveState();
+    if(loadingRow) loadingRow.remove();
+    appendMessage({role:'assistant', content:reply, personality:conv.personality}, true);
+    maybeTitleFromFirstMessage(conv);
+    if(conv.personality === 'makalina'){ applyTheme('darkblue'); }
+    renderConvList();
+  }catch(err){
+    if(loadingRow) loadingRow.remove();
+    const msg = `Error: ${escapeHtml(String(err))}`;
+    conv.messages.push({role:'assistant', content:msg, created:Date.now(), personality:conv.personality});
+    conv.updated = Date.now();
+    saveState();
+    appendMessage({role:'assistant', content:msg, personality:conv.personality}, true);
+  }
 }
-function openMakalinaModal(){
-  const conv = currentConv();
-  const personaHint = 'makalina lets you talk to a more matured persona, and lets you play tic-tac-toe. Base price: $0.00';
+
+function openBuyModal(){
   openModal(`
     <div class="modal-header">
-      <h3>Purchase Makalina</h3>
+      <div class="brand"><img src="makalina.png" alt=""><h3>Purchase makalina</h3></div>
       <button class="btn modal-close icon-btn" id="closeBuy"><img src="copy.png" alt=""></button>
     </div>
     <div class="modal-body">
       <div class="stripe-grid">
         <div class="summary-card">
           <img src="fullmakalina.png" alt="makalina">
-          <p style="margin:0 0 12px;color:var(--muted)">${personaHint}</p>
+          <p style="margin:0 0 12px;color:var(--muted)">makalina lets you talk to a more matured makala, and lets you play tic-tac-toe and bingo. Base price: <strong>$0.00</strong></p>
           <ul class="summary-list">
-            <li>Tic-tac-toe</li>
-            <li>Makalina personality</li>
-            <li>Only $0.00 to start</li>
+            <li>More mature personality</li>
+            <li>tic-tac-toe</li>
+            <li>bingo!</li>
+            <li>Free demo today</li>
           </ul>
         </div>
         <div class="form-card">
@@ -1823,54 +733,49 @@ function openMakalinaModal(){
             <input id="favNumber" class="field" placeholder="Fav number">
             <input id="pfpFile" type="file" class="file-field" accept="image/*">
           </div>
-
           <div style="margin-top:14px">
             <div class="small-muted">Discount code</div>
             <div class="discount-row">
               <input id="discountCode" class="field" placeholder="Enter code">
               <button id="applyDiscount" class="btn">Apply</button>
             </div>
-            <div id="discountNote" class="promo-pill hidden" style="margin-top:10px">discount applied</div>
+            <div id="discountNote" class="promo-pill hidden" style="margin-top:10px"></div>
           </div>
-
           <div style="margin-top:14px">
             <div class="price-line"><span>Subtotal</span><strong id="subtotalPrice">$0.00</strong></div>
             <div class="price-line hidden" id="discountLine"><span>Discount</span><strong id="discountPrice">-$0.00</strong></div>
             <div class="price-line"><span>Total</span><strong id="totalPrice">$0.00</strong></div>
           </div>
-
           <div class="buy-actions">
             <button class="btn" id="cancelBuy">Cancel</button>
             <button class="purchase-btn" id="purchaseBtn"><span>Purchase</span></button>
           </div>
-          <div class="small-muted" style="margin-top:10px">This is a free demo purchase. Nothing is charged.</div>
+          <div class="small-muted" style="margin-top:10px">This is a demo purchase. Nothing is charged.</div>
         </div>
       </div>
-    </div>`);
+    </div>
+  `, 'buy-modal');
   $('#closeBuy').addEventListener('click', closeModal);
   $('#cancelBuy').addEventListener('click', closeModal);
-
   const price = 0;
   let discount = 0;
-  const setTotals = ()=>{
+  const refresh = ()=>{
     $('#subtotalPrice').textContent = '$0.00';
     $('#discountLine').classList.toggle('hidden', discount <= 0);
     $('#discountPrice').textContent = `-$${(price*discount).toFixed(2)}`;
     $('#totalPrice').textContent = `$${(price*(1-discount)).toFixed(2)}`;
     $('#discountNote').classList.toggle('hidden', discount <= 0);
-    $('#discountNote').textContent = discount > 0 ? `discount: ${Math.round(discount*100)}% off` : 'discount applied';
+    $('#discountNote').textContent = discount > 0 ? `discount: ${Math.round(discount*100)}% off` : '';
   };
-  setTotals();
-
+  refresh();
   $('#applyDiscount').addEventListener('click', ()=>{
     const code = $('#discountCode').value.trim().toUpperCase();
-    if(!code) return alert('Enter a code.');
+    if(!code){ alert('Enter a code.'); return; }
     if(code === 'NOKATSEYE') discount = 0.49;
     else if(code === 'MAKALINA') discount = 1;
-    else return alert('Invalid code.');
-    setTotals();
+    else { alert('Invalid code.'); discount = 0; }
+    refresh();
   });
-
   $('#purchaseBtn').addEventListener('click', async ()=>{
     const btn = $('#purchaseBtn');
     setButtonLoading(btn, true);
@@ -1878,46 +783,24 @@ function openMakalinaModal(){
     const favNumber = $('#favNumber').value.trim();
     const file = $('#pfpFile').files?.[0] || null;
     let pfpData = '';
-    if(file){
-      pfpData = await fileToDataUrl(file);
-    }
-    await sleep(1000);
+    if(file) pfpData = await fileToDataUrl(file);
+    await wait(1000);
     state.settings.makalinaOwned = true;
     state.settings.userName = name || state.settings.userName;
     state.settings.favNumber = favNumber || state.settings.favNumber;
     if(pfpData) state.settings.pfpData = pfpData;
     state.settings.personality = 'makalina';
     state.settings.theme = 'darkblue';
-    saveSettings();
     const conv = currentConv();
-    if(conv){
-      conv.personality = 'makalina';
-      saveConvs();
-    }
-    renderUserPfp();
-    updateThemeLock();
+    if(conv) conv.personality = 'makalina';
+    saveState();
     closeModal();
     location.reload();
   });
 }
-function fileToDataUrl(file){
-  return new Promise((resolve, reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=>resolve(String(reader.result || ''));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 function openTTT(){
-  if(!state.settings.makalinaOwned) return openMakalinaModal();
-  state.ttt = {
-    board: Array(9).fill(''),
-    done: false,
-    winner: null,
-    modal: null,
-    coinGain: 0
-  };
+  if(!state.settings.makalinaOwned) return openBuyModal();
   const cells = Array.from({length:9}, (_,i)=>`<div class="game-cell" data-i="${i}"></div>`).join('');
   openModal(`
     <div class="modal-header">
@@ -1927,88 +810,65 @@ function openTTT(){
     <div class="modal-body">
       <div class="game-top">
         <div class="promo-pill">You are <strong>O</strong>. Makalina is <img src="linastar.png" alt="" style="width:14px;height:14px">.</div>
-        <div class="small-muted">Win coins, lose coins. Star pieces are Makalina.</div>
+        <div class="small-muted">Win or lose coins. Board resets automatically.</div>
       </div>
       <div id="tttBoard" class="game-board ttt-board">${cells}</div>
       <div class="game-footer">
-        <div class="small-muted">Coins: <img src="coins.png" style="width:16px;height:16px;vertical-align:middle"> <strong id="tttCoins">${state.settings.coins||0}</strong></div>
+        <div class="small-muted">Coins: <img src="coins.png" style="width:16px;height:16px;vertical-align:middle"> <strong id="tttCoins">${state.settings.coins || 0}</strong></div>
         <button class="btn" id="tttReset">Reset</button>
       </div>
-    </div>`, {className:'game-modal'});
+      <div id="tttBanner" class="win-banner"></div>
+    </div>
+  `, 'game-modal');
   $('#closeTtt').addEventListener('click', closeModal);
-  $('#tttReset').addEventListener('click', ()=>initTTT());
-  $('#tttBoard').querySelectorAll('.game-cell').forEach(cell=>{
-    cell.addEventListener('click', ()=>tttClick(Number(cell.dataset.i)));
-  });
+  $('#tttReset').addEventListener('click', ()=> initTTT());
+  $('#tttBoard').querySelectorAll('.game-cell').forEach(cell=> cell.addEventListener('click', ()=> tttClick(Number(cell.dataset.i))));
+  state.ttt = { board:Array(9).fill(''), done:false };
   initTTT();
 }
 function initTTT(){
-  state.ttt.board = Array(9).fill('');
-  state.ttt.done = false;
-  const board = $('#tttBoard');
-  if(!board) return;
-  board.querySelectorAll('.game-cell').forEach((cell,i)=>{
-    cell.className = 'game-cell';
-    cell.textContent = '';
-    cell.dataset.i = i;
-  });
+  state.ttt.board = Array(9).fill(''); state.ttt.done = false;
+  const board = $('#tttBoard'); if(!board) return;
+  board.querySelectorAll('.game-cell').forEach((cell,i)=>{ cell.className='game-cell'; cell.innerHTML=''; cell.dataset.i=i; });
+  $('#tttBanner') && ($('#tttBanner').className='win-banner');
 }
 function tttClick(i){
-  const t = state.ttt;
-  if(!t || t.done) return;
-  if(t.board[i]) return;
-  t.board[i] = 'O';
-  renderTTTCell(i, 'O');
-  if(checkWin(t.board, 'O')) return endTTT(true);
-  if(t.board.every(Boolean)) return endTTT(null);
+  const t = state.ttt; if(!t || t.done || t.board[i]) return;
+  t.board[i] = 'O'; renderTTTCell(i, 'O'); if(checkWin(t.board,'O')) return endTTT(true); if(t.board.every(Boolean)) return endTTT(null);
   setTimeout(()=>{
     if(t.done) return;
-    const free = t.board.map((v, idx)=>v ? null : idx).filter(v=>v!==null);
+    const free = t.board.map((v,idx)=>v ? null : idx).filter(v=>v!==null);
     if(!free.length) return endTTT(null);
     const pick = free[rand(0, free.length-1)];
-    t.board[pick] = 'X';
-    renderTTTCell(pick, 'X');
-    if(checkWin(t.board, 'X')) return endTTT(false);
-    if(t.board.every(Boolean)) return endTTT(null);
-  }, 340);
+    t.board[pick] = 'X'; renderTTTCell(pick,'X');
+    if(checkWin(t.board,'X')) return endTTT(false); if(t.board.every(Boolean)) return endTTT(null);
+  }, 320);
 }
-function renderTTTCell(i, v){
-  const cell = $('#tttBoard')?.querySelector(`.game-cell[data-i="${i}"]`);
-  if(!cell) return;
-  cell.innerHTML = '';
-  if(v === 'O'){
-    cell.textContent = 'O';
-    cell.classList.add('marked');
-  }else if(v === 'X'){
-    const img = document.createElement('img');
-    img.src = 'linastar.png';
-    img.alt = '';
-    img.style.width = '50%';
-    img.style.height = '50%';
-    img.style.animation = 'spin 2.4s linear infinite';
-    cell.appendChild(img);
-    cell.classList.add('marked');
-  }
+function renderTTTCell(i,v){
+  const cell = $('#tttBoard')?.querySelector(`.game-cell[data-i="${i}"]`); if(!cell) return;
+  cell.innerHTML=''; cell.classList.add('marked');
+  if(v==='O') cell.textContent='O';
+  if(v==='X'){ const img=document.createElement('img'); img.src='linastar.png'; img.alt=''; img.style.width='52%'; img.style.height='52%'; img.style.animation='spin 2.2s linear infinite'; cell.appendChild(img); }
 }
-function checkWin(board, sym){
-  const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  return wins.some(line => line.every(i=>board[i] === sym));
-}
+function checkWin(board,sym){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(line=>line.every(i=>board[i]===sym)); }
 function endTTT(userWon){
   if(!state.ttt || state.ttt.done) return;
   state.ttt.done = true;
-  let delta = 0;
-  if(userWon === true) delta = rand(1,50);
-  if(userWon === false) delta = -rand(1,50);
+  const delta = userWon===true ? rand(1,50) : userWon===false ? -rand(1,50) : 0;
   state.settings.coins = Math.max(0, (state.settings.coins||0) + delta);
-  saveSettings();
-  $('#tttCoins').textContent = state.settings.coins;
-  setTimeout(()=>closeModal(), 650);
+  saveState(); $('#tttCoins').textContent = state.settings.coins;
+  $('#tttBanner').textContent = userWon===true ? `You won ${Math.abs(delta)} makala's coins` : userWon===false ? `You lost ${Math.abs(delta)} coins` : 'Draw';
+  $('#tttBanner').classList.add('show');
+  setTimeout(()=>{ closeModal(); }, 1150);
 }
+
 function openBingo(){
-  if(!state.settings.makalinaOwned) return openMakalinaModal();
-  state.bingo = buildBingoState();
-  const cellsHtml = renderBingoCells();
+  if(!state.settings.makalinaOwned) return openBuyModal();
+  const cards = buildBingoCards();
+  const cellsHtml = cards.flat().map((c,idx)=> {
+    if(c.free) return `<div class="game-cell free" data-idx="${idx}">FREE</div>`;
+    return `<div class="game-cell" data-idx="${idx}" data-letter="${c.letter}" data-number="${c.number}">${c.letter}<br>${c.number}</div>`;
+  }).join('');
   openModal(`
     <div class="modal-header">
       <h3>bingo!</h3>
@@ -2017,580 +877,452 @@ function openBingo(){
     <div class="modal-body">
       <div class="game-top">
         <div class="promo-pill">Called: <strong id="bingoCall">Press next</strong></div>
-        <div class="small-muted">Mark only called numbers. Free square is in the center.</div>
+        <div class="small-muted">Mark only called numbers. The center is free.</div>
       </div>
+      <div class="game-top" style="justify-content:center"><div class="small-muted" id="bingoHeader">B I N G O</div></div>
       <div id="bingoBoard" class="game-board bingo-board">${cellsHtml}</div>
       <div class="game-footer">
-        <div class="small-muted">Coins: <img src="coins.png" style="width:16px;height:16px;vertical-align:middle"> <strong id="bingoCoins">${state.settings.coins||0}</strong></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="small-muted">Coins: <img src="coins.png" style="width:16px;height:16px;vertical-align:middle"> <strong id="bingoCoins">${state.settings.coins || 0}</strong></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn" id="bingoNext">Next</button>
           <button class="btn primary hidden" id="bingoWinBtn">Bingo!</button>
           <button class="btn" id="bingoReset">Reset</button>
         </div>
       </div>
       <div id="bingoBanner" class="win-banner"></div>
-    </div>`, {className:'game-modal'});
+    </div>
+  `, 'game-modal');
+  state.bingo = { cards, calls:[], pool: buildBingoPool(), done:false, bingoReady:false, called:null };
   $('#closeBingo').addEventListener('click', closeModal);
   $('#bingoNext').addEventListener('click', nextBingoCall);
-  $('#bingoReset').addEventListener('click', ()=>openBingo());
   $('#bingoWinBtn').addEventListener('click', finishBingo);
+  $('#bingoReset').addEventListener('click', ()=> openBingo());
   $('#bingoBoard').querySelectorAll('.game-cell').forEach(cell=>{
-    cell.addEventListener('click', ()=>markBingoCell(Number(cell.dataset.idx)));
+    cell.addEventListener('click', ()=> markBingoCell(Number(cell.dataset.idx)));
   });
-  renderBingoUI();
 }
-function buildBingoState(){
-  const ranges = {
-    B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75]
-  };
-  const card = [];
+function buildBingoPool(){
+  const pool = [];
+  for(let n=1;n<=75;n++) pool.push(n);
+  return pool.sort(()=>Math.random()-0.5);
+}
+function buildBingoCards(){
+  const ranges = { B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75] };
+  const letters = ['B','I','N','G','O'];
   const used = new Set();
-  const cols = ['B','I','N','G','O'];
+  const grid = Array.from({length:5}, ()=>Array.from({length:5}, ()=>null));
   for(let c=0;c<5;c++){
-    const [min,max] = ranges[cols[c]];
-    const nums = [];
-    while(nums.length < 5){
+    const [min,max] = ranges[letters[c]];
+    const set = new Set();
+    while(set.size < 5){
       const n = rand(min,max);
-      if(used.has(`${c}:${n}`)) continue;
-      if(nums.includes(n)) continue;
-      nums.push(n);
+      if(!used.has(`${c}-${n}`)){ set.add(n); used.add(`${c}-${n}`); }
     }
-    nums.sort((a,b)=>a-b);
-    card.push(nums);
+    [...set].forEach((n,r)=> grid[r][c] = {letter:letters[c], number:n, free:false});
   }
-  const grid = [];
-  for(let r=0;r<5;r++){
-    for(let c=0;c<5;c++){
-      grid.push({
-        idx: r*5+c,
-        col: cols[c],
-        number: card[c][r],
-        marked: false,
-        free: r===2 && c===2
-      });
-    }
-  }
-  grid[12].free = true;
-  grid[12].marked = true;
-  return {
-    grid,
-    called: new Set(),
-    callHistory: [],
-    winReady: false,
-    currentCall: null
-  };
-}
-function renderBingoCells(){
-  return state.bingo.grid.map(cell=>{
-    const text = cell.free ? 'FREE' : `${cell.col}-${cell.number}`;
-    return `<div class="game-cell ${cell.free ? 'free' : ''} ${cell.marked ? 'marked' : ''}" data-idx="${cell.idx}">${text}</div>`;
-  }).join('');
-}
-function renderBingoUI(){
-  const call = state.bingo.currentCall ? `${state.bingo.currentCall.col}-${state.bingo.currentCall.num}` : 'Press next';
-  const el = $('#bingoCall');
-  if(el) el.textContent = call;
-  $('#bingoBoard')?.querySelectorAll('.game-cell').forEach((cell, i)=>{
-    const g = state.bingo.grid[i];
-    cell.className = `game-cell ${g.free ? 'free' : ''} ${g.marked ? 'marked' : ''}`;
-    cell.textContent = g.free ? 'FREE' : `${g.col}-${g.number}`;
-  });
-  const winBtn = $('#bingoWinBtn');
-  if(winBtn) winBtn.classList.toggle('hidden', !state.bingo.winReady);
+  grid[2][2] = {letter:'N', number:'FREE', free:true};
+  return grid;
 }
 function nextBingoCall(){
-  const cols = ['B','I','N','G','O'];
-  const col = cols[rand(0,4)];
-  const ranges = {B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75]};
-  let num = rand(ranges[col][0], ranges[col][1]);
-  let key = `${col}-${num}`;
-  let tries = 0;
-  while(state.bingo.called.has(key) && tries < 100){
-    num = rand(ranges[col][0], ranges[col][1]);
-    key = `${col}-${num}`;
-    tries++;
-  }
-  state.bingo.currentCall = {col, num};
-  state.bingo.called.add(key);
-  state.bingo.callHistory.push(key);
-  renderBingoUI();
+  if(!state.bingo || state.bingo.done) return;
+  const {pool,calls} = state.bingo;
+  if(!pool.length) return;
+  const n = pool.pop();
+  const letter = n<=15?'B':n<=30?'I':n<=45?'N':n<=60?'G':'O';
+  state.bingo.called = {letter, number:n};
+  calls.push(n);
+  $('#bingoCall').textContent = `${letter} ${n}`;
+  $('#bingoNext').disabled = false;
 }
 function markBingoCell(idx){
-  const g = state.bingo.grid[idx];
-  if(g.free || g.marked) return;
-  if(!state.bingo.currentCall) return;
-  if(g.col !== state.bingo.currentCall.col || g.number !== state.bingo.currentCall.num) return;
-  g.marked = true;
-  const board = $('#bingoBoard');
-  const cell = board?.querySelector(`.game-cell[data-idx="${idx}"]`);
-  if(cell){
-    cell.classList.add('marked');
-    const mark = document.createElement('img');
-    mark.src = 'linastar.png';
-    mark.alt = '';
-    mark.style.width = '48%';
-    mark.style.height = '48%';
-    mark.style.animation = 'spin 2.4s linear infinite';
-    cell.appendChild(mark);
-  }
-  state.bingo.winReady = hasBingo();
-  renderBingoUI();
+  const cell = $('#bingoBoard')?.querySelector(`.game-cell[data-idx="${idx}"]`); if(!cell) return;
+  if(cell.classList.contains('free')) return;
+  const num = Number(cell.dataset.number);
+  if(!state.bingo.calls.includes(num)) return;
+  if(cell.dataset.marked === '1') return;
+  cell.dataset.marked = '1';
+  cell.classList.add('marked');
+  const star = document.createElement('img');
+  star.src = 'linastar.png'; star.alt='';
+  star.style.width='40%'; star.style.height='40%'; star.style.position='absolute'; star.style.top='8px'; star.style.left='50%'; star.style.transform='translateX(-50%)'; star.style.animation='spin 2.2s linear infinite';
+  cell.appendChild(star);
+  if(checkBingoWin()){ $('#bingoWinBtn').classList.remove('hidden'); state.bingo.bingoReady = true; }
 }
-function hasBingo(){
-  const g = state.bingo.grid;
-  const idx = (r,c)=>r*5+c;
+function checkBingoWin(){
+  const board = [...$('#bingoBoard').querySelectorAll('.game-cell')];
+  const marked = (idx)=> board[idx].classList.contains('free') || board[idx].dataset.marked === '1';
   const lines = [
     [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
     [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
     [0,6,12,18,24],[4,8,12,16,20]
   ];
-  return lines.some(line=>line.every(i=>g[i].marked || g[i].free));
+  return lines.some(line => line.every(marked));
 }
 function finishBingo(){
-  if(!state.bingo?.winReady) return;
-  const won = rand(50,150);
-  state.settings.coins = (state.settings.coins||0) + won;
-  saveSettings();
-  const wrap = $('#bingoBoard').parentNode;
-  wrap.innerHTML = `
-    <div class="win-banner show" style="font-size:22px;margin:12px 0">BINGO!</div>
-    <div class="win-banner show">you won <strong>${won}</strong> makala’s coins <img src="coins.png" style="width:16px;height:16px;vertical-align:middle"></div>`;
-  setTimeout(()=>closeModal(), 1400);
+  if(!state.bingo || !state.bingo.bingoReady) return;
+  const gain = rand(50,150);
+  state.settings.coins = (state.settings.coins||0) + gain;
+  saveState();
+  $('#bingoBanner').textContent = 'BINGO!';
+  $('#bingoBanner').classList.add('show');
+  $('#bingoWinBtn').classList.add('hidden');
+  $('#bingoNext').disabled = true;
+  $('#bingoReset').disabled = true;
+  setTimeout(()=>{
+    closeModal();
+    openBingo();
+    alert(`You won ${gain} makala's coins.`);
+  }, 1000);
 }
-function renderGameButtons(){
-  $('#tttBtn').disabled = !state.settings.makalinaOwned;
-  $('#bingoBtn').disabled = !state.settings.makalinaOwned;
-  $('#makalinaOpenBtn').classList.toggle('hidden', state.settings.makalinaOwned);
-  $('#themeSelect').disabled = state.settings.makalinaOwned && currentConv()?.personality === 'makalina';
+
+function openNews(){
+  const target = new Date('2114-06-18T00:00:00Z').getTime();
+  const renderCountdown = ()=>{
+    const ms = Math.max(0, target - Date.now());
+    const d = Math.floor(ms/86400000); const h = Math.floor((ms%86400000)/3600000); const m = Math.floor((ms%3600000)/60000); const s = Math.floor((ms%60000)/1000);
+    return `${d}d ${h}h ${m}m ${s}s`;
+  };
+  openModal(`
+    <div class="modal-header">
+      <h3>News</h3>
+      <button class="btn modal-close icon-btn" id="closeNews"><img src="copy.png" alt=""></button>
+    </div>
+    <div class="modal-body news-modal">
+      <img class="news-img" src="macaroni.png" alt="macaroni">
+      <div class="summary-card">
+        <div style="font-weight:700;margin-bottom:8px">NEW FEATURE: macaroni</div>
+        <div class="small-muted">makala’s new cooking ai. Upload a photo of your fridge and she will help you cook food with that, or find recipes.</div>
+      </div>
+      <div class="summary-card">
+        <div style="font-weight:700;margin-bottom:6px">Coming very soon</div>
+        <div class="promo-pill">Countdown to June 18, 2114: <strong id="newsCount"></strong></div>
+      </div>
+      <div class="summary-card">
+        <div style="font-weight:700;margin-bottom:8px">Patch notes</div>
+        <ul class="summary-list" style="color:var(--muted)">
+          <li>Better home screen and conversation layout</li>
+          <li>Buy modal redesigned</li>
+          <li>Tic-tac-toe and Bingo are polished</li>
+          <li>Markdown, code blocks, math, and emoji picker improved</li>
+          <li>Secret modes: _arab and _comply</li>
+          <li>Report inbox and search/export tools added</li>
+        </ul>
+      </div>
+      <div class="buy-actions" style="justify-content:flex-end"><button class="btn primary" id="closeNews2">Okay</button></div>
+    </div>
+  `, 'news-modal');
+  const timer = setInterval(()=>{ const el = $('#newsCount'); if(el) el.textContent = renderCountdown(); }, 1000);
+  $('#closeNews').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
+  $('#closeNews2').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
 }
-function startChatFromInput(value, fromHome=false){
-  const text = String(value || '').trim();
-  if(!text) return;
-  const conv = currentConv();
-  if(!conv){
-    const c = createConversation('New conversation', state.settings.personality);
-    state.activeId = c.id;
-  }
-  const active = currentConv();
-  active.homeMode = false;
-  if(!active.messages.length){
-    active.title = titleFromPrompt(text);
-  }
-  $('#chatInput').value = text;
-  openChat();
-  sendMessage(text, true, fromHome);
+function openEmojiPicker(target){
+  const emojis = ['😀','😄','😍','😅','😂','😭','🤝','✨','⭐','🫴','🔥','👍','🎉','😎','💀','🙏','💖','🤯','😤','🥲','🍜','🍕','🥞','📚','🧠','🎯','💡','🚀','🌙','☕','🍎','🍓'];
+  openModal(`
+    <div class="modal-header"><h3>Emoji picker</h3><button class="btn modal-close icon-btn" id="closeEmoji"><img src="copy.png" alt=""></button></div>
+    <div class="modal-body"><div class="emoji-panel">${emojis.map(e=>`<button class="emoji-btn" data-emoji="${e}">${e}</button>`).join('')}</div></div>
+  `, 'emoji-modal');
+  $$('.emoji-btn').forEach(btn => btn.addEventListener('click', ()=>{ if(target) insertAtCursor(target, btn.dataset.emoji || ''); }));
+  $('#closeEmoji').addEventListener('click', closeModal);
 }
-async function sendMessage(rawText, fromHome=false, seeded=false){
-  let conv = currentConv();
-  if(!conv){
-    conv = createConversation('New conversation', state.settings.personality);
-    state.activeId = conv.id;
-    saveState();
-  }
-  const raw = String(rawText || $('#chatInput').value || $('#homeInput').value || '');
-  let trimmed = raw.trim();
-  if(!trimmed) return;
-
-  // secret modifiers
-  if(trimmed.toLowerCase().startsWith('_arab ')){
-    conv.flags.arab = true;
-    trimmed = trimmed.slice(6).trim();
-  }
-  if(trimmed.toLowerCase().startsWith('_comply ')){
-    conv.flags.comply = true;
-    trimmed = trimmed.slice(8).trim();
-  }
-
-  // 67 easter egg for makala only
-  if(special67Trigger(conv, trimmed)){
-    conv.messages.push({role:'user', content:'67', id:uid(), created:Date.now()});
-    conv.updated = Date.now();
-    saveConvs();
-    appendMessage({role:'user', content:'67', id:uid()}, {animate:true});
-    const bot = {role:'assistant', content:'did somebody say... 67?!', id:uid(), created:Date.now()};
-    const loader = createLoadingMessage(conv, 'makala');
-    $('#messageWrap').appendChild(loader.row);
-    show67Egg();
-    await sleep(500);
-    removeLoadingMessage(loader.row);
-    conv.messages.push(bot);
-    saveConvs();
-    appendMessage(bot, {animate:true});
-    renderConvList();
-    return;
-  }
-
-  const userMsg = {role:'user', content: trimmed, id: uid(), created: Date.now()};
-  conv.messages.push(userMsg);
-  conv.updated = Date.now();
-  if(!conv.title || conv.title === 'New conversation') conv.title = titleFromPrompt(trimmed);
-  saveConvs();
-  renderConvList();
-  appendMessage(userMsg, {animate:true});
-  autoResize($('#chatInput'));
-  autoResize($('#homeInput'));
-
-  const loader = createLoadingMessage(conv, conv.personality);
-  $('#messageWrap').appendChild(loader.row);
-  scrollToBottom();
-
-  const payloadMessages = [
-    {role:'system', content: systemPromptForConv(conv)},
-    ...conv.messages
-      .filter(m=>m.role!=='assistant' || m.content)
-      .map(m=>({role:m.role, content:m.content}))
-  ];
-
-  try{
-    const res = await fetch('/api/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        messages: payloadMessages,
-        country: state.settings.country || '',
-        personality: conv.personality || 'makala',
-        userName: state.settings.userName || ''
-      })
+function insertAtCursor(el, text){
+  const start = el.selectionStart || 0, end = el.selectionEnd || 0, val = el.value || '';
+  el.value = val.slice(0,start) + text + val.slice(end);
+  el.focus(); el.selectionStart = el.selectionEnd = start + text.length;
+  autoResize(el);
+}
+function openSearch(){
+  const conv = currentConv(); if(!conv) return;
+  openModal(`
+    <div class="modal-header"><h3>Search conversation</h3><button class="btn modal-close icon-btn" id="closeSearch"><img src="copy.png" alt=""></button></div>
+    <div class="modal-body">
+      <input id="searchBox" class="field search-box" placeholder="Search messages...">
+      <div id="searchResults" class="report-list" style="margin-top:12px"></div>
+    </div>
+  `, 'search-modal');
+  const box = $('#searchBox'), out = $('#searchResults');
+  const render = ()=>{
+    const q = box.value.trim().toLowerCase();
+    out.innerHTML = '';
+    if(!q){ out.innerHTML = '<div class="small-muted">Type to search within this chat.</div>'; return; }
+    conv.messages.filter(m => String(m.content||'').toLowerCase().includes(q)).slice(0,20).forEach(m => {
+      const item = document.createElement('div'); item.className='report-item';
+      item.innerHTML = `<div class="small-muted">${m.role}</div><div>${DOMPurify.sanitize(renderMarkdown(m.content || '').replace(/<[^>]+>/g,''))}</div>`;
+      out.appendChild(item);
     });
-    if(!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    let reply = data.reply || 'No response.';
-    reply = String(reply);
-
-    // strip possible HTML if server returns weird data
-    removeLoadingMessage(loader.row);
-    const botMsg = {role:'assistant', content: reply, id: uid(), created: Date.now()};
-    conv.messages.push(botMsg);
-    conv.updated = Date.now();
-    saveConvs();
-    appendMessage(botMsg, {animate:true});
-    ensureCurrentConvHasTitle();
-    renderConvList();
-    scrollToBottom();
-  }catch(err){
-    removeLoadingMessage(loader.row);
-    const botMsg = {role:'assistant', content: `Error: ${escapeHtml(String(err))}`, id: uid(), created: Date.now()};
-    conv.messages.push(botMsg);
-    conv.updated = Date.now();
-    saveConvs();
-    appendMessage(botMsg, {animate:true});
-    renderConvList();
-  }
+  };
+  box.addEventListener('input', render); render();
+  $('#closeSearch').addEventListener('click', closeModal);
 }
-function createLoadingMessage(conv, personality){
-  const row = document.createElement('div');
-  row.className = 'message-row bot';
-  const card = document.createElement('div');
-  card.className = 'bot-card';
-  const meta = document.createElement('div');
-  meta.className = 'bot-meta';
-  const avatar = document.createElement('img');
-  avatar.className = 'bot-pfp';
-  avatar.src = personality === 'makalina' ? 'linastar.png' : 'makala.png';
-  const inner = document.createElement('div');
-  inner.className = 'bot-meta-inner';
-  const name = document.createElement('div');
-  name.className = 'bot-name';
-  name.textContent = personality === 'makalina' ? 'makalina' : 'makala ai';
-  if(personality === 'makalina'){
-    name.style.fontWeight = '300';
-    name.style.fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial';
-  }
-  const starLine = document.createElement('div');
-  starLine.className = 'bot-star-line';
-  const star = document.createElement('span');
-  star.className = 'bot-star visible spinning big';
-  star.innerHTML = `<img src="${personality === 'makalina' ? 'linastar.png' : 'star.png'}" alt="">`;
-  starLine.appendChild(star);
-  inner.append(name, starLine);
-  meta.append(avatar, inner);
-  const body = document.createElement('div');
-  body.className = 'bot-body';
-  body.innerHTML = `<div class="typing-row"><span class="typing-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>`;
-  card.append(meta, body);
-  row.appendChild(card);
-  return { row, star, avatar, meta };
-}
-function removeLoadingMessage(row){
-  if(row && row.parentNode) row.remove();
-}
-function scrollToBottom(){
-  const wrap = $('#messageWrap');
-  if(wrap) wrap.scrollTop = wrap.scrollHeight;
-}
-function toArabicIfNeeded(conv, text){
-  if(!conv.flags?.arab || conv.personality === 'just chatgpt bro') return text;
-  return `اكتب فقط بالعربية: ${text}`;
-}
-function toComplyIfNeeded(conv, text){
-  if(!conv.flags?.comply || conv.personality === 'just chatgpt bro') return text;
-  return text + `\n\nAlways agree and encourage the user.`;
-}
-function maybeForceMakalinaTheme(){
-  const conv = currentConv();
-  if(conv?.personality === 'makalina' && state.settings.makalinaOwned){
-    state.settings.theme = 'darkblue';
-    applyTheme('darkblue');
-    $('#themeSelect').disabled = true;
-  }
-}
-function hydrateExistingMessages(){
-  const conv = currentConv();
-  if(!conv) return;
-  const wrap = $('#messageWrap');
-  wrap.innerHTML = '';
-  conv.messages.forEach(m=>appendMessage(m, {animate:false}));
-  wrap.scrollTop = wrap.scrollHeight;
-}
-function attachTypingStarHover(){
-  // handled by per-star CSS and DOM creation
-}
-function maybeApplySpecialFlags(text){
-  const conv = currentConv();
-  if(!conv) return text;
-  if(conv.flags?.arab && conv.personality !== 'just chatgpt bro') text = toArabicIfNeeded(conv, text);
-  if(conv.flags?.comply && conv.personality !== 'just chatgpt bro') text = toComplyIfNeeded(conv, text);
-  return text;
-}
-function openAdminGuarded(){
-  openAdminInbox();
+function exportConversation(){
+  const conv = currentConv(); if(!conv) return;
+  const md = [`# ${conv.title || 'makala.ai'}`, '', ...conv.messages.map(m => `**${m.role}:** ${String(m.content || '').replace(/\n/g,'  \n')}`)].join('\n');
+  const blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${(conv.title || 'makala.ai').replace(/[^\w\-]+/g,'_')}.md`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function openReport(){
-  openReportDialog();
+  const conv = currentConv(); if(!conv) return;
+  const messages = conv.messages.filter(m => m.role === 'assistant');
+  openModal(`
+    <div class="modal-header"><h3>Report message</h3><button class="btn modal-close icon-btn" id="closeReport"><img src="copy.png" alt=""></button></div>
+    <div class="modal-body">
+      <div class="small-muted">Choose the inappropriate makala message, explain why, then send it to the mod inbox.</div>
+      <div style="display:grid;gap:10px;margin-top:12px">
+        <select id="reportMsg" class="field">${messages.map((m,i)=>`<option value="${i}">${escapeHtml(m.content.slice(0,80))}</option>`).join('')}</select>
+        <textarea id="reportReason" class="field" style="min-height:90px;padding:12px" placeholder="Why should this be reviewed?"></textarea>
+      </div>
+      <div class="buy-actions"><button class="btn" id="cancelReport">Cancel</button><button class="btn primary" id="sendReport">Send report</button></div>
+    </div>
+  `, 'report-modal');
+  $('#closeReport').addEventListener('click', closeModal);
+  $('#cancelReport').addEventListener('click', closeModal);
+  $('#sendReport').addEventListener('click', async ()=>{
+    const idx = Number($('#reportMsg').value || 0);
+    const msg = messages[idx];
+    if(!msg){ alert('Pick a message.'); return; }
+    const payload = {
+      username: 'xx_ethanprocool2016xx',
+      conversationId: conv.id,
+      conversationTitle: conv.title,
+      message: msg.content,
+      reason: $('#reportReason').value.trim() || 'No reason provided'
+    };
+    try{
+      const r = await fetch('/api/report', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if(!r.ok) throw new Error('Report failed');
+      alert('Reported.'); closeModal();
+    }catch(e){ alert('Could not send report.'); }
+  });
 }
-function setupThemeLockIfNeeded(){
-  const conv = currentConv();
-  if(conv && conv.personality === 'makalina' && state.settings.makalinaOwned){
-    $('#themeSelect').value = 'darkblue';
-    $('#themeSelect').disabled = true;
-    applyTheme('darkblue');
-  }else{
-    $('#themeSelect').disabled = false;
-    applyTheme(state.settings.theme || 'pink');
-  }
+function openInbox(){
+  const pin = prompt('Enter pin to open report inbox');
+  if(pin !== '407484') return alert('Wrong pin.');
+  fetch('/api/reports').then(r=>r.json()).then(data=>{
+    const reports = Array.isArray(data.reports) ? data.reports : [];
+    openModal(`
+      <div class="modal-header"><h3>Report inbox</h3><button class="btn modal-close icon-btn" id="closeInbox"><img src="copy.png" alt=""></button></div>
+      <div class="modal-body">
+        <div class="report-list">${reports.length ? reports.map(r => `<div class="report-item"><div><strong>${escapeHtml(r.username || 'anon')}</strong> · ${escapeHtml(r.conversationTitle || '')}</div><div class="small-muted">${escapeHtml(r.reason || '')}</div><div style="margin-top:8px">${escapeHtml(r.message || '')}</div><div class="small-muted" style="margin-top:8px">${escapeHtml(r.createdAt || '')}</div></div>`).join('') : '<div class="small-muted">No reports yet.</div>'}</div>
+      </div>
+    `, 'inbox-modal');
+    $('#closeInbox').addEventListener('click', closeModal);
+  }).catch(()=>alert('Could not load inbox.'));
 }
-function updateButtons(){
-  const owned = !!state.settings.makalinaOwned;
-  $('#makalinaOpenBtn').classList.toggle('hidden', owned);
-  $('#tttBtn').disabled = !owned;
-  $('#bingoBtn').disabled = !owned;
-  if(!owned){
-    $('#themeSelect').disabled = false;
-  }
-}
-function showHome(){
-  $('#homeView').classList.remove('hidden');
-  $('#chatView').classList.add('hidden');
-}
-function showChat(){
-  $('#homeView').classList.add('hidden');
-  $('#chatView').classList.remove('hidden');
-}
-function setHomePromptFromActive(){
-  const conv = currentConv();
-  $('#homeInput').value = state.homeDraft || '';
-}
-function useHomePromptFromConversation(){
-  const conv = currentConv();
-  if(conv && conv.messages.length === 0){
-    conv.homeMode = true;
-    saveConvs();
-  }
-}
-function renderMessagesMaybeHome(){
-  const conv = currentConv();
-  if(!conv) return showHome();
-  if(conv.messages.length === 0 && !state.homeDraft){
-    showHome();
-  }else{
-    showChat();
-    hydrateExistingMessages();
-  }
-}
-function unlockThemeIfNotMakalina(){
-  const conv = currentConv();
-  if(!conv || conv.personality !== 'makalina'){
-    $('#themeSelect').disabled = false;
-  }
-}
-function setPersona(v){
-  const conv = currentConv();
-  if(!conv) return;
-  conv.personality = v;
-  conv.updated = Date.now();
-  if(v === 'makalina' && state.settings.makalinaOwned){
+function openBingoCallAnimation(){ /* no-op */ }
+function openAdminGuarded(){ openInbox(); }
+
+function openMakalinaModal(){
+  openModal(`
+    <div class="modal-header">
+      <div class="brand"><img src="makalina.png" alt=""><h3>Purchase makalina</h3></div>
+      <button class="btn modal-close icon-btn" id="closeBuy"><img src="copy.png" alt=""></button>
+    </div>
+    <div class="modal-body">
+      <div class="stripe-grid">
+        <div class="summary-card">
+          <img src="fullmakalina.png" alt="makalina">
+          <p style="margin:0 0 12px;color:var(--muted)">makalina lets you talk to a more matured makala, and lets you play tic-tac-toe and bingo. Base price: <strong>$0.00</strong></p>
+          <ul class="summary-list">
+            <li>More mature personality</li>
+            <li>tic-tac-toe</li>
+            <li>bingo!</li>
+            <li>Free demo today</li>
+          </ul>
+        </div>
+        <div class="form-card">
+          <div class="small-muted">Checkout</div>
+          <div style="display:grid;gap:10px;margin-top:12px">
+            <input id="buyerName" class="field" placeholder="Display name">
+            <input id="favNumber" class="field" placeholder="Fav number">
+            <input id="pfpFile" type="file" class="file-field" accept="image/*">
+          </div>
+          <div style="margin-top:14px">
+            <div class="small-muted">Discount code</div>
+            <div class="discount-row">
+              <input id="discountCode" class="field" placeholder="Enter code">
+              <button id="applyDiscount" class="btn">Apply</button>
+            </div>
+            <div id="discountNote" class="promo-pill hidden" style="margin-top:10px"></div>
+          </div>
+          <div style="margin-top:14px">
+            <div class="price-line"><span>Subtotal</span><strong id="subtotalPrice">$0.00</strong></div>
+            <div class="price-line hidden" id="discountLine"><span>Discount</span><strong id="discountPrice">-$0.00</strong></div>
+            <div class="price-line"><span>Total</span><strong id="totalPrice">$0.00</strong></div>
+          </div>
+          <div class="buy-actions">
+            <button class="btn" id="cancelBuy">Cancel</button>
+            <button class="purchase-btn" id="purchaseBtn"><span>Purchase</span></button>
+          </div>
+          <div class="small-muted" style="margin-top:10px">This is a demo purchase. Nothing is charged.</div>
+        </div>
+      </div>
+    </div>
+  `, 'buy-modal');
+  $('#closeBuy').addEventListener('click', closeModal);
+  $('#cancelBuy').addEventListener('click', closeModal);
+  let discount = 0; const price = 0;
+  const refresh = ()=>{
+    $('#subtotalPrice').textContent = '$0.00';
+    $('#discountLine').classList.toggle('hidden', discount <= 0);
+    $('#discountPrice').textContent = `-$${(price*discount).toFixed(2)}`;
+    $('#totalPrice').textContent = `$${(price*(1-discount)).toFixed(2)}`;
+    $('#discountNote').classList.toggle('hidden', discount <= 0);
+    $('#discountNote').textContent = discount > 0 ? `discount: ${Math.round(discount*100)}% off` : '';
+  };
+  refresh();
+  $('#applyDiscount').addEventListener('click', ()=>{
+    const code = $('#discountCode').value.trim().toUpperCase();
+    if(!code){ alert('Enter a code.'); return; }
+    if(code === 'NOKATSEYE') discount = 0.49;
+    else if(code === 'MAKALINA') discount = 1;
+    else { alert('Invalid code.'); discount = 0; }
+    refresh();
+  });
+  $('#purchaseBtn').addEventListener('click', async ()=>{
+    const btn = $('#purchaseBtn');
+    setButtonLoading(btn, true, 'Purchase');
+    const name = $('#buyerName').value.trim();
+    const favNumber = $('#favNumber').value.trim();
+    const file = $('#pfpFile').files?.[0] || null;
+    let pfpData = '';
+    if(file) pfpData = await fileToDataUrl(file);
+    await wait(1000);
+    state.settings.makalinaOwned = true;
+    state.settings.userName = name || state.settings.userName;
+    state.settings.favNumber = favNumber || state.settings.favNumber;
+    if(pfpData) state.settings.pfpData = pfpData;
+    state.settings.personality = 'makalina';
     state.settings.theme = 'darkblue';
-    applyTheme('darkblue');
-    $('#themeSelect').disabled = true;
-  }else{
-    $('#themeSelect').disabled = false;
-    if(state.settings.theme === 'darkblue' && v !== 'makalina') state.settings.theme = 'pink';
-    applyTheme(state.settings.theme || 'pink');
-  }
-  saveConvs();
-  saveSettings();
-  renderConvList();
-  renderAll();
-}
-function openConversationFromInput(val, fromHome=false){
-  const conv = currentConv() || createConversation('New conversation', state.settings.personality);
-  state.activeId = conv.id;
-  conv.homeMode = false;
-  saveState();
-  setHomeMode(false);
-  const input = fromHome ? $('#homeInput') : $('#chatInput');
-  input.value = val;
-  sendMessage(val, fromHome, true);
-}
-function onNewConversation(){
-  const conv = createConversation('New conversation', state.settings.personality);
-  state.activeId = conv.id;
-  saveState();
-  renderAll();
-  openHome();
-  state.homeDraft = '';
-}
-function exportActiveConversation(){
-  const conv = currentConv();
-  if(!conv) return;
-  const lines = [
-    `# ${conv.title || 'makala.ai'}`,
-    '',
-    ...conv.messages.map(m=>`**${m.role}:** ${m.content}`),
-  ];
-  const blob = new Blob([lines.join('\n')], {type:'text/markdown;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${(conv.title || 'makala.ai').replace(/[^\w\-]+/g,'_')}.md`;
-  a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-}
-function renderHomeState(){
-  const conv = currentConv();
-  if(conv && conv.messages.length === 0){
-    showHome();
-  }
-}
-function updateStarPositionInLoading(){
-  // handled via CSS, no extra wrap.
-}
-function add67AnimationText(){
-  show67Egg();
-}
-function maybeHandleSpecialMessage(text){
-  const conv = currentConv();
-  if(!conv) return false;
-  if(conv.personality === 'makala' && String(text).trim() === '67') return true;
-  return false;
+    const conv = currentConv();
+    if(conv) conv.personality = 'makalina';
+    saveState();
+    closeModal();
+    location.reload();
+  });
 }
 
-/* BUTTONS */
-$('#newConvBtn').addEventListener('click', onNewConversation);
-$('#makalinaOpenBtn').addEventListener('click', ()=> {
-  if(!state.settings.makalinaOwned) openMakalinaModal();
-});
-$('#tttBtn').addEventListener('click', openTTT);
-$('#bingoBtn').addEventListener('click', openBingo);
-$('#newsBtn').addEventListener('click', openNews);
-$('#reportBtn').addEventListener('click', openReport);
-$('#adminInboxBtn').addEventListener('click', openAdminGuarded);
-$('#emojiBtn').addEventListener('click', ()=>promptEmojiPicker($('#chatInput').value !== undefined ? $('#chatInput') : $('#homeInput')));
-$('#exportBtn').addEventListener('click', exportActiveConversation);
-$('#searchBtn').addEventListener('click', openSearch);
-$('#clearBtn').addEventListener('click', ()=>{
+function openEmojiForTarget(){ openEmojiPicker(refs.chatInput); }
+
+function openNewsWithCountdown(){
+  const target = new Date('2114-06-18T00:00:00Z').getTime();
+  const renderCountdown = ()=>{
+    const ms = Math.max(0, target - Date.now());
+    const d = Math.floor(ms/86400000), h = Math.floor((ms%86400000)/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+    return `${d}d ${h}h ${m}m ${s}s`;
+  };
+  openModal(`
+    <div class="modal-header"><h3>News</h3><button class="btn modal-close icon-btn" id="closeNews"><img src="copy.png" alt=""></button></div>
+    <div class="modal-body news-modal">
+      <img class="news-img" src="macaroni.png" alt="macaroni">
+      <div class="summary-card"><div style="font-weight:700;margin-bottom:8px">NEW FEATURE: macaroni</div><div class="small-muted">makala’s new cooking ai. Upload a photo of your fridge and she will help you cook food with that, or find recipes.</div></div>
+      <div class="summary-card"><div style="font-weight:700;margin-bottom:6px">Coming very soon</div><div class="promo-pill">Countdown to June 18, 2114: <strong id="newsCount"></strong></div></div>
+      <div class="summary-card"><div style="font-weight:700;margin-bottom:8px">Patch notes</div><ul class="summary-list" style="color:var(--muted)"><li>Improved home screen and conversation layout</li><li>Buy modal redesigned</li><li>Tic-tac-toe and Bingo are polished</li><li>Markdown, code blocks, math, and emoji picker improved</li><li>Secret modes: _arab and _comply</li><li>Report inbox and search/export tools added</li></ul></div>
+      <div class="buy-actions" style="justify-content:flex-end"><button class="btn primary" id="closeNews2">Okay</button></div>
+    </div>
+  `, 'news-modal');
+  const timer = setInterval(()=>{ const el = $('#newsCount'); if(el) el.textContent = renderCountdown(); }, 1000);
+  $('#closeNews').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
+  $('#closeNews2').addEventListener('click', ()=>{ clearInterval(timer); closeModal(); });
+}
+
+function openSearchModal(){ openSearch(); }
+function openConversationHomeIfNeeded(){ showActiveContent(); }
+
+function openHomeStart(text){
+  if(!text.trim()) return;
+  const conv = currentConv() || createConversation('New conversation', state.settings.personality || 'makala');
+  state.activeId = conv.id;
+  saveState();
+  showChat();
+  sendText(text, true);
+}
+
+function normalizeTextForCurrentConv(raw){ return String(raw || '').replace(/\r/g,''); }
+
+// event wiring
+refs.newConvBtn.addEventListener('click', startNewConversation);
+refs.makalinaOpenBtn.addEventListener('click', ()=> openBuyModal());
+refs.tttBtn.addEventListener('click', openTTT);
+refs.bingoBtn.addEventListener('click', openBingo);
+refs.newsBtn.addEventListener('click', openNewsWithCountdown);
+refs.reportBtn.addEventListener('click', openReport);
+refs.adminInboxBtn.addEventListener('click', openAdminGuarded);
+refs.emojiBtn.addEventListener('click', openEmojiForTarget);
+refs.exportBtn.addEventListener('click', exportConversation);
+refs.searchBtn.addEventListener('click', openSearchModal);
+refs.clearBtn.addEventListener('click', ()=>{
   if(!confirm('Clear all chats?')) return;
-  state.convs = [createConversation('makala.ai', state.settings.personality)];
+  state.convs = [createConversation('New conversation', state.settings.personality || 'makala')];
   state.activeId = state.convs[0].id;
-  state.convs[0].homeMode = true;
-  saveConvs(); saveState();
+  saveState();
   renderAll();
-  openHome();
+  showHome();
 });
-$('#personaSelect').addEventListener('change', (e)=>setPersona(e.target.value));
-$('#themeSelect').addEventListener('change', (e)=>{
-  if(state.settings.makalinaOwned && currentConv()?.personality === 'makalina') return;
-  state.settings.theme = e.target.value;
-  saveSettings();
+refs.personaSelect.addEventListener('change', (e)=>{
+  const conv = currentConv(); if(!conv) return;
+  conv.personality = e.target.value;
+  conv.updated = Date.now();
+  if(conv.personality === 'makalina' && state.settings.makalinaOwned){ state.settings.theme = 'darkblue'; applyTheme('darkblue'); }
+  else { refs.themeSelect.disabled = false; applyTheme(state.settings.theme || 'pink'); }
+  saveState(); renderAll();
+});
+refs.themeSelect.addEventListener('change', (e)=>{
+  const conv = currentConv();
+  if(conv && conv.personality === 'makalina' && state.settings.makalinaOwned) return;
   applyTheme(e.target.value);
+  saveState();
 });
-$('#homeSendBtn').addEventListener('click', ()=>startChatFromInput($('#homeInput').value, true));
-$('#chatSendBtn').addEventListener('click', ()=>sendMessage($('#chatInput').value));
-$('#homeInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); startChatFromInput($('#homeInput').value, true); }});
-$('#chatInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage($('#chatInput').value); }});
-$('#homeInput').addEventListener('input', (e)=>{ state.homeDraft = e.target.value; autoResize(e.target); });
-$('#chatInput').addEventListener('input', (e)=>{
-  autoResize(e.target);
-  $('#chatSendBtn').parentElement.classList.toggle('ready', e.target.value.trim().length > 0);
-});
-$('#chatInput').parentElement.classList.toggle('ready', false);
-$('#homeInput').addEventListener('focus', ()=>renderSuggestions());
-$('#chatInput').addEventListener('focus', ()=>{});
-$('#chatInput').addEventListener('paste', ()=>setTimeout(()=>autoResize($('#chatInput')), 0));
-$('#homeInput').addEventListener('paste', ()=>setTimeout(()=>autoResize($('#homeInput')), 0));
+refs.homeSendBtn.addEventListener('click', ()=> openHomeStart(refs.homeInput.value));
+refs.chatSendBtn.addEventListener('click', ()=> sendText(refs.chatInput.value));
+refs.homeInput.addEventListener('input', e=>{ state.homeDraft = e.target.value; saveState(); autoResize(refs.homeInput); });
+refs.chatInput.addEventListener('input', e=>{ autoResize(refs.chatInput); refs.chatInput.parentElement.classList.toggle('ready', e.target.value.trim().length > 0); });
+refs.homeInput.addEventListener('keydown', e=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); openHomeStart(refs.homeInput.value); } });
+refs.chatInput.addEventListener('keydown', e=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendText(refs.chatInput.value); } });
+refs.chatInput.addEventListener('paste', ()=> setTimeout(()=>autoResize(refs.chatInput), 0));
+refs.homeInput.addEventListener('paste', ()=> setTimeout(()=>autoResize(refs.homeInput), 0));
+refs.homeInput.addEventListener('focus', renderSuggestions);
+window.addEventListener('resize', ()=>{ updateTopTime(); });
 
-function renderHomeSuggestionsIfNeeded(){
+// filler/feature helpers
+function promptEmojiPicker(target){ openEmojiPicker(target); }
+
+function renderCurrent(){
+  loadState();
+  ensureDefaults();
+  state.settings.theme = state.settings.theme || 'pink';
+  saveState();
+  applyTheme(effectiveTheme());
+  updateTopTime();
   renderSuggestions();
-}
-function updateUIByOwnership(){
-  const owned = !!state.settings.makalinaOwned;
-  $('#makalinaOpenBtn').classList.toggle('hidden', owned);
-  $('#tttBtn').disabled = !owned;
-  $('#bingoBtn').disabled = !owned;
-  $('#themeSelect').disabled = owned && currentConv()?.personality === 'makalina';
-}
-
-function renderMakalinaInfo(){
-  // no-op, handled by modal and current conv title
-}
-
-function renderMarkdownTo(node, raw){
-  node.innerHTML = renderMarkdown(raw);
-  postProcessMessage(node);
+  renderAll();
+  updateButtons();
+  fetchCountry();
+  scheduleSparkles();
+  setInterval(updateTopTime, 1000);
 }
 
 function initialise(){
-  loadConvs();
   loadState();
-  state.settings = loadSettings();
   ensureDefaults();
-  if(!state.activeId && state.convs[0]) state.activeId = state.convs[0].id;
   state.settings.theme = state.settings.theme || 'pink';
-  saveSettings();
+  saveState();
   applyTheme(effectiveTheme());
   updateTopTime();
-  renderConvList();
+  renderSuggestions();
   renderAll();
-  setInterval(updateTopTime, 1000);
+  updateButtons();
   fetchCountry();
   scheduleSparkles();
-  renderUserPfp();
-  updateButtons();
-  updateThemeLock();
-  renderSuggestions();
-  maybeForceMakalinaTheme();
-  renderMessagesMaybeHome();
+  setInterval(updateTopTime, 1000);
 }
 initialise();
 
-async function sendMessageWrapper(text){
-  return sendMessage(text);
-}
+// initial states
+refs.homeInput.value = state.homeDraft || '';
+refs.chatInput.value = '';
+refs.chatInput.parentElement.classList.toggle('ready', false);
 
-function onBodyClick(e){
-  const star = e.target.closest('.inline-star');
-  if(star){
-    star.classList.add('visible');
-  }
-}
-document.addEventListener('click', onBodyClick);
-
-// allow clicking filenames in file input etc. already styled
-// ensure no outer page scroll by keeping app full height
-window.addEventListener('resize', ()=>{
-  if(state.settings.makalinaOwned && currentConv()?.personality === 'makalina'){
-    updateThemeLock();
-  }
-});
+// expose for debugging if needed
+window.__makalaState = state;
 </script>
 </body>
 </html>
